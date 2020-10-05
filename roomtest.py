@@ -19,16 +19,29 @@ class kitchen:
         self.oven.sensors.append(tempS)
         ovenAct = actuator("Oven Actuator", "Oven",dbCursor)
         self.oven.actuators.append(ovenAct)
+        self.fridge = device("Fridge",dbCursor)
+        tempS2 = tempSensor("TS2","Fridge",dbCursor)
+        self.fridge.sensors.append(tempS2)
+        fridgeDoorSensor=openCloseSensors("Fridge Door OCS","Fridge",dbCursor)
+        self.fridge.sensors.append(fridgeDoorSensor)
 
     def turnOnOven(self):
         self.oven.actuators[0].turnOn()
 
     def turnOffOven(self):
-        self.oven.actuators[0].turnOn()
+        self.oven.actuators[0].turnOff()
 
     def getOvenTemp(self):
         return self.oven.sensors[0].getTemp()
 
+    def openFridgeDoor(self):
+        self.fridge.sensors[1].updateOpen()
+
+    def closeFridgeDoor(self):
+        self.fridge.sensors[1].updateClosed()
+
+    def getFridgeDoorState(self):
+        return self.fridge.sensors[1].getState()
         
         
 
@@ -58,9 +71,17 @@ def main():
     # kitchen.devices.append(oven)
     # print(kitchen.devices[0].getName())
     kitchen1 = kitchen("Kitchen", cursor)
+    print(kitchen1.oven.actuators[0].getState())
     kitchen1.turnOnOven()
     print(kitchen1.oven.actuators[0].getState())
-
+    kitchen1.turnOffOven()
+    print(kitchen1.oven.actuators[0].getState())
+    print("FRIDGE")
+    print(kitchen1.getFridgeDoorState())
+    kitchen1.openFridgeDoor()
+    print(kitchen1.getFridgeDoorState())
+    kitchen1.closeFridgeDoor()
+    print(kitchen1.getFridgeDoorState())
 
 
 
