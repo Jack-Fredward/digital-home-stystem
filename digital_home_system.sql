@@ -27,10 +27,11 @@ CREATE TABLE `Actuators` (
   `D_ID` int(11) DEFAULT NULL,
   `State` int(11) NOT NULL,
   `LUT` datetime DEFAULT NULL,
+  `A_Name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`A_ID`),
   KEY `Actuators_FK` (`D_ID`),
   CONSTRAINT `Actuators_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -39,6 +40,7 @@ CREATE TABLE `Actuators` (
 
 LOCK TABLES `Actuators` WRITE;
 /*!40000 ALTER TABLE `Actuators` DISABLE KEYS */;
+INSERT INTO `Actuators` VALUES (49,82,0,'2020-10-07 15:27:35','Oven Actuator'),(50,84,0,'2020-10-07 15:27:35','Burner1 Actuator'),(51,84,0,'2020-10-07 15:27:35','Burner2 Actuator'),(52,84,0,'2020-10-07 15:27:35','Burner3 Actuator'),(53,84,0,'2020-10-07 15:27:35','Burner4 Actuator');
 /*!40000 ALTER TABLE `Actuators` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -57,7 +59,7 @@ CREATE TABLE `BrightnessSensor` (
   PRIMARY KEY (`BS_ID`),
   KEY `BrightnessSensor_FK` (`D_ID`),
   CONSTRAINT `BrightnessSensor_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +82,7 @@ CREATE TABLE `Devices` (
   `D_ID` int(11) NOT NULL AUTO_INCREMENT,
   `D_Name` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,6 +91,7 @@ CREATE TABLE `Devices` (
 
 LOCK TABLES `Devices` WRITE;
 /*!40000 ALTER TABLE `Devices` DISABLE KEYS */;
+INSERT INTO `Devices` VALUES (82,'Oven'),(83,'Fridge'),(84,'Stove');
 /*!40000 ALTER TABLE `Devices` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +110,7 @@ CREATE TABLE `LiquidFlowSensors` (
   PRIMARY KEY (`LFS_ID`),
   KEY `LiquidFlowSensors_FK` (`D_ID`),
   CONSTRAINT `LiquidFlowSensors_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -134,7 +137,7 @@ CREATE TABLE `MotionSensors` (
   PRIMARY KEY (`MS_ID`),
   KEY `MotionSensors_FK` (`D_ID`),
   CONSTRAINT `MotionSensors_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +164,7 @@ CREATE TABLE `OpenCloseSensors` (
   PRIMARY KEY (`OCS_ID`),
   KEY `OpenCloseSensors_FK` (`D_ID`),
   CONSTRAINT `OpenCloseSensors_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='For things that have two states a 1 state and a 0 state(on/off, open/close, etc)';
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1 COMMENT='For things that have two states a 1 state and a 0 state(on/off, open/close, etc)';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,6 +173,7 @@ CREATE TABLE `OpenCloseSensors` (
 
 LOCK TABLES `OpenCloseSensors` WRITE;
 /*!40000 ALTER TABLE `OpenCloseSensors` DISABLE KEYS */;
+INSERT INTO `OpenCloseSensors` VALUES (5,83,'Fridge Door OCS',0);
 /*!40000 ALTER TABLE `OpenCloseSensors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +192,7 @@ CREATE TABLE `TempSensors` (
   PRIMARY KEY (`TS_ID`),
   KEY `TempSensors_FK` (`D_ID`),
   CONSTRAINT `TempSensors_FK` FOREIGN KEY (`D_ID`) REFERENCES `Devices` (`D_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,6 +201,7 @@ CREATE TABLE `TempSensors` (
 
 LOCK TABLES `TempSensors` WRITE;
 /*!40000 ALTER TABLE `TempSensors` DISABLE KEYS */;
+INSERT INTO `TempSensors` VALUES (11,82,'OTS1',0),(12,83,'FTS1',0),(13,84,'STS1',0),(14,84,'STS2',0),(15,84,'STS3',0),(16,84,'STS4',0);
 /*!40000 ALTER TABLE `TempSensors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -215,7 +220,7 @@ CREATE TABLE `Users` (
   `Is_Disabled` int(11) NOT NULL,
   `Is_SU` int(11) NOT NULL,
   PRIMARY KEY (`U_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -224,6 +229,7 @@ CREATE TABLE `Users` (
 
 LOCK TABLES `Users` WRITE;
 /*!40000 ALTER TABLE `Users` DISABLE KEYS */;
+INSERT INTO `Users` VALUES (1,'Steve','Wright',76,1,0),(2,'Mini','Wright',72,0,0),(3,'Stanely','Wright',47,0,1),(4,'Vinni','Wright',42,0,0),(5,'Michelle','Wright',18,0,0),(6,'Robert','Wright',16,0,0);
 /*!40000 ALTER TABLE `Users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -236,4 +242,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-03 16:18:30
+-- Dump completed on 2020-10-07 15:39:01
