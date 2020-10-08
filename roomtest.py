@@ -45,31 +45,56 @@ class kitchen:
         #   SINK
         #-------------------------------------------------------------
 
+        self.sink = device("Sink", dbCursor)
+        self.sink.actuators.append(actuator("Sink Actuator","Sink",dbCursor))
+        self.sink.sensors.append(liquidFlowSensor("SLFS","Sink",dbCursor))
+
         #-------------------------------------------------------------
         #   MICROWAVE
         #-------------------------------------------------------------
 
+        self.microwave = device("Microwave",dbCursor)
+        self.microwave.actuators.append(actuator("Microwave Actuator", "Microwave", dbCursor))
+        self.microwave.sensors.append(tempSensor("MTS", "Microwave",dbCursor))
 
         #-------------------------------------------------------------
         #   DISH WASHER
         #-------------------------------------------------------------
 
+        self.dishwasher = device("Dishwasher",dbCursor)
+        self.dishwasher.actuators.append(actuator("Dishwasher Actuator", "Dishwasher", dbCursor))
+        self.dishwasher.sensors.append(liquidFlowSensor("DWLFS","Dishwasher", dbCursor))
 
         #-------------------------------------------------------------
         #   COFFEE MAKER
         #-------------------------------------------------------------
 
+        self.coffeemaker = device("Coffee Maker",dbCursor)
+        self.coffeemaker.actuators.append(actuator("Coffee Maker Actuator", "Coffee Maker",dbCursor))
+        self.coffeemaker.sensors.append(tempSensor("CMTS","Coffee Maker",dbCursor))
+        self.coffeemaker.sensors.append(liquidFlowSensor("CMLFS","Coffee Maker",dbCursor))
+
         #-------------------------------------------------------------
         #   TOASTER
         #-------------------------------------------------------------
+
+        self.toaster = device("Toaster", dbCursor)
+        self.toaster.actuators.append(actuator("Toaster Actuator", "Toaster", dbCursor))
+        self.toaster.sensors.append(tempSensor("TTS","Toaster",dbCursor))
 
         #-------------------------------------------------------------
         #   GARBAGE DISPOSAL
         #-------------------------------------------------------------
 
+        self.garbagedisposal = device("Garbage Disposal",dbCursor)
+        self.garbagedisposal.actuators.append(actuator("Garbage Disposal Actuator", "Garbage Disposal",dbCursor))
+
         #-------------------------------------------------------------
         #   LIGHTS
         #-------------------------------------------------------------
+
+        self.lights = device("Kitchen Lights",dbCursor)
+        self.lights.actuators(actuator("Kitchen Light Actuator","Kitchen Lights",dbCursor))
 
         #-------------------------------------------------------------
         #   DOORS
