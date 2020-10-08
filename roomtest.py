@@ -95,11 +95,15 @@ class kitchen:
 
         self.lights = device("Kitchen Lights",dbCursor)
         self.lights.actuators(actuator("Kitchen Light Actuator","Kitchen Lights",dbCursor))
+        self.lights.sensors.append(brightSensor("KLBS","Kitchen Lights", dbCursor))
+        self.lights.sensors.append(motionSensor("KLMS","Kitchen Lights", dbCursor))
 
         #-------------------------------------------------------------
         #   DOORS
         #-------------------------------------------------------------
 
+        #   NO DOORS
+        
         #-------------------------------------------------------------
         #   WINDOWS
         #-------------------------------------------------------------
