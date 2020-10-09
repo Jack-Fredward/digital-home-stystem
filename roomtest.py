@@ -94,7 +94,7 @@ class kitchen:
         #-------------------------------------------------------------
 
         self.lights = device("Kitchen Lights",dbCursor)
-        self.lights.actuators(actuator("Kitchen Light Actuator","Kitchen Lights",dbCursor))
+        self.lights.actuators.append(actuator("Kitchen Light Actuator","Kitchen Lights",dbCursor))
         self.lights.sensors.append(brightSensor("KLBS","Kitchen Lights", dbCursor))
         self.lights.sensors.append(motionSensor("KLMS","Kitchen Lights", dbCursor))
 
@@ -108,14 +108,29 @@ class kitchen:
         #   WINDOWS
         #-------------------------------------------------------------
 
+        self.windows = []
+        self.windows.append(device("KWindow1",dbCursor))
+        self.windows[0].actuators.append(actuator("Kitchen Window 1 Actuator", "Kwindow1",dbCursor))
+        self.windows[0].sensors.append(openCloseSensors("KW1OCS","KWindow1",dbCursor))
+        self.windows.append(device("KWindow2",dbCursor))
+        self.windows[1].actuators.append(actuator("Kitchen Window 2 Actuator", "Kwindow2",dbCursor))
+        self.windows[1].sensors.append(openCloseSensors("KW2OCS","KWindow2",dbCursor))
+        
         #-------------------------------------------------------------
         #   AC/HEAT
         #-------------------------------------------------------------
 
+        self.air = device("Air",dbCursor)
+        self.air.sensors.append(tempSensor("KATS","Air",dbCursor))
+        self.air.actuators.append(actuator("Kitchen Air Actuator","Air",dbCursor))
         #-------------------------------------------------------------
         #   CAMERAS
         #-------------------------------------------------------------
-
+        
+        self.cameras = []
+        self.cameras.append(device("Kitchen Camera 1",dbCursor))
+        self.cameras[0].actuators.append(actuator("Kitchen Camera 1 Actuator","Kitchen Camera 1",dbCursor))
+        self.cameras[0].sensors.append(motionSensor("KC1MS","Kitchen Camera 1",dbCursor))
 
 
 
@@ -127,7 +142,7 @@ class kitchen:
     #-------------------------------------------------------------
 
     def turnOnOven(self):
-    self.oven.actuators[0].turnOn()
+        self.oven.actuators[0].turnOn()
 
     def turnOffOven(self):
         self.oven.actuators[0].turnOff()
