@@ -167,6 +167,14 @@ class kitchen:
     #   STOVE
     #-------------------------------------------------------------
 
+    def turnOnStoveBurner(self, burnerNum):
+        self.stove.actuators[burnerNum].turnOn()
+
+    def turnOffStoveBurner(self, burnerNum)
+        self.stove.actuators[burnerNum].turnOff()
+
+    
+
     #-------------------------------------------------------------
     #   SINK
     #-------------------------------------------------------------
