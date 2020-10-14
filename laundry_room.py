@@ -27,16 +27,16 @@ class laundry_room:
         self.lights.sensors.append(motionSensor("LRLMS","Laundry Room Lights", dbCursor))
 
         #-------------------------------------------------------------
-        #   DOORS needs finishing self.doors or self.garagedoor.append
+        #   DOORS 
         #-------------------------------------------------------------
 
-        self.doors = [interiordoor, garagedoor]
+        self.doors = []
         self.doors.append(device("LRinteriordoor",dbCursor))
-        self.doors.actuators.append(actuator("Laundry Room Interior Door Actuator", "LRinteriordoor",dbCursor))
-        self.doors.sensors.append(openCloseSensors("LRIDOCS","LRinteriordoor",dbCursor))
+        self.doors[0].actuators.append(actuator("Laundry Room Interior Door Actuator", "LRinteriodoor",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("LRIDOCS","LRinteriordoor",dbCursor))
         self.doors.append(device("LRgaragedoor",dbCursor))
-        self.doors.actuators.append(actuator("Laundry Room Garage Door Actuator", "LRgaragedoor",dbCursor))
-        self.doors.sensors.append(openCloseSensors("LRGDOCS","LRgaragedoor",dbCursor))
+        self.doors[1].actuators.append(actuator("Laundry Room Garage Door Actuator", "LRgaragedoor",dbCursor))
+        self.doors[1].sensors.append(openCloseSensors("LRGDOCS","LRgaragedoor",dbCursor))
 
         #-------------------------------------------------------------
         #   WINDOWS
@@ -56,10 +56,10 @@ class laundry_room:
         #   CAMERAS
         #-------------------------------------------------------------
 
-        self.cameras = []
-        self.cameras.append(device("Laundry Room 1",dbCursor))
-        self.cameras[0].actuators.append(actuator("Laundry Room Camera 1 Actuator","Laundry Room Camera 1",dbCursor))
-        self.cameras[0].sensors.append(motionSensor("LRC1MS","Laundry Room Camera 1",dbCursor))
+        self.cameras = device("Laundry Room Camera",dbCursor)
+        self.cameras.append(device("Laundry Room Camera",dbCursor))
+        self.cameras.actuators.append(actuator("Laundry Room Camera Actuator","Laundry Room Camera",dbCursor))
+        self.cameras.sensors.append(motionSensor("LRCMS","Laundry Room Camera",dbCursor))
 
         #-------------------------------------------------------------
         #   SINK
@@ -96,6 +96,30 @@ class laundry_room:
     #-------------------------------------------------------------
     #   METHODS
     #-------------------------------------------------------------
+    #   LIGHTS
+    #-------------------------------------------------------------
+
+    #-------------------------------------------------------------
+    #   DOORS
+    #-------------------------------------------------------------
+
+    #-------------------------------------------------------------
+    #   WINDOWS
+    #-------------------------------------------------------------
+
+    #-------------------------------------------------------------
+    #   AC/HEAT
+    #-------------------------------------------------------------
+
+    #-------------------------------------------------------------
+    #   CAMERAS
+    #-------------------------------------------------------------
+
+    #-------------------------------------------------------------
+    #   SINK
+    #-------------------------------------------------------------
+    
+    #-------------------------------------------------------------
     #   WASHING MACHINE need cycle notification
     #-------------------------------------------------------------
 
@@ -115,3 +139,10 @@ class laundry_room:
 
     def turnOffDryer(self):
         self.Dryer.actuators[0].turnOff()
+
+
+    #-------------------------------------------------------------
+    #   SMOKE ALARM
+    #-------------------------------------------------------------
+
+  
