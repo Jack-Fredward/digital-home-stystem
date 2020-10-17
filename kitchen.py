@@ -15,14 +15,14 @@ class kitchen:
     def __init__(self, name, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
-        self.DELTAT = 100 #100 degrees per second
+        
 
         #-------------------------------------------------------------
         #   DEFINITION AND DATA MEMBERS
         #-------------------------------------------------------------
         #   OVEN
         #-------------------------------------------------------------
-
+        self.OVENDELTAT = 100 #100 degrees per second
         self.oven = device("Oven",dbCursor)
         self.oven.sensors.append(tempSensor("OTS1","Oven",dbCursor))
         self.oven.actuators.append(actuator("Oven Actuator", "Oven",dbCursor))
@@ -38,6 +38,7 @@ class kitchen:
         #   STOVE
         #-------------------------------------------------------------
 
+        self.STOVEDELTAT = 50 #50 degrees per second
         self.stove = device("Stove",dbCursor)
         for i in range(4):
             self.stove.sensors.append(tempSensor("STS"+str(i+1),"Stove",dbCursor))
@@ -109,7 +110,7 @@ class kitchen:
         #-------------------------------------------------------------
         #   WINDOWS
         #-------------------------------------------------------------
-
+        #WINDOWS DONT NEED SENSORS THE ACTUATOR CAN REPRESENT THE STATE OF THE DOOR
         self.windows = []
         self.windows.append(device("KWindow1",dbCursor))
         self.windows[0].actuators.append(actuator("Kitchen Window 1 Actuator", "Kwindow1",dbCursor))
@@ -160,8 +161,7 @@ class kitchen:
         now = datetime.datetime.now()
         timeDiff = now - lut
         secondsElapsed = round(timeDiff.total_seconds())
-        oldTemp=self.getOvenTemp()
-        self.setOvenTemp((secondsElapsed*self.DELTAT))
+        self.setOvenTemp((secondsElapsed*self.OVENDELTAT))
 
     def getOvenState(self):
         return self.oven.actuators[0].getState()
@@ -189,52 +189,203 @@ class kitchen:
     def turnOffStoveBurner(self, burnerNum):
         self.stove.actuators[burnerNum].turnOff()
 
-    
+    def getStoveTemp(self, burnerNum):
+        return self.stove.sensors[burnerNum].getTemp()
+
+    def getStoveBurnerState(self, burnerNum):
+        return self.stove.actuators[burnerNum].getState()
+
+    def setStoveBurnerTemp(self, burnerNum, temp):
+        self.stove.sensors[burnerNum].setTemp(temp)
+
+    def updateStoveBurnerTemp(self,burnerNum):
+        lut = self.stove.actuators[burnerNum].getLUT()
+        now = datetime.datetime.now()
+        timeDiff = now - lut
+        secondsElapsed = round(timeDiff.total_seconds())
+        self.setStoveBurnerTemp(burnerNum,(secondsElapsed*self.OVENDELTAT))
 
     #-------------------------------------------------------------
     #   SINK
     #-------------------------------------------------------------
 
+    def turnOnSink(self):
+        self.sink.actuators[0].turnOn()
+
+    def turnOffSink(self):
+        self.sink.actuators[0].turnOff()
+
+    def getSinkState(self):
+        return self.sink.actuators[0].getState()
+
+    def setSinkFlow(self, flowRate):
+        self.sink.sensors[0].setFlowRatePct(flowRate)
+
+    def getSinkFlow(self):
+        return self.sink.sensors[0].getFlowRatePct()
+    
     #-------------------------------------------------------------
     #   MICROWAVE
     #-------------------------------------------------------------
+
+    def turnOnMicrowave(self):
+        self.microwave.actuators[0].turnOn()
+
+    def turnOffMicrowave(self):
+        self.microwave.actuators[0].turnOff()
+
+    def getMicrowaveState(self):
+        return self.microwave.actuators[0].getState()
+
+    def setMicrowaveTemp(self, temp):
+        self.microwave.sensors[0].setTemp(temp)
+
+    def getMicrowaveTemp(self):
+        return self.microwave.sensors[0].getTemp()
 
     #-------------------------------------------------------------
     #   DISH WASHER
     #-------------------------------------------------------------
 
+    def turnOnDishwasher(self):
+        self.dishwasher.actuators[0].turnOn()
+
+    def turnOffDishwaser(self):
+        self.dishwasher.actuators[0].turnOff()
+
+    def getDishwasherState(self):
+        return self.microwave.actuators[0].getState()
+
+    def setDishwasherFlow(self, flowRate):
+        self.dishwasher.sensors[0].setFlowRatePct(flowRate)
+
+    def getDishwasherFlow(self):
+        return self.dishwasher.sensors[0].getFlowRatePct()
+
     #-------------------------------------------------------------
     #   COFFEE MAKER
     #-------------------------------------------------------------
+
+    def turnOnCoffeeMaker(self):
+        self.coffeemaker.actuators[0].turnOn()
+
+    def turnOffCofeeMaker(self):
+        self.coffeemaker.actuators[0].turnOff()
+
+    def getCoffeeMakerState(self):
+        return self.coffeemaker.actuators[0].getState()
+    
+    def setCoffeeMakerFlow(self, flowRate):
+        self.coffeemaker.sensors[1].setFlowRatePct(flowRate)
+    
+    def getCoffeMakerFlow(self):
+        return self.coffeemaker.sensors[1].getFlowRatePct()
+
+    def setCoffeeMakerTemp(self, temp):
+        self.coffeemaker.sensors[0].setTemp(temp)
+
+    def getCoffeeMakerTemp(self):
+        return self.coffeemaker.sensors[0].getTemp()
 
     #-------------------------------------------------------------
     #   TOASTER
     #-------------------------------------------------------------
 
+    def turnOnToaster(self):
+        self.toaster.actuators[0].turnOn()
+
+    def turnOffToaster(self):
+        self.toaster.actuators[0].turnOff()
+
+    def getToasterState(self):
+        return self.toaster.actuators[0].getState()
+
+    def setToasterTemp(self, temp):
+        self.toaster.sensors[0].setTemp(temp)
+
+    def getToasterTemp(self):
+        self.toaster.sensors[0].getTemp()
+
     #-------------------------------------------------------------
     #   GARBAGE DISPOSAL
     #-------------------------------------------------------------
+
+    def turnOnGarbageDisposal(self):
+        self.garbagedisposal.actuators[0].turnOn()
+
+    def turnOffGarbageDisposal(self):
+        self.garbagedisposal.actuators[0].turnOff()
+
+    def getGarbageDisposalState(self):
+        return self.garbagedisposal.actuators[0].getState()
 
     #-------------------------------------------------------------
     #   LIGHTS
     #-------------------------------------------------------------
 
+    def turnOnLights(self):
+        self.lights.actuators[0].turnOn()
+    
+    def turnOffLights(self):
+        self.lights.actuators[0].turnOff()
+    
+    def getLightsState(self):
+        return self.lights.actuators[0].getState()
+
+    def setLightBrightness(self,bright):
+        self.lights.sensors[0].setBrightPct(bright)
+
+    def getLightBrightness(self):
+        return self.lights.sensors[0].getBrightPct()
+
+    def setLightsMotion(self, value):
+        self.lights.sensors[1].updateIsMotion(value)
+
+    def getLightsMotion(self):
+        return self.lights.sensors[1].getMotion()
+    
     #-------------------------------------------------------------
     #   DOORS
     #-------------------------------------------------------------
-
+  
+    #   NO DOORS
+  
     #-------------------------------------------------------------
     #   WINDOWS
     #-------------------------------------------------------------
 
+    def openWindow(self,winNum):
+        self.windows[winNum].actuators[0].turnOn()
+        self.windows[winNum].sensors[0].updateOpen()
+
+    def closeWindow(self,winNum):
+        self.windows[winNum].actuators[0].turnOff()
+        self.windows[winNum].sensors[0].updateClosed()
+
+    def getWindowState(self,winNum):
+        return self.windows[winNum].actuators[0].getState()
+
+    def getWindowOpenCloseState(self, winNum):
+        return self.windows[winNum].sensors[0].getState()
+    
     #-------------------------------------------------------------
     #   AC/HEAT
     #-------------------------------------------------------------
+
+    #this is kinda complicated need ac and heat
 
     #-------------------------------------------------------------
     #   CAMERAS
     #-------------------------------------------------------------
 
+    def turnOnCamera(self, camNum):
+        self.cameras[camNum].actuators[0].turnOn()
+
+    def turnOffCamera(self, camNum):
+        self.cameras[camNum].actuators[0].turnOff()
+
+    def getCameraState(self, camNum):
+        return self.cameras[camNum].actuators[0].getState()
         
 
 # def main():
