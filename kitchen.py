@@ -123,9 +123,17 @@ class kitchen:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("KATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Kitchen Air Actuator","Air",dbCursor))
+        #AC
+        self.aircon = device("Kitchen AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("KACTS","Kithcen Air",dbCursor))
+        self.aircon.actuators.append(actuator("Kitchen AirCon Actuator","Kitchen AirCon",dbCursor))
+
+        #HEAT
+        self.heat = device("Kitchen Heat",dbCursor)
+        self.heat.actuators.append(actuator("Kitchen Heat Actuator","Kitchen Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("KHTS","Kitchen Heat",dbCursor))
+
+
         #-------------------------------------------------------------
         #   CAMERAS
         #-------------------------------------------------------------
@@ -135,8 +143,14 @@ class kitchen:
         self.cameras[0].actuators.append(actuator("Kitchen Camera 1 Actuator","Kitchen Camera 1",dbCursor))
         self.cameras[0].sensors.append(motionSensor("KC1MS","Kitchen Camera 1",dbCursor))
 
+        #-------------------------------------------------------------
+        #   SMOKE DETECTOR
+        #-------------------------------------------------------------
 
-
+        self.smokeDetector=device("Kitchen Smoke Detector",dbCursor)
+        self.smokeDetector.actuators.append(actuator("Kitchen Smoke Detector Actuator","Kitchen Smoke Detecor", dbCursor))
+        self.smokeDetector.sensors.append(openCloseSensors("KSDOCS", "Kitchen Smoke Detector",dbCursor))
+        
     
     #-------------------------------------------------------------
     #   METHODS
@@ -170,14 +184,23 @@ class kitchen:
     #   FRIDGE
     #-------------------------------------------------------------
 
+    def turnOnFridge(self):
+        self.fridge.actuators[0].turnOn()
+
+    def turnOffFridge(self):
+        self.fridge.actuators[0].turnOff()
+
+    def getFridgeState(self):
+        return self.fridge.actuators[0].getState()
+    
     def openFridgeDoor(self):
-        self.fridge.sensors[1].updateOpen()
+        self.fridge.sensors[0].updateOpen()
 
     def closeFridgeDoor(self):
-        self.fridge.sensors[1].updateClosed()
+        self.fridge.sensors[0].updateClosed()
 
     def getFridgeDoorState(self):
-        return self.fridge.sensors[1].getState()
+        return self.fridge.sensors[0].getState()
     
     #-------------------------------------------------------------
     #   STOVE
@@ -203,7 +226,7 @@ class kitchen:
         now = datetime.datetime.now()
         timeDiff = now - lut
         secondsElapsed = round(timeDiff.total_seconds())
-        self.setStoveBurnerTemp(burnerNum,(secondsElapsed*self.OVENDELTAT))
+        self.setStoveBurnerTemp(burnerNum,(secondsElapsed*self.STOVEDELTAT))
 
     #-------------------------------------------------------------
     #   SINK
@@ -372,7 +395,37 @@ class kitchen:
     #   AC/HEAT
     #-------------------------------------------------------------
 
-    #this is kinda complicated need ac and heat
+    #AC
+    def turnOnAC(self):
+        self.aircon.actuators[0].turnOn()
+
+    def turnOffAC(self):
+        self.aircon.actuators[0].turnOff()
+
+    def getACState(self):
+        return self.aircon.actuators[0].getState()
+
+    def setACTemp(self,temp):
+        self.aircon.sensors[0].setTemp(temp)
+
+    def getACTemp(self):
+        return self.aircon.sensors[0].getTemp()
+
+    #HEAT
+    def turnOnHeat(self):
+        self.heat.actuators[0].turnOn()
+
+    def turnOffHeat(self):
+        self.heat.actuators[0].turnOff()
+
+    def getHeatState(self):
+        return self.heat.actuators[0].getState()
+
+    def setHeatTemp(self, temp):
+        self.heat.sensors[0].setTemp(temp)
+
+    def getHeatTemp(self):
+        self.heat.sensors[0].getTemp()
 
     #-------------------------------------------------------------
     #   CAMERAS
@@ -386,7 +439,28 @@ class kitchen:
 
     def getCameraState(self, camNum):
         return self.cameras[camNum].actuators[0].getState()
-        
+
+    #-------------------------------------------------------------
+    #   SMOKE DETECTOR
+    #-------------------------------------------------------------
+    
+    def turnOnSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOn()
+
+    def turnOffSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOff()
+
+    def getSmokeDetectorState(self):
+        return self.smokeDetector.actuators[0].getState()
+
+    def setSmokeState(self, isSmoke):
+        if isSmoke == 1:
+            self.smokeDetector.sensors[0].updateOpen()
+        else:
+            self.smokeDetector.sensors[0].updateClosed()
+    
+    def getSmokeState(self):
+        return self.smokeDetector.sensors[0].getState()
 
 # def main():
 #     # Open database connection
