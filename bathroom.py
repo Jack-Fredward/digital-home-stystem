@@ -85,18 +85,18 @@ class bathroom:
 
         if (has_shower == 1):
             self.shower = device("Bathroom"+number+"shower",dbCursor)
-            self.sink = device("Bathroom"+number+"Shower", dbCursor)
-            self.sink.actuators.append(actuator("Bathroom"+number+"Shower Actuator","Bathroom"+number+"Shower",dbCursor))
-            self.sink.sensors.append(liquidFlowSensor("B"+number+"SHLFS","Bathroom"+number+"Shower",dbCursor))
+            self.shower = device("Bathroom"+number+"Shower", dbCursor)
+            self.shower.actuators.append(actuator("Bathroom"+number+"Shower Actuator","Bathroom"+number+"Shower",dbCursor))
+            self.shower.sensors.append(liquidFlowSensor("B"+number+"SHLFS","Bathroom"+number+"Shower",dbCursor))
         #-------------------------------------------------------------
         #   BATHTUB
         #-------------------------------------------------------------
         
         if (has_bathtub == 1):
             self.bathtub = device("Bathroom"+number+"bathtub",dbCursor)
-            self.sink = device("Bathroom"+number+"bathtub", dbCursor)
-            self.sink.actuators.append(actuator("Bathroom"+number+"Bathtub Actuator","Bathroom"+number+"Bathtub",dbCursor))
-            self.sink.sensors.append(liquidFlowSensor("B"+number+"BLFS","Bathroom"+number+"Bathtub",dbCursor))
+            self.bathtub = device("Bathroom"+number+"bathtub", dbCursor)
+            self.bathtub.actuators.append(actuator("Bathroom"+number+"Bathtub Actuator","Bathroom"+number+"Bathtub",dbCursor))
+            self.bathtub.sensors.append(liquidFlowSensor("B"+number+"BLFS","Bathroom"+number+"Bathtub",dbCursor))
 
 
     #-------------------------------------------------------------
