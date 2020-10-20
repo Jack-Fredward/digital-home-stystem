@@ -47,11 +47,15 @@ class kitchen:
         #-------------------------------------------------------------
         #   SINK
         #-------------------------------------------------------------
-
+        #Kitchen Sink
         self.sink = device("Sink", dbCursor)
         self.sink.actuators.append(actuator("Sink Actuator","Sink",dbCursor))
         self.sink.sensors.append(liquidFlowSensor("SLFS","Sink",dbCursor))
 
+        #Pantry Sink
+        self.pantrysink = device("Pantry Sink",dbCursor)
+        self.pantrysink.actuators.append(actuator("Pantry Sink Actuator", "Pantry Sink", dbCursor))
+        self.pantrysink.sensors.append(liquidFlowSensor("PSLFS","Pantry Sink", dbCursor))
         #-------------------------------------------------------------
         #   MICROWAVE
         #-------------------------------------------------------------
@@ -122,16 +126,22 @@ class kitchen:
         #-------------------------------------------------------------
         #   AC/HEAT
         #-------------------------------------------------------------
-
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
         #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
         self.aircon = device("Kitchen AirCon",dbCursor)
-        self.aircon.sensors.append(tempSensor("KACTS","Kithcen Air",dbCursor))
+        self.aircon.sensors.append(tempSensor("KACTS","Kitchen AirCon",dbCursor))
         self.aircon.actuators.append(actuator("Kitchen AirCon Actuator","Kitchen AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
 
         #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
         self.heat = device("Kitchen Heat",dbCursor)
         self.heat.actuators.append(actuator("Kitchen Heat Actuator","Kitchen Heat",dbCursor))
         self.heat.sensors.append(tempSensor("KHTS","Kitchen Heat",dbCursor))
+        print(self.heat.sensors[0].getTemp())
+        self.setHeatTemp(ROOMTEMP)
+        print(self.heat.sensors[0].getTemp())
 
 
         #-------------------------------------------------------------
@@ -171,11 +181,12 @@ class kitchen:
         self.oven.sensors[0].setTemp(temp)
 
     def updateOvenTemp(self):
-        lut = self.oven.actuators[0].getLUT()
-        now = datetime.datetime.now()
-        timeDiff = now - lut
-        secondsElapsed = round(timeDiff.total_seconds())
-        self.setOvenTemp((secondsElapsed*self.OVENDELTAT))
+        # lut = self.oven.actuators[0].getLUT()
+        # now = datetime.datetime.now()
+        # timeDiff = now - lut
+        # secondsElapsed = round(timeDiff.total_seconds())
+        # self.setOvenTemp((secondsElapsed*self.OVENDELTAT))
+        self.setOvenTemp(self.getOvenTemp()+self.OVENDELTAT)
 
     def getOvenState(self):
         return self.oven.actuators[0].getState()
@@ -222,16 +233,17 @@ class kitchen:
         self.stove.sensors[burnerNum].setTemp(temp)
 
     def updateStoveBurnerTemp(self,burnerNum):
-        lut = self.stove.actuators[burnerNum].getLUT()
-        now = datetime.datetime.now()
-        timeDiff = now - lut
-        secondsElapsed = round(timeDiff.total_seconds())
-        self.setStoveBurnerTemp(burnerNum,(secondsElapsed*self.STOVEDELTAT))
+        # lut = self.stove.actuators[burnerNum].getLUT()
+        # now = datetime.datetime.now()
+        # timeDiff = now - lut
+        # secondsElapsed = round(timeDiff.total_seconds())
+        self.setStoveBurnerTemp(burnerNum,(self.getStoveTemp(burnerNum)+self.STOVEDELTAT))
 
     #-------------------------------------------------------------
     #   SINK
     #-------------------------------------------------------------
 
+    #Kitchen Sink
     def turnOnSink(self):
         self.sink.actuators[0].turnOn()
 
@@ -247,6 +259,22 @@ class kitchen:
     def getSinkFlow(self):
         return self.sink.sensors[0].getFlowRatePct()
     
+    #Pantry Sink
+    def turnOnPantrySink(self):
+        self.pantrysink.actuators[0].turnOn()
+    
+    def turnOffPantrySink(self):
+        self.pantrysink.actuators[0].turnOff()
+
+    def getPantrySinkState(self):
+        return self.pantrysink.actuators[0].getState()
+
+    def setPantrySinkFlow(self, flowRate):
+        self.pantrysink.sensors[0].setFlowRatePct(flowRate)
+
+    def getPantrySinkFlow(self):
+        return self.pantrysink.sensors[0].getFlowRatePct()
+
     #-------------------------------------------------------------
     #   MICROWAVE
     #-------------------------------------------------------------
@@ -411,6 +439,12 @@ class kitchen:
     def getACTemp(self):
         return self.aircon.sensors[0].getTemp()
 
+    def updateACTemp(self):
+        currTemp = self.getTemp()
+        newTemp = currTemp + self.ACDELTAT
+        self.setACTemp(newTemp)
+        self.setHeatTemp(newTemp)
+
     #HEAT
     def turnOnHeat(self):
         self.heat.actuators[0].turnOn()
@@ -425,7 +459,20 @@ class kitchen:
         self.heat.sensors[0].setTemp(temp)
 
     def getHeatTemp(self):
-        self.heat.sensors[0].getTemp()
+        return self.heat.sensors[0].getTemp()
+
+    def updateHeatTemp(self):
+        currTemp = self.getTemp()
+        newTemp = currTemp + self.HEATDELTAT
+        self.setACTemp(newTemp)
+        self.setHeatTemp(newTemp)
+
+    #Shared
+    def getTemp(self):
+        if self.getACTemp() == self.getHeatTemp():
+            return self.getACTemp()
+        else:
+            print("error temp sensors missmatched (should never be here)")
 
     #-------------------------------------------------------------
     #   CAMERAS

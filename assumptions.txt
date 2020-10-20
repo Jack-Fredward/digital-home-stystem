@@ -1,0 +1,5 @@
+This is a list of assumptions made through out the developement process.
+
+1. The oven sim will not be super realistic
+    a. However it will work in large temp changes in small increments of time just to show that it works
+2. The AC/Heat system temp sensors will be set to "room temp" upon initialization of a room
