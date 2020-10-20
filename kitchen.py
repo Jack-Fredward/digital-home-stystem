@@ -223,7 +223,7 @@ class kitchen:
     def turnOffStoveBurner(self, burnerNum):
         self.stove.actuators[burnerNum].turnOff()
 
-    def getStoveTemp(self, burnerNum):
+    def getStoveBurnerTemp(self, burnerNum):
         return self.stove.sensors[burnerNum].getTemp()
 
     def getStoveBurnerState(self, burnerNum):
@@ -237,7 +237,7 @@ class kitchen:
         # now = datetime.datetime.now()
         # timeDiff = now - lut
         # secondsElapsed = round(timeDiff.total_seconds())
-        self.setStoveBurnerTemp(burnerNum,(self.getStoveTemp(burnerNum)+self.STOVEDELTAT))
+        self.setStoveBurnerTemp(burnerNum,(self.getStoveBurnerTemp(burnerNum)+self.STOVEDELTAT))
 
     #-------------------------------------------------------------
     #   SINK
