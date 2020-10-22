@@ -1,0 +1,7 @@
+Issues.txt
+
+1. How to deal with the end of a sim for the oven or stove. How to handle the turn off and cool down?
+
+2. How to deal with lights auto turn off
+
+3. How to deal with camera feed
