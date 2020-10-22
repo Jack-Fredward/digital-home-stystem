@@ -68,6 +68,8 @@ class kitchen:
         #   DISH WASHER
         #-------------------------------------------------------------
 
+        self.DISHWASHERCAP = 50 #Arbitrary number of dishes the dishwasher can hold
+        self.dishwasherDishCount = 0
         self.dishwasher = device("Dishwasher",dbCursor)
         self.dishwasher.actuators.append(actuator("Dishwasher Actuator", "Dishwasher", dbCursor))
         self.dishwasher.sensors.append(liquidFlowSensor("DWLFS","Dishwasher", dbCursor))
@@ -312,6 +314,20 @@ class kitchen:
 
     def getDishwasherFlow(self):
         return self.dishwasher.sensors[0].getFlowRatePct()
+
+    def getDishwasherCap(self):
+        return self.DISHWASHERCAP
+
+    def getDishwasherDishCount(self):
+        return self.dishwasherDishCount
+    
+    def addDishToDishwasher(self,numDishes):
+        if(self.getDishwasherDishCount()+numDishes<=self.DISHWASHERCAP):
+            self.dishwasherDishCount+=numDishes
+        else:
+            print("Too many dishes. Must add less")
+
+    
 
     #-------------------------------------------------------------
     #   COFFEE MAKER

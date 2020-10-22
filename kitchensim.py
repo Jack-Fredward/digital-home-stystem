@@ -52,6 +52,67 @@ def simMicrowave(kitchen, microTime, powerlevel):
     print("Beep Beep Beep")
 
 
+
+def simDishwasher(kitchen):
+    numDishes = eval(input("Please enter the number of dishes you would like to add: "))
+    kitchen.addDishToDishwasher(numDishes)
+    print(kitchen.getDishwasherDishCount())
+    while(kitchen.getDishwasherDishCount()<kitchen.getDishwasherCap()):
+        numDishes = eval(input("Please enter the number of dishes you would like to add: "))
+        kitchen.addDishToDishwasher(numDishes)
+        print(kitchen.getDishwasherDishCount())
+    print("Running Dishwasher now...")
+    
+
+def simCoffeMaker(kitchen,cupSize):
+    kitchen.turnOnCoffeeMaker()
+    kitchen.setCoffeeMakerTemp(200) #the average optimal temp for making coffee
+    print("Heating Water For Coffee Please Wait")
+    time.sleep(3)
+    #cup size options small medium large
+    if(cupSize == 1):
+        kitchen.setCoffeeMakerFlow(.33)
+        print("Dispensing Coffee Now for a Small Cup")
+    elif(cupSize ==2):
+        kitchen.setCoffeeMakerFlow(.66)
+        print("Dispensing Coffee Now for a Medium Cup")
+    else:
+        kitchen.setCoffeeMakerFlow(1)
+        print("Dispensing Coffee Now for a Large Cup")
+    kitchen.turnOffCofeeMaker()
+    kitchen.setCoffeeMakerTemp(0)
+    print("Shutting Off: Enjoy your coffee")
+        
+def simToaster(kitchen,tempSetting):
+    TOASTERTEMP = 1112 #degrees F
+    TOASTERTIMEFACTOR = 2 #factor of time in seconds for each tempSetting( tempSetting 1 = 2 seconds, 2 = 4 seconds, etc)
+    kitchen.turnOnToaster()
+    kitchen.setToasterTemp(TOASTERTEMP)
+    print("Cooking the toast for "+str(tempSetting*TOASTERTIMEFACTOR)+" seconds")
+    secondsElapsed = 0
+    time.sleep(1)
+    secondsElapsed+=1
+    print("Toasting. Time left: "+str(tempSetting*TOASTERTIMEFACTOR-secondsElapsed)+" seconds")
+    while(secondsElapsed<tempSetting*TOASTERTIMEFACTOR-1):
+        time.sleep(1)
+        secondsElapsed+=1
+        print("Toasting. Time left: "+str(tempSetting*TOASTERTIMEFACTOR-secondsElapsed)+" seconds")
+    time.sleep(1)
+    print("Pop! Toast is done")
+    kitchen.turnOffToaster()
+    kitchen.setToasterTemp(0)
+    
+
+
+
+# def simAPersonInKitchen(kitchen):
+    #this if for if a person is in the kitchen for light sim purposes
+
+
+
+# def simLights(kitchen):
+    
+
 def simACHeat(kitchen, temp):
     currTemp = kitchen.getTemp()
     if temp < currTemp:
@@ -138,11 +199,17 @@ def main():
     # print("------------------------------------------")
     # print("TESTING Microwave SIM")
     # simMicrowave(kitchen1,5, 8)
+    # print("------------------------------------------")
+    # print("TESTING DISHWASHER SIM")
+    # simDishwasher(kitchen1)
+    # print("------------------------------------------")
+    # print("TESTING COFFEE MAKER SIM")
+    # simCoffeMaker(kitchen1,1)
+    # simCoffeMaker(kitchen1,2)
+    # simCoffeMaker(kitchen1,3)
     print("------------------------------------------")
-    print("TESTING SIM")
-
-
-
+    print("TESTING TOASTER SIM")
+    simToaster(kitchen1, 2)
 
 
 
