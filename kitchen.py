@@ -149,7 +149,7 @@ class kitchen:
         #-------------------------------------------------------------
 
         self.smokeDetector=device("Kitchen Smoke Detector",dbCursor)
-        self.smokeDetector.actuators.append(actuator("Kitchen Smoke Detector Actuator","Kitchen Smoke Detecor", dbCursor))
+        self.smokeDetector.actuators.append(actuator("Kitchen Smoke Detector Actuator","Kitchen Smoke Detector", dbCursor))
         self.smokeDetector.sensors.append(openCloseSensors("KSDOCS", "Kitchen Smoke Detector",dbCursor))
         
     
