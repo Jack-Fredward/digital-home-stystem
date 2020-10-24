@@ -296,7 +296,7 @@ class kitchen:
         self.dishwasher.actuators[0].turnOff()
 
     def getDishwasherState(self):
-        return self.microwave.actuators[0].getState()
+        return self.dishwasher.actuators[0].getState()
 
     def setDishwasherFlow(self, flowRate):
         self.dishwasher.sensors[0].setFlowRatePct(flowRate)
