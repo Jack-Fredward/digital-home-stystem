@@ -33,7 +33,7 @@ class study:
         self.doors = device("Study door", dbCursor)
         self.doors.append(device("Study door",dbCursor))
         self.doors.actuators.append(actuator("Study Door Actuator", "Study door",dbCursor))
-        self.doors.sensors.append(openCloseSensors("SDOCS","HBathroom door",dbCursor))
+        self.doors.sensors.append(openCloseSensors("SDOCS","Study door",dbCursor))
        
 
         #-------------------------------------------------------------
