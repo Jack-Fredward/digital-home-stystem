@@ -54,11 +54,11 @@ class study:
         self.air.actuators.append(actuator("Study Air Actuator","Air",dbCursor))
 
         #-------------------------------------------------------------
-        #   SMOKE ALARM
+        #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokealarm = device("Study Alarm", dbCursor)
-        self.smokealarm.sensor.append(SmokeSensor("SSS","Study Alarm", dbCursor))
+        self.smokealarm = device("Study Detector", dbCursor)
+        self.smokealarm.sensor.append(SmokeSensor("SSS","Study Smoke Detector", dbCursor))
 
 
     #-------------------------------------------------------------
