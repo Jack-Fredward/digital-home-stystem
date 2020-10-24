@@ -110,7 +110,24 @@ def simToaster(kitchen,tempSetting):
 
 
 
-# def simLights(kitchen):
+def simLights(kitchen):
+    print("Person enters room and turns on lights")
+    kitchen.turnOnLights()
+    kitchen.setLightBrightness(100)
+    kitchen.setLightsMotion(1)
+    time.sleep(1)
+    print("Person leaves room")
+    kitchen.setLightsMotion(0)
+    secondsElapsed = 0
+    print("Light auto turn off timer: "+str(5-secondsElapsed))
+    while(secondsElapsed<5):
+        time.sleep(1)
+        secondsElapsed+=1
+        print("Light auto turn off timer: "+str(5-secondsElapsed))
+    kitchen.setLightBrightness(0)
+    kitchen.turnOffLights()
+    print("Turning lights off...")
+
     
 
 def simACHeat(kitchen, temp):
@@ -207,11 +224,12 @@ def main():
     # simCoffeMaker(kitchen1,1)
     # simCoffeMaker(kitchen1,2)
     # simCoffeMaker(kitchen1,3)
+    # print("------------------------------------------")
+    # print("TESTING TOASTER SIM")
+    # simToaster(kitchen1, 2)
     print("------------------------------------------")
-    print("TESTING TOASTER SIM")
-    simToaster(kitchen1, 2)
-
-
+    print("TESTING LIGHT SIM")
+    simLights(kitchen1)
 
     db.commit()
     db.close()

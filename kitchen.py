@@ -141,19 +141,8 @@ class kitchen:
         self.heat = device("Kitchen Heat",dbCursor)
         self.heat.actuators.append(actuator("Kitchen Heat Actuator","Kitchen Heat",dbCursor))
         self.heat.sensors.append(tempSensor("KHTS","Kitchen Heat",dbCursor))
-        print(self.heat.sensors[0].getTemp())
         self.setHeatTemp(ROOMTEMP)
-        print(self.heat.sensors[0].getTemp())
 
-
-        #-------------------------------------------------------------
-        #   CAMERAS
-        #-------------------------------------------------------------
-        
-        self.cameras = []
-        self.cameras.append(device("Kitchen Camera 1",dbCursor))
-        self.cameras[0].actuators.append(actuator("Kitchen Camera 1 Actuator","Kitchen Camera 1",dbCursor))
-        self.cameras[0].sensors.append(motionSensor("KC1MS","Kitchen Camera 1",dbCursor))
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
@@ -489,19 +478,6 @@ class kitchen:
             return self.getACTemp()
         else:
             print("error temp sensors missmatched (should never be here)")
-
-    #-------------------------------------------------------------
-    #   CAMERAS
-    #-------------------------------------------------------------
-
-    def turnOnCamera(self, camNum):
-        self.cameras[camNum].actuators[0].turnOn()
-
-    def turnOffCamera(self, camNum):
-        self.cameras[camNum].actuators[0].turnOff()
-
-    def getCameraState(self, camNum):
-        return self.cameras[camNum].actuators[0].getState()
 
     #-------------------------------------------------------------
     #   SMOKE DETECTOR
