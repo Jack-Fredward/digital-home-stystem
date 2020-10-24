@@ -51,8 +51,6 @@ def simMicrowave(kitchen, microTime, powerlevel):
         print("Time Left: "+str(microTime)+" at powerlevel: "+str(powerlevel)+" wattage: "+str(temp))
     print("Beep Beep Beep")
 
-
-
 def simDishwasher(kitchen):
     numDishes = eval(input("Please enter the number of dishes you would like to add: "))
     kitchen.addDishToDishwasher(numDishes)
@@ -63,7 +61,6 @@ def simDishwasher(kitchen):
         print(kitchen.getDishwasherDishCount())
     print("Running Dishwasher now...")
     
-
 def simCoffeMaker(kitchen,cupSize):
     kitchen.turnOnCoffeeMaker()
     kitchen.setCoffeeMakerTemp(200) #the average optimal temp for making coffee
@@ -101,14 +98,6 @@ def simToaster(kitchen,tempSetting):
     print("Pop! Toast is done")
     kitchen.turnOffToaster()
     kitchen.setToasterTemp(0)
-    
-
-
-
-# def simAPersonInKitchen(kitchen):
-    #this if for if a person is in the kitchen for light sim purposes
-
-
 
 def simLights(kitchen):
     print("Person enters room and turns on lights")
@@ -127,8 +116,6 @@ def simLights(kitchen):
     kitchen.setLightBrightness(0)
     kitchen.turnOffLights()
     print("Turning lights off...")
-
-    
 
 def simACHeat(kitchen, temp):
     currTemp = kitchen.getTemp()
@@ -160,11 +147,6 @@ def simACHeat(kitchen, temp):
         kitchen.turnOffHeat()
     else:
         print("The Kitchen currently your requested temp")
-
-
-
-
-
 
 def main():
     # Open database connection
