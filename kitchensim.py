@@ -4,6 +4,13 @@ import datetime
 import time
 
 def simOvenTemp(kitchen, temp):
+    """Simulates setting a desired temp for the oven to be at and the oven heating up to the desired temp.
+
+    Keyword arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+    temp        -- the temperature in degrees F.
+
+    """
 
     if (kitchen.getOvenState()!=1):
         secondsElapsed = 0
@@ -22,6 +29,14 @@ def simOvenTemp(kitchen, temp):
         print("Oven already on. Should never be here.")
 
 def simStoveTemp(kitchen,temp,burnerNum):
+    """Simulates setting a desired temp to a stove burner and the stove burner heating up to it.
+
+    Keyword Arguments:
+        kitchen     -- is the room object that this simulation pertains to, the kitchen.
+        temp            -- the temp in degrees F.
+        burnerNum       -- the burner number of which burner to use.
+        
+        """
     if (kitchen.getStoveBurnerState(burnerNum)!=1):
         secondsElapsed = 0
         kitchen.turnOnStoveBurner(burnerNum)
@@ -40,6 +55,14 @@ def simStoveTemp(kitchen,temp,burnerNum):
 
 
 def simMicrowave(kitchen, microTime, powerlevel):
+    """Simulates the behavior of setting a cook time and temp to a microwave.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+    microTime   -- the time in seconds that the microwave will cook for.
+    powerlevel  -- the power level of the microwave.
+
+    """
     #microTime is the microwave cook time   
     MICROWATTS = 900 #power of the microwave
     temp = (powerlevel/10)*MICROWATTS
@@ -52,6 +75,12 @@ def simMicrowave(kitchen, microTime, powerlevel):
     print("Beep Beep Beep")
 
 def simDishwasher(kitchen):
+    """Simulating loading the dishwasher.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+
+    """
     numDishes = eval(input("Please enter the number of dishes you would like to add: "))
     kitchen.addDishToDishwasher(numDishes)
     print(kitchen.getDishwasherDishCount())
@@ -62,6 +91,13 @@ def simDishwasher(kitchen):
     print("Running Dishwasher now...")
     
 def simCoffeMaker(kitchen,cupSize):
+    """Simulating the coffee maker's behavior.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+    cupSize     -- cup size to make where 1 is a small cup, 2 is a medium cup 3 is a large cup.
+
+    """
     kitchen.turnOnCoffeeMaker()
     kitchen.setCoffeeMakerTemp(200) #the average optimal temp for making coffee
     print("Heating Water For Coffee Please Wait")
@@ -81,6 +117,13 @@ def simCoffeMaker(kitchen,cupSize):
     print("Shutting Off: Enjoy your coffee")
         
 def simToaster(kitchen,tempSetting):
+    """Simulating a toasters behavior.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+    tempSetting -- the temp setting from 1-10 that the toaster will cook for.
+
+    """
     TOASTERTEMP = 1112 #degrees F
     TOASTERTIMEFACTOR = 2 #factor of time in seconds for each tempSetting( tempSetting 1 = 2 seconds, 2 = 4 seconds, etc)
     kitchen.turnOnToaster()
@@ -100,6 +143,12 @@ def simToaster(kitchen,tempSetting):
     kitchen.setToasterTemp(0)
 
 def simLights(kitchen):
+    """Simulating someone entering and leaving the kitchen.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+
+    """
     print("Person enters room and turns on lights")
     kitchen.turnOnLights()
     kitchen.setLightBrightness(100)
@@ -118,6 +167,13 @@ def simLights(kitchen):
     print("Turning lights off...")
 
 def simACHeat(kitchen, temp):
+    """Simulates the setting of a desired temperature and the AC/Heat system making the kitchen that temperature.
+
+    Keyword Arguments:
+    kitchen     -- is the room object that this simulation pertains to, the kitchen.
+    temp        -- the temperature in degrees F.
+
+    """
     currTemp = kitchen.getTemp()
     if temp < currTemp:
         secondsElapsed = 0
