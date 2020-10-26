@@ -36,10 +36,13 @@ class breakfast_nook:
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = device("Breakfast_Nook window",dbCursor)
-        self.windows.append(device("Breakfast_Nook window",dbCursor))
-        self.windows.actuators.append(actuator("Breakfast_Nook window Actuator", "Breakfast_Nook window",dbCursor))
-        self.windows.sensors.append(openCloseSensors("BNWOCS","Breakfast_Nook window",dbCursor))
+        self.windows = []
+        self.windows.append(device("BNWindow1",dbCursor))
+        self.windows[0].actuators.append(actuator("Breakfast Nook Window 1 Actuator", "BNWindow1",dbCursor))
+        self.windows[0].sensors.append(openCloseSensors("BNW1OCS","BNWindow1",dbCursor))
+        self.windows.append(device("BNWindow2",dbCursor))
+        self.windows[1].actuators.append(actuator("Breakfast Nook Window 2 Actuator", "BNWindow2",dbCursor))
+        self.windows[1].sensors.append(openCloseSensors("BNW2OCS","BNWindow2",dbCursor))
 
         #-------------------------------------------------------------
         #   AC/HEAT
