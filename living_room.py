@@ -34,10 +34,7 @@ class Living_Room:
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = device("Living_Room window",dbCursor)
-        self.windows.append(device("Living_Room window",dbCursor))
-        self.windows.actuators.append(actuator("Living_Room window Actuator", "Living_Room window",dbCursor))
-        self.windows.sensors.append(openCloseSensors("LRWOCS","Living_Room window",dbCursor))
+        # NO WINDOWS
 
         #-------------------------------------------------------------
         #   AC/HEAT
@@ -118,19 +115,7 @@ class Living_Room:
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOn()
-        self.windows[winNum].sensors[0].updateOpen()
-
-    def closeWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOff()
-        self.windows[winNum].sensors[0].updateClosed()
-
-    def getWindowState(self,winNum):
-        return self.windows[winNum].actuators[0].getState()
-
-    def getWindowOpenCloseState(self, winNum):
-        return self.windows[winNum].sensors[0].getState()
+    # NO WINDOWS
 
     #-------------------------------------------------------------
     #   AC/HEAT
