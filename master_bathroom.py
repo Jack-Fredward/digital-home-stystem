@@ -48,10 +48,22 @@ class master_bathroom:
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = device("Master_Bathroom window",dbCursor)
-        self.windows.append(device("Master_Bathroom window",dbCursor))
-        self.windows.actuators.append(actuator("Master_Bathroom window Actuator", "Master_Bathroom window",dbCursor))
-        self.windows.sensors.append(openCloseSensors("MBWOCS","Master_Bathroom window",dbCursor))
+        self.windows = []
+        self.windows.append(device("MBWindow1",dbCursor))
+        self.windows[0].actuators.append(actuator("Master_Bathroom Window 1 Actuator", "MBwindow1",dbCursor))
+        self.windows[0].sensors.append(openCloseSensors("MBW1OCS","MBWindow1",dbCursor))
+        self.windows.append(device("MBWindow2",dbCursor))
+        self.windows[1].actuators.append(actuator("Master_Bathroom Window 2 Actuator", "MBwindow2",dbCursor))
+        self.windows[1].sensors.append(openCloseSensors("MBW2OCS","MBWindow2",dbCursor))
+        self.windows.append(device("MBWindow3",dbCursor))
+        self.windows[2].actuators.append(actuator("Master_Bathroom Window 3 Actuator", "MBwindow3",dbCursor))
+        self.windows[2].sensors.append(openCloseSensors("MBW3OCS","MBWindow3",dbCursor))
+        self.windows.append(device("MBWindow4",dbCursor))
+        self.windows[3].actuators.append(actuator("Master_Bathroom Window 4 Actuator", "MBwindow4",dbCursor))
+        self.windows[3].sensors.append(openCloseSensors("MBW4OCS","MBWindow4",dbCursor))
+        self.windows.append(device("MBWindow4",dbCursor))
+        self.windows[4].actuators.append(actuator("Master_Bathroom Window 5 Actuator", "MBwindow5",dbCursor))
+        self.windows[4].sensors.append(openCloseSensors("MBW5OCS","MBWindow5",dbCursor))
 
         #-------------------------------------------------------------
         #   AC/HEAT
