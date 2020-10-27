@@ -24,10 +24,10 @@ class Living_Room:
         #   DOORS 
         #-------------------------------------------------------------
 
-        self.doors = device("Living_Room door", dbCursor)
+        self.doors = []
         self.doors.append(device("Living_Room door",dbCursor))
-        self.doors.actuators.append(actuator("Living_Room Door Actuator", "Living_Room door",dbCursor))
-        self.doors.sensors.append(openCloseSensors("LRDOCS","Living_Room door",dbCursor))
+        self.doors[0].actuators.append(actuator("Living_Room Door Actuator", "Living_Room door",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("LRDOCS","Living_Room door",dbCursor))
        
 
         #-------------------------------------------------------------
@@ -40,16 +40,27 @@ class Living_Room:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("LRATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Living_Room Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Living_Room AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("LRACTS","Living_Room AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Living_Room AirCon Actuator","Living_Room AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Living_Room Heat",dbCursor)
+        self.heat.actuators.append(actuator("Living_Room Heat Actuator","Living_Room Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("LRHTS","Living_Room Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokealarm = device("Living_Room Detector", dbCursor)
-        self.smokealarm.sensor.append(SmokeSensor("LRSS","Living_Room Detector", dbCursor))
+        self.smokeDetector = device("Living_Room Detector", dbCursor)
+        self.smokeDetector.sensors.append(openCloseSensors("LRSD","Living_Room Detector", dbCursor))
 
         #-------------------------------------------------------------
         #   FIREPLACE
@@ -98,18 +109,18 @@ class Living_Room:
     #-------------------------------------------------------------
 
     def openDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOn()
-        self.door[doorNum].sensors[0].updateOpen()
+        self.doors[doorNum].actuators[0].turnOn()
+        self.doors[doorNum].sensors[0].updateOpen()
 
     def closeDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOff()
-        self.door[doorNum].sensors[0].updateClosed()
+        self.doors[doorNum].actuators[0].turnOff()
+        self.doors[doorNum].sensors[0].updateClosed()
 
     def getDoorState(self,doorNum):
-        return self.door[doorNum].actuators[0].getState()
+        return self.doors[doorNum].actuators[0].getState()
 
     def getDoorOpenCloseState(self,doorNum):
-        return self.door[doorNum].sensors[0].getState()
+        return self.doors[doorNum].sensors[0].getState()
 
     #-------------------------------------------------------------
     #   WINDOWS
@@ -225,3 +236,30 @@ class Living_Room:
 
     def getTelevisionState(self):
         return self.television.actuators[0].getState()
+
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    test=Living_Room("Living_Room",cursor)
+
+
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+    db.commit()
+    db.close()
+main()  
