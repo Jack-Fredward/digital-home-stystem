@@ -10,7 +10,7 @@ import datetime
 #         self.dbCursor = dbCursor
 #         self.devices = []
 
-class Dining_Room:
+class dining_room:
     def __init__(self, name, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
@@ -36,6 +36,7 @@ class Dining_Room:
         #   WINDOWS
         #-------------------------------------------------------------
 
+        self.windows = []
         self.windows = device("Dining_Room window",dbCursor)
         self.windows.append(device("Dining_Room window",dbCursor))
         self.windows.actuators.append(actuator("Dining_Room window Actuator", "Dining_Room window",dbCursor))
@@ -45,16 +46,27 @@ class Dining_Room:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("DRATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Dining_Room Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Dining_Room AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("DRACTS","Dining_Room AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Dining_Room AirCon Actuator","Dining_Room AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Dining_Room Heat",dbCursor)
+        self.heat.actuators.append(actuator("Dining_Room Heat Actuator","Dining_Room Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("DRHTS","Dining_Room Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokedetector = device("Dining_Room Detector", dbCursor)
-        self.smokedetector.sensor.append(SmokeSensor("DRSS","Dining_Room Detector", dbCursor))
+        self.smokeDetector = device("Dining_Room Detector", dbCursor)
+        self.smokeDetector.sensors.append(openCloseSensors("DRSD","Dining_Room Detector", dbCursor))
 
         #-------------------------------------------------------------
         #   SINK
@@ -211,3 +223,29 @@ class Dining_Room:
 
     def getSinkFlow(self):
         return self.sink.sensors[0].getFlowRatePct()
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    test=dining_room("dining_room",cursor)
+
+
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+    db.commit()
+    db.close()
+main() 
