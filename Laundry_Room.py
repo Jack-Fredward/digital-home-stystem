@@ -48,9 +48,20 @@ class laundry_room:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("LRATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Laundry Room Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Laundry_Room AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("LRACTS","Laundry_Room AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Laundry_Room AirCon Actuator","Laundry_Room AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Laundry_Room Heat",dbCursor)
+        self.heat.actuators.append(actuator("Laundry_Room Heat Actuator","Laundry_Room Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("LRHTS","Laundry_Room Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   SINK
@@ -81,7 +92,7 @@ class laundry_room:
         #-------------------------------------------------------------
 
         self.smokedetector = device("Smoke Detector", dbCursor)
-        self.smokedetector.sensor.append(SmokeSensor("LRSS","Smoke Detector", dbCursor))
+        self.smokedetector.sensor.append(openCloseSensors("LRSS","Smoke Detector", dbCursor))
 
 
     #-------------------------------------------------------------
@@ -252,8 +263,49 @@ class laundry_room:
     #   SMOKE DETECTOR
     #-------------------------------------------------------------
 
-    self.smokeDetector=device("Kitchen Smoke Detector",dbCursor)
-    self.smokeDetector.actuators.append(actuator("Kitchen Smoke Detector Actuator","Kitchen Smoke Detecor", dbCursor))
-    self.smokeDetector.sensors.append(openCloseSensors("KSDOCS", "Kitchen Smoke Detector",dbCursor))
+    def turnOnSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOn()
+
+    def turnOffSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOff()
+
+    def getSmokeDetectorState(self):
+        return self.smokeDetector.actuators[0].getState()
+
+    def setSmokeState(self, isSmoke):
+        if isSmoke == 1:
+            self.smokeDetector.sensors[0].updateOpen()
+        else:
+            self.smokeDetector.sensors[0].updateClosed()
+    
+    def getSmokeState(self):
+        return self.smokeDetector.sensors[0].getState()
+
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    test=Laundry_Room("Laundry_Room",cursor)
+
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+    db.commit()
+    db.close()
+main()  
 
   
