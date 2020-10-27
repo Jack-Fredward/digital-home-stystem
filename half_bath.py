@@ -11,7 +11,7 @@ import datetime
 #         self.dbCursor = dbCursor
 #         self.devices = []
 
-class Hbathroom:
+class hbathroom:
     def __init__(self, name, number, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
@@ -22,19 +22,19 @@ class Hbathroom:
         #   LIGHTS
         #-------------------------------------------------------------
 
-        self.lights = device("HBathroom Lights",dbCursor)
-        self.lights.actuators.append(actuator("HBathroom Light Actuator","HBathroom Lights",dbCursor))
-        self.lights.sensors.append(brightSensor("HBLBS","HBathroom Lights", dbCursor))
-        self.lights.sensors.append(motionSensor("HBLMS","HBathroom Lights", dbCursor))
+        self.lights = device("hbathroom Lights",dbCursor)
+        self.lights.actuators.append(actuator("hbathroom Light Actuator","hbathroom Lights",dbCursor))
+        self.lights.sensors.append(brightSensor("HBLBS","hbathroom Lights", dbCursor))
+        self.lights.sensors.append(motionSensor("HBLMS","hbathroom Lights", dbCursor))
 
         #-------------------------------------------------------------
         #   DOORS 
         #-------------------------------------------------------------
 
-        self.doors = device("HBathroom door", dbCursor)
-        self.doors.append(device("HBathroom door",dbCursor))
-        self.doors.actuators.append(actuator("HBathroom Door Actuator", "HBathroom door",dbCursor))
-        self.doors.sensors.append(openCloseSensors("HBDOCS","HBathroom door",dbCursor))
+        self.doors = []
+        self.doors.append(device("hbathroom door", dbCursor))
+        self.doors[0].actuators.append(actuator("hbathroom Door Actuator", "hbathroom door",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("HBDOCS","hbathroom door",dbCursor))
 
         #-------------------------------------------------------------
         #   WINDOWS
@@ -46,9 +46,20 @@ class Hbathroom:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("HBATS","Air",dbCursor))
-        self.air.actuators.append(actuator("HBathroom Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("hbathroom AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("HBACTS","hbathroom AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("hbathroom AirCon Actuator","hbathroom AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("hbathroom Heat",dbCursor)
+        self.heat.actuators.append(actuator("hbathroom Heat Actuator","hbathroom Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("HBHTS","hbathroom Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   CAMERAS
@@ -60,18 +71,18 @@ class Hbathroom:
         #   SINK
         #-------------------------------------------------------------
 
-        self.sink = device("HBathroom Sink", dbCursor)
-        self.sink.actuators.append(actuator("HBathroom Sink Actuator","HBathroom Sink",dbCursor))
-        self.sink.sensors.append(liquidFlowSensor("HBSLFS","HBathroom Sink",dbCursor))
+        self.sink = device("hbathroom Sink", dbCursor)
+        self.sink.actuators.append(actuator("hbathroom Sink Actuator","hbathroom Sink",dbCursor))
+        self.sink.sensors.append(liquidFlowSensor("HBSLFS","hbathroom Sink",dbCursor))
        
      
         #-------------------------------------------------------------
         #   TOILET
         #-------------------------------------------------------------
         
-        self.toilet = device("HBathroom Toilet", dbCursor)
-        self.toilet.actuators.append(actuator("HBathroom Toilet Actuator","HBathroom Toilet",dbCursor))
-        self.toilet.sensors.append(liquidFlowSensor("HBTLFS","HBathroom Toilet",dbCursor))
+        self.toilet = device("hbathroom Toilet", dbCursor)
+        self.toilet.actuators.append(actuator("hbathroom Toilet Actuator","hbathroom Toilet",dbCursor))
+        self.toilet.sensors.append(liquidFlowSensor("HBTLFS","hbathroom Toilet",dbCursor))
 
 
 
@@ -107,18 +118,18 @@ class Hbathroom:
     #-------------------------------------------------------------
 
     def openDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOn()
-        self.door[doorNum].sensors[0].updateOpen()
+        self.doors[doorNum].actuators[0].turnOn()
+        self.doors[doorNum].sensors[0].updateOpen()
 
     def closeDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOff()
-        self.door[doorNum].sensors[0].updateClosed()
+        self.doors[doorNum].actuators[0].turnOff()
+        self.doors[doorNum].sensors[0].updateClosed()
 
     def getDoorState(self,doorNum):
-        return self.door[doorNum].actuators[0].getState()
+        return self.doors[doorNum].actuators[0].getState()
 
     def getDoorOpenCloseState(self,doorNum):
-        return self.door[doorNum].sensors[0].getState()
+        return self.doors[doorNum].sensors[0].getState()
 
     #-------------------------------------------------------------
     #   AC/HEAT
@@ -212,3 +223,24 @@ class Hbathroom:
 
     def getToiletFlow(self):
         return self.toilet.sensors[0].getFlowRatePct()
+
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    db.commit()
+    db.close()
+main()
