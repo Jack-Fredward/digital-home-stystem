@@ -69,9 +69,20 @@ class master_bathroom:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("MBATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Master_Bathroom Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Master_Bathroom AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("MBACTS","Master_Bathroom AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Master_Bathroom AirCon Actuator","Master_Bathroom AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Master_Bathroom Heat",dbCursor)
+        self.heat.actuators.append(actuator("Master_Bathroom Heat Actuator","Master_Bathroom Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("MBHTS","Master_Bathroom Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   CAMERAS
@@ -83,25 +94,29 @@ class master_bathroom:
         #   SINK
         #-------------------------------------------------------------
 
-        self.sink = []
-        self.sink.append(device("Master_Bathroom His sink",dbCursor))
-        self.sink[0].actuators.append(actuator("Master_Bathroom His Sink Actuator","Master_Bathroom His Sink",dbCursor))
-        self.sink[0].sensors.append(liquidFlowSensor("MBHSLFS","Master_Bathroom His Sink",dbCursor))
-        self.sink.append(device("Master_Bathroom Her sink",dbCursor))
-        self.sink[1].actuators.append(actuator("Master_Bathroom Her Sink Actuator","Master_Bathroom Her Sink",dbCursor))
-        self.sink[1].sensors.append(liquidFlowSensor("MBHERSLFS","Master_Bathroom Her Sink",dbCursor))
+        #His Sink
+        self.sink = device("His Sink", dbCursor)
+        self.sink.actuators.append(actuator("Sink Actuator","His Sink",dbCursor))
+        self.sink.sensors.append(liquidFlowSensor("HSLFS","His Sink",dbCursor))
+
+        #Her Sink
+        self.Hersink = device("Her Sink",dbCursor)
+        self.Hersink.actuators.append(actuator("Her Sink Actuator", "Her Sink", dbCursor))
+        self.Hersink.sensors.append(liquidFlowSensor("HERSLFS","Her Sink", dbCursor))
        
         #-------------------------------------------------------------
         #   TOILET
         #-------------------------------------------------------------
  
-        self.toilet = []
-        self.toilet.append(device("Master_Bathroom His toilet",dbCursor))
-        self.toilet[0].actuators.append(actuator("Master_Bathroom His toilet Actuator","Master_Bathroom His toilet",dbCursor))
-        self.toilet[0].sensors.append(liquidFlowSensor("MBHTLFS","Master_Bathroom His toilet",dbCursor))
-        self.toilet.append(device("Master_Bathroom Her toilet",dbCursor))
-        self.toilet[1].actuators.append(actuator("Master_Bathroom Her toilet Actuator","Master_Bathroom Her toilet",dbCursor))
-        self.toilet[1].sensors.append(liquidFlowSensor("MBHERTLFS","Master_Bathroom Her toilet",dbCursor))
+        #His Toilet
+        self.toilet = device("His Toilet", dbCursor)
+        self.toilet.actuators.append(actuator("His Toilet Actuator","His Toilet",dbCursor))
+        self.toilet.sensors.append(liquidFlowSensor("HTLFS","His Toilet",dbCursor))
+
+        #Her Toilet
+        self.pantrytoilet = device("Her toilet",dbCursor)
+        self.pantrytoilet.actuators.append(actuator("Her toilet Actuator", "Her toilet", dbCursor))
+        self.pantrytoilet.sensors.append(liquidFlowSensor("HERTLFS","Her Toilet", dbCursor))
 
         #-------------------------------------------------------------
         #   SHOWER
@@ -156,18 +171,18 @@ class master_bathroom:
     #-------------------------------------------------------------
 
     def openDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOn()
-        self.door[doorNum].sensors[0].updateOpen()
+        self.doors[doorNum].actuators[0].turnOn()
+        self.doors[doorNum].sensors[0].updateOpen()
 
     def closeDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOff()
-        self.door[doorNum].sensors[0].updateClosed()
+        self.doors[doorNum].actuators[0].turnOff()
+        self.doors[doorNum].sensors[0].updateClosed()
 
     def getDoorState(self,doorNum):
-        return self.door[doorNum].actuators[0].getState()
+        return self.doors[doorNum].actuators[0].getState()
 
     def getDoorOpenCloseState(self,doorNum):
-        return self.door[doorNum].sensors[0].getState()
+        return self.doors[doorNum].sensors[0].getState()
 
 
     #-------------------------------------------------------------
@@ -247,38 +262,113 @@ class master_bathroom:
     #   SINK
     #-------------------------------------------------------------
    
+    #His Sink
     def turnOnSink(self):
+        """Turns on the His sink."""
         self.sink.actuators[0].turnOn()
 
     def turnOffSink(self):
+        """Turns off the His sink."""
         self.sink.actuators[0].turnOff()
 
     def getSinkState(self):
+        """Returns the His sink's state (on/off)."""
         return self.sink.actuators[0].getState()
 
     def setSinkFlow(self, flowRate):
+        """Sets the flow rate of the His sink.
+
+        Keyword Arguments:
+        flowRate        -- the flow rate of the sink as a percent of its maximum flow.
+
+        """
         self.sink.sensors[0].setFlowRatePct(flowRate)
 
     def getSinkFlow(self):
+        """Returns the His sink's flow rate."""
         return self.sink.sensors[0].getFlowRatePct()
+
+    #Her Sink
+    def turnOnHerSink(self):
+        """Turns on the Her sink."""
+        self.Hersink.actuators[0].turnOn()
+    
+    def turnOffHerSink(self):
+        """Turns off the panty sink."""
+        self.Hersink.actuators[0].turnOff()
+
+    def getHerSinkState(self):
+        """Gets the panty sink's state (on/off)."""
+        return self.Hersink.actuators[0].getState()
+
+    def setHerSinkFlow(self, flowRate):
+        """Sets the flow rate of the Her sink.
+
+        Keyword Arguments:
+        flowRate        -- the flow rate of the sink as a percent of its maximum flow.
+
+        """
+        self.Hersink.sensors[0].setFlowRatePct(flowRate)
+
+    def getHerSinkFlow(self):
+        """Returns the Her sink's flow rate."""
+        return self.Hersink.sensors[0].getFlowRatePct()
+    
 
     #-------------------------------------------------------------
     #   TOILET
     #-------------------------------------------------------------
     
+    #His Toilet
     def turnOnToilet(self):
+        """Turns on the His Toilet."""
         self.toilet.actuators[0].turnOn()
 
-    def turnOffToilet(self):
+    def turnOfftoilet(self):
+        """Turns off the His Toilet."""
         self.toilet.actuators[0].turnOff()
 
-    def getToiletState(self):
+    def gettoiletState(self):
+        """Returns the His Toilet's state (on/off)."""
         return self.toilet.actuators[0].getState()
 
-    def setToiletFlow(self, flowRate):
+    def settoiletFlow(self, flowRate):
+        """Sets the flow rate of the His Toilet.
+
+        Keyword Arguments:
+        flowRate        -- the flow rate of the toilet as a percent of its maximum flow.
+
+        """
         self.toilet.sensors[0].setFlowRatePct(flowRate)
 
-    def getToiletFlow(self):
+    def gettoiletFlow(self):
+        """Returns the His Toilet's flow rate."""
+        return self.toilet.sensors[0].getFlowRatePct()
+
+    #Her toilet
+    def turnOnHertoilet(self):
+        """Turns on the Her toilet."""
+        self.toilet.actuators[0].turnOn()
+    
+    def turnOffHertoilet(self):
+        """Turns off the toilet."""
+        self.toilet.actuators[0].turnOff()
+
+    def getHertoiletState(self):
+        """Gets the toilet's state (on/off)."""
+        return self.toilet.actuators[0].getState()
+
+    def setHertoiletFlow(self, flowRate):
+        """Sets the flow rate of the Her toilet.
+
+        Keyword Arguments:
+        flowRate        -- the flow rate of the toilet as a percent of its maximum flow.
+
+        """
+        self.toilet.sensors[0].setFlowRatePct(flowRate)
+
+    def getHertoiletFlow(self):
+        """Returns the Her toilet's flow rate."""
         return self.toilet.sensors[0].getFlowRatePct()
 
     #-------------------------------------------------------------
@@ -318,3 +408,23 @@ class master_bathroom:
 
     def getBathtubFlow(self):
         return self.bathtub.sensors[0].getFlowRatePct()
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    db.commit()
+    db.close()
+main()  
