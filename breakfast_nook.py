@@ -48,16 +48,27 @@ class breakfast_nook:
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("BNATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Breakfast_Nook Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Breakfast Nook AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("BNACTS","Breakfast Nook AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Breakfast Nook AirCon Actuator","Breakfast Nook AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Breakfast Nook Heat",dbCursor)
+        self.heat.actuators.append(actuator("Breakfast Nook Heat Actuator","Breakfast Nook Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("BNHTS","Breakfast Nook Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokedetector = device("Breakfast_Nook Detector", dbCursor)
-        self.smokedetector.sensor.append(SmokeSensor("BNSS","Breakfast_Nook Detector", dbCursor))
+        self.smokeDetector = device("Breakfast_Nook Detector", dbCursor)
+        self.smokeDetector.sensors.append(openCloseSensors("BNSD","Breakfast_Nook Detector", dbCursor))
 
 
     #-------------------------------------------------------------
@@ -187,3 +198,30 @@ class breakfast_nook:
     
     def getSmokeState(self):
         return self.smokeDetector.sensors[0].getState()
+
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    test=breakfast_nook("breakfast nook",cursor)
+
+
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+    db.commit()
+    db.close()
+main()  
