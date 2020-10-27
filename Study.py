@@ -29,36 +29,46 @@ class study:
         #-------------------------------------------------------------
         #   DOORS 
         #-------------------------------------------------------------
-
-        self.doors = device("Study door", dbCursor)
-        self.doors.append(device("Study door",dbCursor))
-        self.doors.actuators.append(actuator("Study Door Actuator", "Study door",dbCursor))
-        self.doors.sensors.append(openCloseSensors("SDOCS","Study door",dbCursor))
+        self.doors = []
+        self.doors.append(device("Study door", dbCursor))
+        self.doors[0].actuators.append(actuator("Study Door Actuator", "Study door",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("SDOCS","Study door",dbCursor))
        
 
         #-------------------------------------------------------------
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = device("Study window",dbCursor)
+        self.windows = []
         self.windows.append(device("Study window",dbCursor))
-        self.windows.actuators.append(actuator("Study window Actuator", "Study window",dbCursor))
-        self.windows.sensors.append(openCloseSensors("SWOCS","Study window",dbCursor))
+        self.windows[0].actuators.append(actuator("Study window Actuator", "Study window",dbCursor))
+        self.windows[0].sensors.append(openCloseSensors("SWOCS","Study window",dbCursor))
 
         #-------------------------------------------------------------
         #   AC/HEAT
         #-------------------------------------------------------------
 
-        self.air = device("Air",dbCursor)
-        self.air.sensors.append(tempSensor("SATS","Air",dbCursor))
-        self.air.actuators.append(actuator("Study Air Actuator","Air",dbCursor))
+        ROOMTEMP = 70 #70 degrees F average for standard room temp
+        #AC
+        self.ACDELTAT = -1 #cools off by 1 degree a second
+        self.aircon = device("Study AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("SACTS","Study AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("Study AirCon Actuator","Study AirCon",dbCursor))
+        self.setACTemp(ROOMTEMP)
+
+        #HEAT
+        self.HEATDELTAT = 1 #heats up by 1 degree a second
+        self.heat = device("Study Heat",dbCursor)
+        self.heat.actuators.append(actuator("Study Heat Actuator","Study Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("SHTS","Study Heat",dbCursor))
+        self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokealarm = device("Study Detector", dbCursor)
-        self.smokealarm.sensor.append(SmokeSensor("SSS","Study Smoke Detector", dbCursor))
+        self.smokeDetector = device("Study Detector", dbCursor)
+        self.smokeDetector.sensors.append(openCloseSensors("SSD","Study Detector", dbCursor))
 
 
     #-------------------------------------------------------------
@@ -93,18 +103,18 @@ class study:
     #-------------------------------------------------------------
 
     def openDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOn()
-        self.door[doorNum].sensors[0].updateOpen()
+        self.doors[doorNum].actuators[0].turnOn()
+        self.doors[doorNum].sensors[0].updateOpen()
 
     def closeDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOff()
-        self.door[doorNum].sensors[0].updateClosed()
+        self.doors[doorNum].actuators[0].turnOff()
+        self.doors[doorNum].sensors[0].updateClosed()
 
     def getDoorState(self,doorNum):
-        return self.door[doorNum].actuators[0].getState()
+        return self.doors[doorNum].actuators[0].getState()
 
     def getDoorOpenCloseState(self,doorNum):
-        return self.door[doorNum].sensors[0].getState()
+        return self.doors[doorNum].sensors[0].getState()
 
     #-------------------------------------------------------------
     #   WINDOWS
@@ -200,3 +210,30 @@ class study:
     
     def getSmokeState(self):
         return self.smokeDetector.sensors[0].getState()
+
+
+def main():
+    # Open database connection
+    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    
+    cursor.execute("DELETE FROM TempSensors")
+    cursor.execute("DELETE FROM OpenCloseSensors")
+    cursor.execute("DELETE FROM MotionSensors")
+    cursor.execute("DELETE FROM LiquidFlowSensors")
+    cursor.execute("DELETE FROM BrightnessSensor")
+    cursor.execute("DELETE FROM Actuators")
+    cursor.execute("DELETE FROM Devices")
+
+
+    test=study("study",cursor)
+
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+    db.commit()
+    db.close()
+main()  
