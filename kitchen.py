@@ -214,15 +214,15 @@ class kitchen:
     
     def openFridgeDoor(self):
         """Opens the fridge door."""
-        self.fridge.sensors[0].updateOpen()
+        self.fridge.sensors[1].updateOpen()
 
     def closeFridgeDoor(self):
         """Closes the fridge door."""
-        self.fridge.sensors[0].updateClosed()
+        self.fridge.sensors[1].updateClosed()
 
     def getFridgeDoorState(self):
         """Returns the fridge door's state (open/close)."""
-        return self.fridge.sensors[0].getState()
+        return self.fridge.sensors[1].getState()
     
     #-------------------------------------------------------------
     #   STOVE
