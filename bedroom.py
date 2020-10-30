@@ -206,7 +206,8 @@ class bedroom:
 def main ():
 
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    # db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
@@ -223,11 +224,9 @@ def main ():
     bedroom3 = bedroom("bedroom3", "3", cursor,0)
     bedroom4 = bedroom("bedroom4", "4", cursor,1)
 
-    test=bedroom2("bedroom",cursor)
 
-    test.openDoor(0)
-    test.setSmokeState(1)
-    print(test.getTemp())
+
+
 
     
 
