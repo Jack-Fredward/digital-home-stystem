@@ -11,7 +11,7 @@ import datetime
 #         self.devices = []
 
 class master_bathroom:
-    def __init__(self, name, number, dbCursor, has_shower, has_bathtub, has_extDoor):
+    def __init__(self, name, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
 
@@ -124,7 +124,6 @@ class master_bathroom:
 
 
         self.shower = device("Master_Bathroom shower",dbCursor)
-        self.shower = device("Master_Bathroom Shower", dbCursor)
         self.shower.actuators.append(actuator("Master_Bathroom Shower Actuator","Master_Bathroom Shower",dbCursor))
         self.shower.sensors.append(liquidFlowSensor("MBSHLFS","Master_Bathroom Shower",dbCursor))
 
@@ -134,7 +133,6 @@ class master_bathroom:
         
    
         self.bathtub = device("Master_Bathroom bathtub",dbCursor)
-        self.bathtub = device("Master_Bathroom bathtub", dbCursor)
         self.bathtub.actuators.append(actuator("Master_Bathroom Bathtub Actuator","Master_Bathroom Bathtub",dbCursor))
         self.bathtub.sensors.append(liquidFlowSensor("MBBLFS","Master_Bathroom Bathtub",dbCursor))
 
@@ -411,7 +409,8 @@ class master_bathroom:
 
 def main():
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    # db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
@@ -428,7 +427,7 @@ def main():
     test=master_bathroom("master_bathroom",cursor)
 
     test.openDoor(0)
-    test.setSmokeState(1)
+    # test.setSmokeState(1)
     print(test.getTemp())
 
 

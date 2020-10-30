@@ -226,7 +226,8 @@ class dining_room:
 
 def main():
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    # db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()

@@ -319,7 +319,7 @@ class kitchen:
         self.pantrysink.actuators[0].turnOn()
     
     def turnOffPantrySink(self):
-        """Turns off the panty sink."""
+        """Turns off the pantry sink."""
         self.pantrysink.actuators[0].turnOff()
 
     def getPantrySinkState(self):

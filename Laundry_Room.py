@@ -32,7 +32,7 @@ class laundry_room:
 
         self.doors = []
         self.doors.append(device("LRinteriordoor",dbCursor))
-        self.doors[0].actuators.append(actuator("Laundry Room Interior Door Actuator", "LRinteriodoor",dbCursor))
+        self.doors[0].actuators.append(actuator("Laundry Room Interior Door Actuator", "LRinteriordoor",dbCursor))
         self.doors[0].sensors.append(openCloseSensors("LRIDOCS","LRinteriordoor",dbCursor))
         self.doors.append(device("LRgaragedoor",dbCursor))
         self.doors[1].actuators.append(actuator("Laundry Room Garage Door Actuator", "LRgaragedoor",dbCursor))
@@ -285,7 +285,8 @@ class laundry_room:
 
 def main():
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    # db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()

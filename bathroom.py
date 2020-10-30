@@ -96,7 +96,6 @@ class bathroom:
 
         if (has_shower == 1):
             self.shower = device("Bathroom"+number+"shower",dbCursor)
-            self.shower = device("Bathroom"+number+"Shower", dbCursor)
             self.shower.actuators.append(actuator("Bathroom"+number+"Shower Actuator","Bathroom"+number+"Shower",dbCursor))
             self.shower.sensors.append(liquidFlowSensor("B"+number+"SHLFS","Bathroom"+number+"Shower",dbCursor))
         #-------------------------------------------------------------
@@ -105,7 +104,6 @@ class bathroom:
         
         if (has_bathtub == 1):
             self.bathtub = device("Bathroom"+number+"bathtub",dbCursor)
-            self.bathtub = device("Bathroom"+number+"bathtub", dbCursor)
             self.bathtub.actuators.append(actuator("Bathroom"+number+"Bathtub Actuator","Bathroom"+number+"Bathtub",dbCursor))
             self.bathtub.sensors.append(liquidFlowSensor("B"+number+"BLFS","Bathroom"+number+"Bathtub",dbCursor))
 
@@ -311,7 +309,8 @@ class bathroom:
 def main ():
 
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    # db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
     cursor = db.cursor()
@@ -324,15 +323,12 @@ def main ():
     cursor.execute("DELETE FROM Actuators")
     cursor.execute("DELETE FROM Devices")
 
-    bathroom2 = bathroom("Bathroom2", "2", cursor,1,0,0)
+    bathroom2 = bathroom("Bathroom2", "2", cursor,0,0,0)
     bathroom3 = bathroom("Bathroom3", "3", cursor,0,1,0)
     bathroom4 = bathroom("Bathroom4", "4", cursor,1,0,1)
 
-    test=study("study",cursor)
 
-    test.openDoor(0)
-    test.setSmokeState(1)
-    print(test.getTemp())
+
 
     
 
