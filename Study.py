@@ -33,6 +33,9 @@ class study:
         self.doors.append(device("Study door", dbCursor))
         self.doors[0].actuators.append(actuator("Study Door Actuator", "Study door",dbCursor))
         self.doors[0].sensors.append(openCloseSensors("SDOCS","Study door",dbCursor))
+        self.doors.append(device("Study door2", dbCursor))
+        self.doors[1].actuators.append(actuator("Study Door2 Actuator", "Study door2",dbCursor))
+        self.doors[1].sensors.append(openCloseSensors("SD2OCS","Study door2",dbCursor))
        
 
         #-------------------------------------------------------------
@@ -47,7 +50,7 @@ class study:
         #-------------------------------------------------------------
         #   AC/HEAT
         #-------------------------------------------------------------
-
+        
         ROOMTEMP = 70 #70 degrees F average for standard room temp
         #AC
         self.ACDELTAT = -1 #cools off by 1 degree a second

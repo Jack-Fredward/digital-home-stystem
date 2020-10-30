@@ -85,15 +85,16 @@ class laundry_room:
 
         self.dryer = device("Dryer",dbCursor)
         self.dryer.actuators.append(actuator("Dryer Actuator", "Dryer", dbCursor))
-        self.dryer.sensors.append(MoistureSensor("DMS","Dryer", dbCursor))
+    
 
         #-------------------------------------------------------------
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokedetector = device("Smoke Detector", dbCursor)
-        self.smokedetector.sensor.append(openCloseSensors("LRSS","Smoke Detector", dbCursor))
-
+        self.smokeDetector = device("Smoke Detector", dbCursor)
+        self.smokeDetector.sensors.append(openCloseSensors("LROCS","Smoke Detector", dbCursor))
+        self.smokeDetector.actuators.append(actuator("Laundry Room Detector Actuator","Laundry Room Smoke Detector", dbCursor))
+       
 
     #-------------------------------------------------------------
     #   METHODS
@@ -127,18 +128,18 @@ class laundry_room:
     #-------------------------------------------------------------
 
     def openDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOn()
-        self.door[doorNum].sensors[0].updateOpen()
+        self.doors[doorNum].actuators[0].turnOn()
+        self.doors[doorNum].sensors[0].updateOpen()
 
     def closeDoor(self,doorNum):
-        self.door[doorNum].actuators[0].turnOff()
-        self.door[doorNum].sensors[0].updateClosed()
+        self.doors[doorNum].actuators[0].turnOff()
+        self.doors[doorNum].sensors[0].updateClosed()
 
     def getDoorState(self,doorNum):
-        return self.door[doorNum].actuators[0].getState()
+        return self.doors[doorNum].actuators[0].getState()
 
     def getDoorOpenCloseState(self,doorNum):
-        return self.door[doorNum].sensors[0].getState()
+        return self.doors[doorNum].sensors[0].getState()
 
     #-------------------------------------------------------------
     #   WINDOWS
@@ -228,7 +229,7 @@ class laundry_room:
         self.washingmachine.actuators[0].turnOn()
 
     def turnOffWashingMachine(self):
-        self.washingmachine.actuators.[0].turnOff()
+        self.washingmachine.actuators[0].turnOff()
 
     def getWashingMachineState(self):
         return self.washingmachine.actuators[0].getState()
@@ -245,10 +246,10 @@ class laundry_room:
     #-------------------------------------------------------------
 
     def turnOnDryer(self):
-        self.Dryer.actuators[0].turnOn()
+        self.dryer.actuators[0].turnOn()
 
     def turnOffDryer(self):
-        self.Dryer.actuators[0].turnOff()
+        self.dryer.actuators[0].turnOff()
     
     def getDryerState(self):
         return self.dryer.actuators[0].getState()
@@ -298,7 +299,7 @@ def main():
     cursor.execute("DELETE FROM Devices")
 
 
-    test=Laundry_Room("Laundry_Room",cursor)
+    test=laundry_room("Laundry_Room",cursor)
 
     test.openDoor(0)
     test.setSmokeState(1)
@@ -306,6 +307,7 @@ def main():
 
     db.commit()
     db.close()
+    
 main()  
 
   

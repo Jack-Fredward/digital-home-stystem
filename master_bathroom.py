@@ -425,6 +425,13 @@ def main():
     cursor.execute("DELETE FROM Devices")
 
 
+    test=master_bathroom("master_bathroom",cursor)
+
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
+
+
     db.commit()
     db.close()
 main()  

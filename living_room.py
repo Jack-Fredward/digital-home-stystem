@@ -256,7 +256,7 @@ def main():
 
     test=Living_Room("Living_Room",cursor)
 
-
+    test.openDoor(0)
     test.setSmokeState(1)
     print(test.getTemp())
 

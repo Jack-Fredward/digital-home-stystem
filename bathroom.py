@@ -328,8 +328,11 @@ def main ():
     bathroom3 = bathroom("Bathroom3", "3", cursor,0,1,0)
     bathroom4 = bathroom("Bathroom4", "4", cursor,1,0,1)
 
-    bathroom2.openDoor()
-    print(bathroom2.getTemp())
+    test=study("study",cursor)
+
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
 
     
 

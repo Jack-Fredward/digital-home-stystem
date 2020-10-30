@@ -32,7 +32,7 @@ class hbathroom:
         #-------------------------------------------------------------
 
         self.doors = []
-        self.doors.append(device("hbathroom door", dbCursor))
+        self.doors.append(device("hbathroom door",dbCursor))
         self.doors[0].actuators.append(actuator("hbathroom Door Actuator", "hbathroom door",dbCursor))
         self.doors[0].sensors.append(openCloseSensors("HBDOCS","hbathroom door",dbCursor))
 
@@ -241,6 +241,13 @@ def main():
     cursor.execute("DELETE FROM Devices")
 
 
+    test=hbathroom("Half Bathroom",cursor)
+
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
+
     db.commit()
     db.close()
+
 main()

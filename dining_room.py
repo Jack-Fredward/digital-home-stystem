@@ -37,10 +37,10 @@ class dining_room:
         #-------------------------------------------------------------
 
         self.windows = []
-        self.windows = device("Dining_Room window",dbCursor)
         self.windows.append(device("Dining_Room window",dbCursor))
-        self.windows.actuators.append(actuator("Dining_Room window Actuator", "Dining_Room window",dbCursor))
-        self.windows.sensors.append(openCloseSensors("DRWOCS","Dining_Room window",dbCursor))
+        self.windows[0].actuators.append(actuator("Dining_Room window Actuator", "Dining_Room window",dbCursor))
+        self.windows[0].sensors.append(openCloseSensors("DRWOCS","Dining_Room window",dbCursor))
+
 
         #-------------------------------------------------------------
         #   AC/HEAT
@@ -242,7 +242,7 @@ def main():
 
     test=dining_room("dining_room",cursor)
 
-
+   
     test.setSmokeState(1)
     print(test.getTemp())
 
