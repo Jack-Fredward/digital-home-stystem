@@ -570,13 +570,17 @@ class kitchen:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame):
         """Turns on the AC."""
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffAC(self):
+    def turnOffAC(self,frame):
         """Turns off the AC."""
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getACState(self):
         """Returns the AC's state (on/off)."""
@@ -603,13 +607,17 @@ class kitchen:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame):
         """Turns on the heat."""
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffHeat(self):
+    def turnOffHeat(self,frame):
         """Turns off the heat."""
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getHeatState(self):
         """Returns the heat's state (on/off)."""

@@ -177,7 +177,7 @@ def simLights(kitchen):
     kitchen.turnOffLights()
     print("Turning lights off...")
 
-def simACHeat(kitchen, temp):
+def simACHeat(frame,kitchen, temp):
     """Simulates the setting of a desired temperature and the AC/Heat system making the kitchen that temperature.
 
     Keyword Arguments:
@@ -188,32 +188,40 @@ def simACHeat(kitchen, temp):
     currTemp = kitchen.getTemp()
     if temp < currTemp:
         secondsElapsed = 0
-        kitchen.turnOnAC()
+        kitchen.turnOnAC(frame)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         kitchen.updateACTemp()
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+        # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+        frame.tempDisplayLabel.config(text = str(kitchen.getACTemp())+"*F")
+        frame.update()
         while(kitchen.getTemp()>temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed + 1
             kitchen.updateACTemp()
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
-        kitchen.turnOffAC()
+            #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+            frame.tempDisplayLabel.config(text = str(kitchen.getACTemp())+"*F")
+            frame.update()
+        kitchen.turnOffAC(frame)
     elif temp > currTemp:
         secondsElapsed = 0
-        kitchen.turnOnHeat()
+        kitchen.turnOnHeat(frame)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         kitchen.updateHeatTemp()
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+        #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+        frame.tempDisplayLabel.config(text = str(kitchen.getHeatTemp())+"*F")
+        frame.update()
         while(kitchen.getTemp()<temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed + 1
             kitchen.updateHeatTemp()
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
-        kitchen.turnOffHeat()
-    else:
-        print("The Kitchen currently your requested temp")
+            #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
+            frame.tempDisplayLabel.config(text = str(kitchen.getHeatTemp())+"*F")
+            frame.update()
+        kitchen.turnOffHeat(frame)
+    #else:
+    #    print("The Kitchen currently your requested temp")
 
 # def main():
 #     # Open database connection
