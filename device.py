@@ -80,15 +80,15 @@ class actuator:
         """Turns on the actuator. Checks database for actuator state and updates the state in the database accordingly."""
         if(self.getState() != 1):
             self.dbCursor.execute("UPDATE Actuators SET State=1, LUT=\""+str(datetime.datetime.now())+"\" WHERE A_ID = \""+str(self.getAID())+"\";")
-        else:
-            print("Device already on")
+        #else:
+            #print("Device already on")
             
     def turnOff(self):
         """Turns off the actuator. Checks database for actuator state and updates the state in the database accordingly."""
         if(self.getState() != 0):
             self.dbCursor.execute("UPDATE Actuators SET State=0, LUT=\""+str(datetime.datetime.now())+"\" WHERE A_ID = \""+str(self.getAID())+"\";")
-        else:
-            print("Device already off")
+        #else:
+            #print("Device already off")
 
 
 class brightSensor:

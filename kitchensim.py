@@ -13,25 +13,28 @@ def simOvenTemp(frame, kitchen, temp):
 
     """
 
-    if (kitchen.getOvenState()!=1):
+    if (kitchen.getOvenState()!=1 and temp != 0):
         secondsElapsed = 0
-        kitchen.turnOnOven()
+        kitchen.turnOnOven(frame)
         time.sleep(1)
         secondsElapsed = secondsElapsed +1
         kitchen.updateOvenTemp()
-        frame.tempDisplayLabel.config(text = "Seconds Elapsed: "+str(secondsElapsed)+ " Temperature(F): "+str(kitchen.getOvenTemp()))
+        # frame.tempDisplayLabel.config(text = "Seconds Elapsed: "+str(secondsElapsed)+ " Temperature(F): "+str(kitchen.getOvenTemp()))
+        frame.tempDisplayLabel.config(text = str(kitchen.getOvenTemp())+"*F")
         frame.update()
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
+        # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
         while(kitchen.getOvenTemp()<temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed +1
             kitchen.updateOvenTemp()
-            frame.tempDisplayLabel.config(text = "Seconds Elapsed: "+str(secondsElapsed)+ " Temperature(F): "+str(kitchen.getOvenTemp()))
+            # frame.tempDisplayLabel.config(text = "Seconds Elapsed: "+str(secondsElapsed)+ " Temperature(F): "+str(kitchen.getOvenTemp()))
+            frame.tempDisplayLabel.config(text = str(kitchen.getOvenTemp())+"*F")
             frame.update()
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
-        # kitchen.turnOffOven()
+            # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
+        kitchen.turnOffOven(frame)
+        kitchen.setOvenTemp(0)
     else:
-        print("Oven already on. Should never be here.")
+        print("Oven already on. Or entered an invalid temp (0) Should never be here.")
 
 def simStoveTemp(kitchen,temp,burnerNum):
     """Simulates setting a desired temp to a stove burner and the stove burner heating up to it.

@@ -168,13 +168,18 @@ class kitchen:
     #   OVEN
     #-------------------------------------------------------------
 
-    def turnOnOven(self):
+    def turnOnOven(self,frame):
         """"Turns on the oven."""
         self.oven.actuators[0].turnOn()
+        frame.ovenStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffOven(self):
+
+    def turnOffOven(self,frame):
         """Turns off the oven."""
         self.oven.actuators[0].turnOff()
+        frame.ovenStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getOvenTemp(self):
         """Returns the oven temp."""
