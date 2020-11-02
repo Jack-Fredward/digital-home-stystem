@@ -1,4 +1,5 @@
-#bathroom1.py
+#Half_Bath.py
+
 
 import pymysql
 from device import *
@@ -10,8 +11,8 @@ import datetime
 #         self.dbCursor = dbCursor
 #         self.devices = []
 
-class bathroom:
-    def __init__(self, name, number, dbCursor, has_shower, has_bathtub, has_extDoor):
+class halfBathroom:
+    def __init__(self, name, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
 
@@ -21,33 +22,25 @@ class bathroom:
         #   LIGHTS
         #-------------------------------------------------------------
 
-        self.lights = device("Bathroom"+number+"Lights",dbCursor)
-        self.lights.actuators.append(actuator("Bathroom"+number+"Light Actuator","Bathroom"+number+"Lights",dbCursor))
-        self.lights.sensors.append(brightSensor("B"+number+"LBS","Bathroom"+number+"Lights", dbCursor))
-        self.lights.sensors.append(motionSensor("B"+number+"LMS","Bathroom"+number+"Lights", dbCursor))
+        self.lights = device("halfBathroom Lights",dbCursor)
+        self.lights.actuators.append(actuator("halfBathroom Light Actuator","halfBathroom Lights",dbCursor))
+        self.lights.sensors.append(brightSensor("HBLBS","halfBathroom Lights", dbCursor))
+        self.lights.sensors.append(motionSensor("HBLMS","halfBathroom Lights", dbCursor))
 
         #-------------------------------------------------------------
         #   DOORS 
         #-------------------------------------------------------------
 
         self.doors = []
-        self.doors.append(device("Bathroom"+number+"door",dbCursor))
-        self.doors[0].actuators.append(actuator("Bathroom"+number+"Door Actuator", "Bathroom"+number+"door",dbCursor))
-        self.doors[0].sensors.append(openCloseSensors("B"+number+"DOCS","Bathroom"+number+"door",dbCursor))
+        self.doors.append(device("halfBathroom door",dbCursor))
+        self.doors[0].actuators.append(actuator("halfBathroom Door Actuator", "halfBathroom door",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("HBDOCS","halfBathroom door",dbCursor))
 
-        if (has_extDoor == 1):
-            self.doors.append(device("Bathroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].actuators.append(actuator("Bathroom"+number+"ExtDoor Actuator", "Bathroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].sensors.append(openCloseSensors("B"+number+"EDOCS","Bathroom"+number+"ExtDoor",dbCursor))
-      
         #-------------------------------------------------------------
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = []
-        self.windows.append(device("Bathroom"+number+"window",dbCursor))
-        self.windows[0].actuators.append(actuator("Bathroom"+number+"window Actuator", "Bathroom"+number+"window",dbCursor))
-        self.windows[0].sensors.append(openCloseSensors("B"+number+"WOCS","Bathroom"+number+"window",dbCursor))
+        # NO WINDOWS
 
         #-------------------------------------------------------------
         #   AC/HEAT
@@ -56,16 +49,16 @@ class bathroom:
         ROOMTEMP = 70 #70 degrees F average for standard room temp
         #AC
         self.ACDELTAT = -1 #cools off by 1 degree a second
-        self.aircon = device("Bathroom"+number+ "AirCon",dbCursor)
-        self.aircon.sensors.append(tempSensor("B"+number+"ACTS","Bathroom"+number+"AirCon",dbCursor))
-        self.aircon.actuators.append(actuator("Bathroom"+number+"AirCon Actuator","Bathroom"+number+"AirCon",dbCursor))
+        self.aircon = device("halfBathroom AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("HBACTS","halfBathroom AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("halfBathroom AirCon Actuator","halfBathroom AirCon",dbCursor))
         self.setACTemp(ROOMTEMP)
 
         #HEAT
         self.HEATDELTAT = 1 #heats up by 1 degree a second
-        self.heat = device("Bathroom"+number+"Heat",dbCursor)
-        self.heat.actuators.append(actuator("Bathroom"+number+"Heat Actuator","Bathroom"+number+"Heat",dbCursor))
-        self.heat.sensors.append(tempSensor("B"+number+"HTS","Bathroom"+number+"Heat",dbCursor))
+        self.heat = device("halfBathroom Heat",dbCursor)
+        self.heat.actuators.append(actuator("halfBathroom Heat Actuator","halfBathroom Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("HBHTS","halfBathroom Heat",dbCursor))
         self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
@@ -78,34 +71,19 @@ class bathroom:
         #   SINK
         #-------------------------------------------------------------
 
-        self.sink = device("Bathroom"+number+"Sink", dbCursor)
-        self.sink.actuators.append(actuator("Bathroom"+number+"Sink Actuator","Bathroom"+number+"Sink",dbCursor))
-        self.sink.sensors.append(liquidFlowSensor("B"+number+"SLFS","Bathroom"+number+"Sink",dbCursor))
+        self.sink = device("halfBathroom Sink", dbCursor)
+        self.sink.actuators.append(actuator("halfBathroom Sink Actuator","halfBathroom Sink",dbCursor))
+        self.sink.sensors.append(liquidFlowSensor("HBSLFS","halfBathroom Sink",dbCursor))
        
+     
         #-------------------------------------------------------------
         #   TOILET
         #-------------------------------------------------------------
         
-        self.toilet = device("Bathroom"+number+"Toilet", dbCursor)
-        self.toilet.actuators.append(actuator("Bathroom"+number+"Toilet Actuator","Bathroom"+number+"Toilet",dbCursor))
-        self.toilet.sensors.append(liquidFlowSensor("B"+number+"TLFS","Bathroom"+number+"Toilet",dbCursor))
+        self.toilet = device("halfBathroom Toilet", dbCursor)
+        self.toilet.actuators.append(actuator("halfBathroom Toilet Actuator","halfBathroom Toilet",dbCursor))
+        self.toilet.sensors.append(liquidFlowSensor("HBTLFS","halfBathroom Toilet",dbCursor))
 
-        #-------------------------------------------------------------
-        #   SHOWER
-        #-------------------------------------------------------------
-
-        if (has_shower == 1):
-            self.shower = device("Bathroom"+number+"shower",dbCursor)
-            self.shower.actuators.append(actuator("Bathroom"+number+"Shower Actuator","Bathroom"+number+"Shower",dbCursor))
-            self.shower.sensors.append(liquidFlowSensor("B"+number+"SHLFS","Bathroom"+number+"Shower",dbCursor))
-        #-------------------------------------------------------------
-        #   BATHTUB
-        #-------------------------------------------------------------
-        
-        if (has_bathtub == 1):
-            self.bathtub = device("Bathroom"+number+"bathtub",dbCursor)
-            self.bathtub.actuators.append(actuator("Bathroom"+number+"Bathtub Actuator","Bathroom"+number+"Bathtub",dbCursor))
-            self.bathtub.sensors.append(liquidFlowSensor("B"+number+"BLFS","Bathroom"+number+"Bathtub",dbCursor))
 
 
     #-------------------------------------------------------------
@@ -152,26 +130,6 @@ class bathroom:
 
     def getDoorOpenCloseState(self,doorNum):
         return self.doors[doorNum].sensors[0].getState()
-
-
-
-    #-------------------------------------------------------------
-    #   WINDOWS
-    #-------------------------------------------------------------
-
-    def openWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOn()
-        self.windows[winNum].sensors[0].updateOpen()
-
-    def closeWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOff()
-        self.windows[winNum].sensors[0].updateClosed()
-
-    def getWindowState(self,winNum):
-        return self.windows[winNum].actuators[0].getState()
-
-    def getWindowOpenCloseState(self, winNum):
-        return self.windows[winNum].sensors[0].getState()
 
     #-------------------------------------------------------------
     #   AC/HEAT
@@ -231,7 +189,7 @@ class bathroom:
     #-------------------------------------------------------------
     #   SINK
     #-------------------------------------------------------------
-   
+    
     def turnOnSink(self):
         self.sink.actuators[0].turnOn()
 
@@ -250,7 +208,7 @@ class bathroom:
     #-------------------------------------------------------------
     #   TOILET
     #-------------------------------------------------------------
-    
+
     def turnOnToilet(self):
         self.toilet.actuators[0].turnOn()
 
@@ -266,48 +224,8 @@ class bathroom:
     def getToiletFlow(self):
         return self.toilet.sensors[0].getFlowRatePct()
 
-    #-------------------------------------------------------------
-    #   SHOWER
-    #-------------------------------------------------------------
-    
-    def turnOnShower(self):
-        self.shower.actuators[0].turnOn()
 
-    def turnOffShower(self):
-        self.shower.actuators[0].turnOff()
-
-    def getShowerState(self):
-        return self.shower.actuators[0].getState()
-
-    def setShowerFlow(self, flowRate):
-        self.shower.sensors[0].setFlowRatePct(flowRate)
-
-    def getShowerFlow(self):
-        return self.shower.sensors[0].getFlowRatePct()
-
-    #-------------------------------------------------------------
-    #   BATHTUB
-    #-------------------------------------------------------------
-
-    def turnOnBathtub(self):
-        self.bathtub.actuators[0].turnOn()
-
-    def turnOffBathtub(self):
-        self.bathtub.actuators[0].turnOff()
-
-    def getBathtubState(self):
-        return self.bathtub.actuators[0].getState()
-
-    def setBathtubFlow(self, flowRate):
-        self.bathtub.sensors[0].setFlowRatePct(flowRate)
-
-    def getBathtubFlow(self):
-        return self.bathtub.sensors[0].getFlowRatePct()
-
-    
-
-def main ():
-
+def main():
     # Open database connection
     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
@@ -323,15 +241,13 @@ def main ():
     cursor.execute("DELETE FROM Actuators")
     cursor.execute("DELETE FROM Devices")
 
-    bathroom2 = bathroom("Bathroom2", "2", cursor,0,0,0)
-    bathroom3 = bathroom("Bathroom3", "3", cursor,0,1,0)
-    bathroom4 = bathroom("Bathroom4", "4", cursor,1,0,1)
 
+    test=halfBathroom("halfBathroom",cursor)
 
-
-
-    
+    test.openDoor(0)
+    print(test.getTemp())
 
     db.commit()
     db.close()
-main()  
+
+main()

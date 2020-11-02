@@ -1,17 +1,11 @@
-#bedroom.py
+#livingRoom.py
 
 import pymysql
 from device import *
 import datetime
 
-# class room:
-#     def __init__(self, name, dbCursor):
-#         self.name = name
-#         self.dbCursor = dbCursor
-#         self.devices = []
-
-class bedroom:
-    def __init__(self, name, number, dbCursor, has_extDoor):
+class livingRoom:
+    def __init__(self, name, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
 
@@ -21,36 +15,26 @@ class bedroom:
         #   LIGHTS
         #-------------------------------------------------------------
 
-        self.lights = device("bedroom"+number+"Lights",dbCursor)
-        self.lights.actuators.append(actuator("bedroom"+number+"Light Actuator","bedroom"+number+"Lights",dbCursor))
-        self.lights.sensors.append(brightSensor("Bed"+number+"LBS","bedroom"+number+"Lights", dbCursor))
-        self.lights.sensors.append(motionSensor("Bed"+number+"LMS","bedroom"+number+"Lights", dbCursor))
+        self.lights = device("livingRoom Lights",dbCursor)
+        self.lights.actuators.append(actuator("livingRoom Light Actuator","livingRoom Lights",dbCursor))
+        self.lights.sensors.append(brightSensor("LRLBS","livingRoom Lights", dbCursor))
+        self.lights.sensors.append(motionSensor("LRLMS","livingRoom Lights", dbCursor))
 
         #-------------------------------------------------------------
         #   DOORS 
         #-------------------------------------------------------------
 
         self.doors = []
-        self.doors.append(device("bedroom"+number+"door",dbCursor))
-        self.doors[0].actuators.append(actuator("bedroom"+number+"Door Actuator", "bedroom"+number+"door",dbCursor))
-        self.doors[0].sensors.append(openCloseSensors("Bed"+number+"DOCS","bedroom"+number+"door",dbCursor))
+        self.doors.append(device("livingRoom door",dbCursor))
+        self.doors[0].actuators.append(actuator("livingRoom Door Actuator", "livingRoom door",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("LRDOCS","livingRoom door",dbCursor))
+       
 
-        if (has_extDoor == 1):
-            self.doors.append(device("bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].actuators.append(actuator("bedroom"+number+"ExtDoor Actuator", "bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].sensors.append(openCloseSensors("Bed"+number+"EDOCS","bedroom"+number+"ExtDoor",dbCursor))
-      
         #-------------------------------------------------------------
         #   WINDOWS
         #-------------------------------------------------------------
 
-        self.windows = []
-        self.windows.append(device("bedroom"+number+"window1",dbCursor))
-        self.windows[0].actuators.append(actuator("bedroom"+number+"window1 Actuator", "bedroom"+number+"window1",dbCursor))
-        self.windows[0].sensors.append(openCloseSensors("Bed"+number+"W1OCS","bedroom"+number+"window1",dbCursor))
-        self.windows.append(device("bedroom"+number+"window2",dbCursor))
-        self.windows[1].actuators.append(actuator("bedroom"+number+"window2 Actuator", "bedroom"+number+"window2",dbCursor))
-        self.windows[1].sensors.append(openCloseSensors("Bed"+number+"W2OCS","bedroom"+number+"window2",dbCursor))
+        # NO WINDOWS
 
         #-------------------------------------------------------------
         #   AC/HEAT
@@ -59,26 +43,40 @@ class bedroom:
         ROOMTEMP = 70 #70 degrees F average for standard room temp
         #AC
         self.ACDELTAT = -1 #cools off by 1 degree a second
-        self.aircon = device("bedroom"+number+ "AirCon",dbCursor)
-        self.aircon.sensors.append(tempSensor("Bed"+number+"ACTS","bedroom"+number+"AirCon",dbCursor))
-        self.aircon.actuators.append(actuator("bedroom"+number+"AirCon Actuator","bedroom"+number+"AirCon",dbCursor))
+        self.aircon = device("livingRoom AirCon",dbCursor)
+        self.aircon.sensors.append(tempSensor("LRACTS","livingRoom AirCon",dbCursor))
+        self.aircon.actuators.append(actuator("livingRoom AirCon Actuator","livingRoom AirCon",dbCursor))
         self.setACTemp(ROOMTEMP)
 
         #HEAT
         self.HEATDELTAT = 1 #heats up by 1 degree a second
-        self.heat = device("bedroom"+number+"Heat",dbCursor)
-        self.heat.actuators.append(actuator("bedroom"+number+"Heat Actuator","bedroom"+number+"Heat",dbCursor))
-        self.heat.sensors.append(tempSensor("Bed"+number+"HTS","bedroom"+number+"Heat",dbCursor))
+        self.heat = device("livingRoom Heat",dbCursor)
+        self.heat.actuators.append(actuator("livingRoom Heat Actuator","livingRoom Heat",dbCursor))
+        self.heat.sensors.append(tempSensor("LRHTS","livingRoom Heat",dbCursor))
         self.setHeatTemp(ROOMTEMP)
 
         #-------------------------------------------------------------
-        #   CAMERAS
+        #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        # NO CAMERAS
+        self.smokeDetector=device("livingRoom Smoke Detector",dbCursor)
+        self.smokeDetector.actuators.append(actuator("livingRoom Smoke Detector Actuator","livingRoom Smoke Detector", dbCursor))
+        self.smokeDetector.sensors.append(openCloseSensors("LRSDOCS", "livingRoom Smoke Detector",dbCursor))
 
-       
+        #-------------------------------------------------------------
+        #   FIREPLACE
+        #-------------------------------------------------------------
 
+        self.fireplace = device("Fireplace", dbCursor)
+        self.fireplace.actuators.append(actuator("Fireplace Actuator", "Fireplace", dbCursor))
+        self.fireplace.sensors.append(tempSensor("FTS","Fireplace",dbCursor))
+
+        #-------------------------------------------------------------
+        #   TELEVISION
+        #-------------------------------------------------------------
+
+        self.television = device("Television",dbCursor)
+        self.television.actuators.append(actuator("Television Actuator", "Television",dbCursor))
 
     #-------------------------------------------------------------
     #   METHODS
@@ -125,25 +123,11 @@ class bedroom:
     def getDoorOpenCloseState(self,doorNum):
         return self.doors[doorNum].sensors[0].getState()
 
-
-
     #-------------------------------------------------------------
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOn()
-        self.windows[winNum].sensors[0].updateOpen()
-
-    def closeWindow(self,winNum):
-        self.windows[winNum].actuators[0].turnOff()
-        self.windows[winNum].sensors[0].updateClosed()
-
-    def getWindowState(self,winNum):
-        return self.windows[winNum].actuators[0].getState()
-
-    def getWindowOpenCloseState(self, winNum):
-        return self.windows[winNum].sensors[0].getState()
+    # NO WINDOWS
 
     #-------------------------------------------------------------
     #   AC/HEAT
@@ -200,13 +184,64 @@ class bedroom:
         else:
             print("error temp sensors missmatched (should never be here)")
 
-  
+    #-------------------------------------------------------------
+    #   SMOKE DETECTOR
+    #-------------------------------------------------------------
+
+    def turnOnSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOn()
+
+    def turnOffSmokeDetector(self):
+        self.smokeDetector.actuators[0].turnOff()
+
+    def getSmokeDetectorState(self):
+        return self.smokeDetector.actuators[0].getState()
+
+    def setSmokeState(self, isSmoke):
+        if isSmoke == 1:
+            self.smokeDetector.sensors[0].updateOpen()
+        else:
+            self.smokeDetector.sensors[0].updateClosed()
     
+    def getSmokeState(self):
+        return self.smokeDetector.sensors[0].getState()
 
-def main ():
+    #-------------------------------------------------------------
+    #   FIREPLACE
+    #-------------------------------------------------------------
 
+    def turnOnFireplace(self):
+        self.fireplace.actuators[0].turnOn()
+
+    def turnOffFireplace(self):
+        self.fireplace.actuators[0].turnOff()
+
+    def getFireplaceState(self):
+        return self.fireplace.actuators[0].getState()
+
+    def setFireplaceTemp(self, temp):
+        self.fireplace.sensors[0].setTemp(temp)
+
+    def getFireplaceTemp(self):
+        self.fireplace.sensors[0].getTemp()
+
+    #-------------------------------------------------------------
+    #   TELEVISION
+    #-------------------------------------------------------------
+
+    def turnOnTelevision(self):
+        self.television.actuators[0].turnOn()
+
+    def turnOffTelevision(self):
+        self.television.actuators[0].turnOff()
+
+    def getTelevisionState(self):
+        return self.television.actuators[0].getState()
+
+
+def main():
     # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
     # prepare a cursor object using cursor() method
@@ -220,15 +255,12 @@ def main ():
     cursor.execute("DELETE FROM Actuators")
     cursor.execute("DELETE FROM Devices")
 
-    bedroom2 = bedroom("bedroom2", "2", cursor,0)
-    bedroom3 = bedroom("bedroom3", "3", cursor,0)
-    bedroom4 = bedroom("bedroom4", "4", cursor,1)
 
+    test=livingRoom("livingRoom",cursor)
 
-
-
-
-    
+    test.openDoor(0)
+    test.setSmokeState(1)
+    print(test.getTemp())
 
     db.commit()
     db.close()
