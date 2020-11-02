@@ -67,8 +67,10 @@ class breakfastNook:
         #   SMOKE DETECTOR
         #-------------------------------------------------------------
 
-        self.smokeDetector = device("breakfastNook Detector", dbCursor)
-        self.smokeDetector.sensors.append(openCloseSensors("BNSD","breakfastNook Detector", dbCursor))
+        self.smokeDetector=device("breakfastNook Smoke Detector",dbCursor)
+        self.smokeDetector.actuators.append(actuator("breakfastNook Smoke Detector Actuator","breakfastNook Smoke Detector", dbCursor))
+        self.smokeDetector.sensors.append(openCloseSensors("BNSDOCS", "breakfastNook Smoke Detector",dbCursor))
+        
 
 
     #-------------------------------------------------------------
@@ -182,21 +184,32 @@ class breakfastNook:
     #-------------------------------------------------------------
 
     def turnOnSmokeDetector(self):
+        """Turns on the smoke detector."""
         self.smokeDetector.actuators[0].turnOn()
 
     def turnOffSmokeDetector(self):
+        """Turns off the smoke detector."""
         self.smokeDetector.actuators[0].turnOff()
 
     def getSmokeDetectorState(self):
+        """Returns the smoke detector's state (on/off)."""
         return self.smokeDetector.actuators[0].getState()
 
     def setSmokeState(self, isSmoke):
+        """Sets the smoke detector's is smoke state.
+
+        Keyword arguments:
+        isSmoke     -- the value representing the presence of smoke. 1 if there is smoke 0 if there is not smoke.
+
+        """
         if isSmoke == 1:
             self.smokeDetector.sensors[0].updateOpen()
         else:
             self.smokeDetector.sensors[0].updateClosed()
     
     def getSmokeState(self):
+        """Returns the smoke detector's smoke state (1=smoke/0=nosmoke).
+        """
         return self.smokeDetector.sensors[0].getState()
 
 
@@ -216,11 +229,51 @@ def main():
     cursor.execute("DELETE FROM Devices")
 
 
-    test=breakfastNook("breakfastNook",cursor)
+    bN = breakfastNook("breakfastNook", cursor)
+#    Testing all elements of the breakfastNook
 
+    print("------------------------------------------")
+    print("TESTING LIGHTS")
+    print(bN.getLightsState())
+    bN.turnOnLights()
+    print(bN.getLightsState())
+    bN.turnOffLights()
+    print(bN.getLightsState())
+    print(bN.getLightBrightness())
+    bN.setLightBrightness(.129837)
+    print(bN.getLightBrightness())
+    print(bN.getLightsMotion())
+    bN.setLightsMotion(1)
+    print(bN.getLightsMotion())
+    print("------------------------------------------")
+    print("TESTING AC/HEAT")
+    print(bN.getACState())
+    bN.turnOnAC()
+    print(bN.getACState())
+    bN.turnOffAC()
+    print(bN.getACState())
+    print(bN.getACTemp())
+    bN.setACTemp(1290470)
+    print(bN.getACTemp())
+    print(bN.getHeatState())
+    bN.turnOnHeat()
+    print(bN.getHeatState())
+    bN.turnOffHeat()
+    print(bN.getHeatState())
+    print(bN.getHeatTemp())
+    bN.setHeatTemp(9182791823719283)
+    print(bN.getHeatTemp())
+    print("------------------------------------------")
+    print("TESTING SMOKE DETECTOR")
+    print(bN.getSmokeDetectorState())
+    bN.turnOnSmokeDetector()
+    print(bN.getSmokeDetectorState())
+    bN.turnOffSmokeDetector()
+    print(bN.getSmokeDetectorState())
+    print(bN.getSmokeState())
+    bN.setSmokeState(1)
+    print(bN.getSmokeState())
 
-    test.setSmokeState(1)
-    print(test.getTemp())
 
     db.commit()
     db.close()
