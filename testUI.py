@@ -1,5 +1,6 @@
 import tkinter as tk 
 from tkinter import ttk
+from commomsim import *
 from kitchensim import *
 from kitchen import *
 from login import *
@@ -31,7 +32,7 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat): 
+		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge): 
 
 			frame = F(container, self) 
 
@@ -132,6 +133,10 @@ class Kitchen(tk.Frame):
 		aCHeatButton = ttk.Button(self, text = "AC/Heat", command = lambda : controller.show_frame(KitchenACHeat))
 		aCHeatButton.grid(row=2, column =2)
 
+		#to get back to the kitchen
+		fridgeButton = ttk.Button(self, text ="Fridge", command = lambda : controller.show_frame(Fridge)) 
+		fridgeButton.grid(row = 2, column = 3, padx = 10, pady = 10) 
+
 
 
 def showEntry(text):
@@ -195,7 +200,7 @@ class KitchenACHeat(tk.Frame):
 
 		tempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		tempEntry = ttk.Entry(self, font = SMALLFONT)
-		tempButton = ttk.Button(self, text = "Go", command = lambda : simACHeat(self,controller.kitchen,int(tempEntry.get())))
+		tempButton = ttk.Button(self, text = "Go", command = lambda : commonSimACHeat(self,controller.kitchen,int(tempEntry.get())))
 		self.tempDisplayLabel = ttk.Label(self, text = "70 *F")
 		currTempLabel = ttk.Label(self,text = "Kitchen Room Temp")
 
@@ -205,6 +210,33 @@ class KitchenACHeat(tk.Frame):
 		tempButton.grid(row= 3, column = 3)
 		currTempLabel.grid(row=4,column=1)
 		self.tempDisplayLabel.grid(row=4, column =2)
+
+		#to get back to the kitchen
+		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
+		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10) 
+
+class Fridge(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Fridge", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.turnOnFridge(self))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffFridge(self))
+		self.fridgeStateDisplayLabel = ttk.Label(self, text = "On")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.fridgeStateDisplayLabel.grid(row=1,column=3)
+
+		buttonOpen = ttk.Button(self, text = "Open", command = lambda : controller.kitchen.openFridgeDoor(self))
+		buttonClose = ttk.Button(self, text="Close",command = lambda : controller.kitchen.closeFridgeDoor(self))
+		self.fridgeDoorStateDisplayLabel = ttk.Label(self, text = "Closed")
+
+		buttonOpen.grid(row=2,column=1)
+		buttonClose.grid(row=2,column=2)
+		self.fridgeDoorStateDisplayLabel.grid(row=2,column=3)
 
 		#to get back to the kitchen
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 

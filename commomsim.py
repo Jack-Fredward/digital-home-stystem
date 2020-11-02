@@ -3,7 +3,7 @@ import datetime
 import time
 from kitchen import *
 
-def simACHeat(room, temp):
+def commonSimACHeat(frame, room, temp):
     """Simulates the setting of a desired temperature and the AC/Heat system making a room that temperature.
 
     Keyword Arguments:
@@ -14,32 +14,40 @@ def simACHeat(room, temp):
     currTemp = room.getTemp()
     if temp < currTemp:
         secondsElapsed = 0
-        room.turnOnAC()
+        room.turnOnAC(frame)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         room.updateACTemp()
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
+        frame.tempDisplayLabel.config(text = str(room.getACTemp())+"*F")
+        frame.update()
+        # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
         while(room.getTemp()>temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed + 1
             room.updateACTemp()
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
-        room.turnOffAC()
+            frame.tempDisplayLabel.config(text = str(room.getACTemp())+"*F")
+            frame.update()
+            # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
+        room.turnOffAC(frame)
     elif temp > currTemp:
         secondsElapsed = 0
-        room.turnOnHeat()
+        room.turnOnHeat(frame)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         room.updateHeatTemp()
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
+        frame.tempDisplayLabel.config(text = str(room.getHeatTemp())+"*F")
+        frame.update()
+        #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
         while(room.getTemp()<temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed + 1
             room.updateHeatTemp()
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
-        room.turnOffHeat()
-    else:
-        print("The "+str(room.name)+" currently your requested temp")
+            frame.tempDisplayLabel.config(text = str(room.getHeatTemp())+"*F")
+            frame.update()
+            #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
+        room.turnOffHeat(frame)
+    #else:
+        #print("The "+str(room.name)+" currently your requested temp")
 
 
 def simLights(room):
@@ -67,28 +75,28 @@ def simLights(room):
     print("Turning lights off...")
 
 
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#     db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
-    kitchen1 = kitchen("Kitchen", cursor)
+#     kitchen1 = kitchen("Kitchen", cursor)
 
-    simACHeat(kitchen1, 70)
-    simLights(kitchen1)
+#     commonSimACHeat(kitchen1, 70)
+#     commonSimLights(kitchen1)
 
 
-    db.commit()
-    db.close()
+#     db.commit()
+#     db.close()
 
-main()
+# main()

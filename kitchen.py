@@ -48,6 +48,7 @@ class kitchen:
         self.fridge = device("Fridge",dbCursor)
         self.fridge.actuators.append(actuator("Fridge Actuator","Fridge",dbCursor))
         self.fridge.sensors.append(openCloseSensors("FDOCS","Fridge",dbCursor))
+        self.fridge.actuators[0].turnOn()
 
         #-------------------------------------------------------------
         #   STOVE
@@ -205,25 +206,33 @@ class kitchen:
     #   FRIDGE
     #-------------------------------------------------------------
 
-    def turnOnFridge(self):
+    def turnOnFridge(self,frame):
         """Turns on the fridge."""
         self.fridge.actuators[0].turnOn()
+        frame.fridgeStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffFridge(self):
+    def turnOffFridge(self,frame):
         """Turns off the fridge."""
         self.fridge.actuators[0].turnOff()
+        frame.fridgeStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getFridgeState(self):
         """Returns the fridge's state (on/off)."""
         return self.fridge.actuators[0].getState()
     
-    def openFridgeDoor(self):
+    def openFridgeDoor(self,frame):
         """Opens the fridge door."""
         self.fridge.sensors[0].updateOpen()
+        frame.fridgeDoorStateDisplayLabel.config(text="Open")
+        frame.update()
 
-    def closeFridgeDoor(self):
+    def closeFridgeDoor(self,frame):
         """Closes the fridge door."""
         self.fridge.sensors[0].updateClosed()
+        frame.fridgeDoorStateDisplayLabel.config(text="Closed")
+        frame.update()
 
     def getFridgeDoorState(self):
         """Returns the fridge door's state (open/close)."""
