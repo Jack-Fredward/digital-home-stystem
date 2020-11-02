@@ -36,7 +36,7 @@ def simOvenTemp(frame, kitchen, temp):
     else:
         print("Oven already on. Or entered an invalid temp (0) Should never be here.")
 
-def simStoveTemp(kitchen,temp,burnerNum):
+def simStoveTemp(frame,kitchen,temp,burnerNum):
     """Simulates setting a desired temp to a stove burner and the stove burner heating up to it.
 
     Keyword Arguments:
@@ -47,19 +47,23 @@ def simStoveTemp(kitchen,temp,burnerNum):
         """
     if (kitchen.getStoveBurnerState(burnerNum)!=1):
         secondsElapsed = 0
-        kitchen.turnOnStoveBurner(burnerNum)
+        kitchen.turnOnStoveBurner(frame,burnerNum)
         time.sleep(1)
         secondsElapsed = secondsElapsed +1
         kitchen.updateStoveBurnerTemp(burnerNum)
-        print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
+        frame.burnerTempDisplayLabel[burnerNum].config(text = str(kitchen.getStoveBurnerTemp(burnerNum))+"*F")
+        frame.update()
+        #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
         while(kitchen.getStoveBurnerTemp(burnerNum)<temp):
             time.sleep(1)
             secondsElapsed = secondsElapsed +1
             kitchen.updateStoveBurnerTemp(burnerNum)
-            print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
-        # kitchen.turnOffStoveBurner(burnerNum)
-    else:
-        print("Stove Burner #"+str(burnerNum)+" already on. Should never be here.")
+            frame.burnerTempDisplayLabel[burnerNum].config(text = str(kitchen.getStoveBurnerTemp(burnerNum))+"*F")
+            frame.update()
+            #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
+        kitchen.turnOffStoveBurner(frame,burnerNum)
+    #else:
+        #print("Stove Burner #"+str(burnerNum)+" already on. Should never be here.")
 
 
 def simMicrowave(kitchen, microTime, powerlevel):

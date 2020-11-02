@@ -242,7 +242,7 @@ class kitchen:
     #   STOVE
     #-------------------------------------------------------------
 
-    def turnOnStoveBurner(self, burnerNum):
+    def turnOnStoveBurner(self,frame, burnerNum):
         """Turns on the Stove burner.
 
         Keyword Arguments:
@@ -250,8 +250,10 @@ class kitchen:
 
         """
         self.stove.actuators[burnerNum].turnOn()
+        frame.burnerStateDisplayLabel[burnerNum].config(text="On")
+        frame.update()
 
-    def turnOffStoveBurner(self, burnerNum):
+    def turnOffStoveBurner(self, frame,burnerNum):
         """Turns off the Stove burner.
 
         Keyword Arguments:
@@ -259,6 +261,8 @@ class kitchen:
 
         """
         self.stove.actuators[burnerNum].turnOff()
+        frame.burnerStateDisplayLabel[burnerNum].config(text="Off")
+        frame.update()
 
     def getStoveBurnerTemp(self, burnerNum):
         """Returns the temp of the Stove burner.
@@ -302,19 +306,24 @@ class kitchen:
     #-------------------------------------------------------------
 
     #Kitchen Sink
-    def turnOnSink(self):
+    def turnOnSink(self,frame):
         """Turns on the kitchen sink."""
         self.sink.actuators[0].turnOn()
+        frame.kitchenSinkStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffSink(self):
+    def turnOffSink(self,frame):
         """Turns off the kitchen sink."""
         self.sink.actuators[0].turnOff()
+        self.setSinkFlow(frame, 0)
+        frame.kitchenSinkStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getSinkState(self):
         """Returns the kitchen sink's state (on/off)."""
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, flowRate):
+    def setSinkFlow(self, frame, flowRate):
         """Sets the flow rate of the kitchen sink.
 
         Keyword Arguments:
@@ -322,25 +331,33 @@ class kitchen:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
+        self.turnOnSink(frame)
+        frame.kitchenSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+
 
     def getSinkFlow(self):
         """Returns the kitchen sink's flow rate."""
         return self.sink.sensors[0].getFlowRatePct()
     
     #Pantry Sink
-    def turnOnPantrySink(self):
+    def turnOnPantrySink(self,frame):
         """Turns on the pantry sink."""
         self.pantrysink.actuators[0].turnOn()
+        frame.pantrySinkStateDisplayLabel.config(text="On")
+        frame.update()
     
-    def turnOffPantrySink(self):
+    def turnOffPantrySink(self,frame):
         """Turns off the pantry sink."""
         self.pantrysink.actuators[0].turnOff()
+        frame.pantrySinkStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getPantrySinkState(self):
         """Gets the panty sink's state (on/off)."""
         return self.pantrysink.actuators[0].getState()
 
-    def setPantrySinkFlow(self, flowRate):
+    def setPantrySinkFlow(self,frame, flowRate):
         """Sets the flow rate of the pantry sink.
 
         Keyword Arguments:
@@ -348,6 +365,9 @@ class kitchen:
 
         """
         self.pantrysink.sensors[0].setFlowRatePct(flowRate)
+        self.turnOnPantrySink(frame)
+        frame.pantrySinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
 
     def getPantrySinkFlow(self):
         """Returns the pantry sink's flow rate."""
