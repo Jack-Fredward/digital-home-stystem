@@ -377,13 +377,17 @@ class kitchen:
     #   MICROWAVE
     #-------------------------------------------------------------
 
-    def turnOnMicrowave(self):
+    def turnOnMicrowave(self,frame):
         """Turns on the microwave."""
         self.microwave.actuators[0].turnOn()
+        frame.microwaveStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffMicrowave(self):
+    def turnOffMicrowave(self,frame):
         """Turns off the microwave"""
         self.microwave.actuators[0].turnOff()
+        frame.microwaveStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getMicrowaveState(self):
         """Returns the microwave's state (on/off)."""

@@ -32,7 +32,7 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink): 
+		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave): 
 
 			frame = F(container, self) 
 
@@ -147,6 +147,9 @@ class Kitchen(tk.Frame):
 		pantrySinkButton = ttk.Button(self, text ="Pantry Sink", command = lambda : controller.show_frame(PantrySink)) 
 		pantrySinkButton.grid(row = 2, column = 6, padx = 10, pady = 10)
 
+		microwaveButton = ttk.Button(self, text ="Microwave", command = lambda : controller.show_frame(Microwave)) 
+		microwaveButton.grid(row = 2, column = 7, padx = 10, pady = 10)
+
 
 # def showEntry(text):
 # 	print(text)
@@ -249,7 +252,6 @@ class Fridge(tk.Frame):
 		#to get back to the kitchen
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10) 
-
 
 class Stove(tk.Frame):
 	def __init__(self, parent, controller): 
@@ -418,7 +420,52 @@ class PantrySink(tk.Frame):
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10) 
 
+class Microwave(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
 
+		mainLabel = ttk.Label(self, text ="Microwave", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.turnOnMicrowave(self))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffMicrowave(self))
+		self.microwaveStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.microwaveStateDisplayLabel.grid(row=1,column=3)
+
+
+		powerSpinboxLabel = ttk.Label(self, text = "Power Level", font = SMALLFONT)
+		powerSpinbox = tk.Spinbox(self, from_=1, to=10)
+		powerSpinboxLabel.grid(row=2,column = 1)
+		powerSpinbox.grid(row=2, column=2)
+
+		timeEntryLabel = ttk.Label(self, text = "Cook Time(s)", font = SMALLFONT)
+		timeEntry = ttk.Entry(self, font = SMALLFONT)
+		cookButton = ttk.Button(self, text = "Start", command = lambda : simMicrowave(self, controller.kitchen, timeEntry.get(),powerSpinbox.get()))
+
+		timeEntryLabel.grid(row = 3, column=1)
+		timeEntry.grid(row=3, column = 2)
+		cookButton.grid(row=4, column =2)
+
+
+		self.microwaveCookTimeDisplay = ttk.Label(self, text = "Time Remaining: 0")
+		self.microwaveCookTimeDisplay.grid(row=2, column = 4)
+
+
+
+
+
+
+
+
+		#to get back to the kitchen
+		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
+		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+
+		
 
 
 # Driver Code 

@@ -66,7 +66,7 @@ def simStoveTemp(frame,kitchen,temp,burnerNum):
         #print("Stove Burner #"+str(burnerNum)+" already on. Should never be here.")
 
 
-def simMicrowave(kitchen, microTime, powerlevel):
+def simMicrowave(frame,kitchen, microTime, powerlevel):
     """Simulates the behavior of setting a cook time and temp to a microwave.
 
     Keyword Arguments:
@@ -77,14 +77,21 @@ def simMicrowave(kitchen, microTime, powerlevel):
     """
     #microTime is the microwave cook time   
     MICROWATTS = 900 #power of the microwave
+    powerlevel = int(powerlevel)
+    microTime = int(microTime)
     temp = (powerlevel/10)*MICROWATTS
-    kitchen.turnOnMicrowave()
+    kitchen.turnOnMicrowave(frame)
     kitchen.setMicrowaveTemp(temp)
+    frame.microwaveCookTimeDisplay.config(text = "Time Remaining: "+str(microTime))
+    frame.update()
     while microTime > 0:
         microTime = microTime - 1
         time.sleep(1)
-        print("Time Left: "+str(microTime)+" at powerlevel: "+str(powerlevel)+" wattage: "+str(temp))
-    print("Beep Beep Beep")
+        frame.microwaveCookTimeDisplay.config(text = "Time Remaining: "+str(microTime))
+        frame.update()
+        #print("Time Left: "+str(microTime)+" at powerlevel: "+str(powerlevel)+" wattage: "+str(temp))
+    #print("Beep Beep Beep")
+    kitchen.turnOffMicrowave(frame)
 
 def simDishwasher(kitchen):
     """Simulating loading the dishwasher.
