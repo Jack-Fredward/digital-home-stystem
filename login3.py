@@ -1,22 +1,43 @@
 #login3
 
+import logging
 import bcrypt
+import pymysql
 
 
-def hash_password(pw):
-    pwhash = bcrypt.hashpw(pw.encode('utf8'), bcrypt.gensalt())
-    return pwhash.decode('utf8')
-
-def check_password(pw, hashed_pw):
-    expected_hash = hashed_pw.encode('utf8')
-    return bcrypt.checkpw(pw.encode('utf8'), expected_hash)
+logging.basicConfig(level=logging.DEBUG)
 
 
-USERS = {'admin': hash_password('admin'),
-         'users': hash_password('users')}
-GROUPS = {'admin': ['group:admin']}
+def check_password(user_id, password):
+    hashed = get_password_hash(user_id)
+    if bcrypt.checkpw(password, hashed):
+        logging.debug(f"password for user {user_id} matches")
+        return True
+    else:
+        logging.debug(f"password for user {user_id} does not match")
+        return True
 
+def get_password_hash(user_id):
+    # Open database connection
+    db = pymysql.connect("localhost","root","","digital_home_database" )
 
-def groupfinder(userid, request):
-    if userid in USERS:
-        return GROUPS.get(userid, [])
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    pw_hash = cursor.execute(f"SELECT pw_hash FROM Users WHERE U_ID = {user_id};")
+    return pw_hash
+
+def get_user_id_from_user_fn(user_fn):
+    # Open database connection
+    db = pymysql.connect("localhost","root","","digital_home_database" )
+
+    # prepare a cursor object using cursor() method
+    cursor = db.cursor()
+    user_id = cursor.execute(f"SELECT U_ID FROM Users WHERE F_Name = {user_fn};")
+    return user_id
+
+def login(user_fn, password):
+    user_id = get_user_id_from_user_fn(user_fn)
+    if check_password(user_id, password):
+        return True
+    else:
+        return False
