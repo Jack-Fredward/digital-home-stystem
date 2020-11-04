@@ -32,7 +32,7 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave): 
+		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker): 
 
 			frame = F(container, self) 
 
@@ -43,7 +43,7 @@ class DigitalHomeApp(tk.Tk):
 
 			frame.grid(row = 0, column = 0, sticky ="nsew") 
 
-		self.show_frame(MainMenu) 
+		self.show_frame(LoginPage) 
 
 	# to display the current frame passed as 
 	# parameter 
@@ -59,7 +59,7 @@ class LoginPage(tk.Frame):
 		mainLabel = ttk.Label(self, text = "LoginPage", font = LARGEFONT)
 		mainLabel.grid(row=0, column = 4, padx = 10, pady=10)
 
-		userNameLabel = ttk.Label(self, text = "Username", font = SMALLFONT)
+		userNameLabel = ttk.Label(self, text = "First Name", font = SMALLFONT)
 		passwordLabel = ttk.Label(self, text = "Password", font = SMALLFONT)
 		userNameLabel.grid(row=1,column=1)
 		passwordLabel.grid(row=2,column=1)
@@ -150,6 +150,12 @@ class Kitchen(tk.Frame):
 		microwaveButton = ttk.Button(self, text ="Microwave", command = lambda : controller.show_frame(Microwave)) 
 		microwaveButton.grid(row = 2, column = 7, padx = 10, pady = 10)
 
+		dishwasherButton = ttk.Button(self, text ="Dishwasher", command = lambda : controller.show_frame(Dishwasher)) 
+		dishwasherButton.grid(row = 2, column = 8, padx = 10, pady = 10)
+
+		coffeeMakerButton = ttk.Button(self, text ="Coffee Maker", command = lambda : controller.show_frame(CoffeeMaker)) 
+		coffeeMakerButton.grid(row = 3, column = 1, padx = 10, pady = 10)
+
 
 # def showEntry(text):
 # 	print(text)
@@ -186,6 +192,7 @@ class Oven(tk.Frame):
 		#to get back to the kitchen
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 4, column = 1, padx = 10, pady = 10) 
+
 
 class KitchenACHeat(tk.Frame):
 	def __init__(self, parent, controller): 
@@ -453,19 +460,40 @@ class Microwave(tk.Frame):
 		self.microwaveCookTimeDisplay = ttk.Label(self, text = "Time Remaining: 0")
 		self.microwaveCookTimeDisplay.grid(row=2, column = 4)
 
+		#to get back to the kitchen
+		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
+		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
+class Dishwasher(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
 
-
-
-
-
+		mainLabel = ttk.Label(self, text ="Dishwasher", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
 		#to get back to the kitchen
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
+class CoffeeMaker(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
 
-		
+		mainLabel = ttk.Label(self, text ="Coffee Maker", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.turnOnCoffeeMaker(self))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffCoffeeMaker(self))
+		self.coffeeMakerStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.coffeeMakerStateDisplayLabel.grid(row=1,column=3)
+
+		#to get back to the kitchen
+		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
+		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
 
 
 # Driver Code 

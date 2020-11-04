@@ -461,13 +461,17 @@ class kitchen:
     #   COFFEE MAKER
     #-------------------------------------------------------------
 
-    def turnOnCoffeeMaker(self):
+    def turnOnCoffeeMaker(self,frame):
         """Turns on the coffee maker."""
         self.coffeemaker.actuators[0].turnOn()
+        frame.coffeeMakerStateDisplayLabel.config(text="On")
+        frame.update()
 
-    def turnOffCofeeMaker(self):
+    def turnOffCoffeeMaker(self,frame):
         """Turns off the coffee maker."""
         self.coffeemaker.actuators[0].turnOff()
+        frame.coffeeMakerStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getCoffeeMakerState(self):
         """Returns the coffeemaker's state (on/off)."""
