@@ -67,7 +67,7 @@ class LoginPage(tk.Frame):
 		passwordLabel.grid(row=2,column=1)
 
 		userNameEntry = ttk.Entry(self, font = SMALLFONT)
-		passwordEntry = ttk.Entry(self, font = SMALLFONT)
+		passwordEntry = ttk.Entry(self, show="*", font = SMALLFONT)
 		userNameEntry.grid(row=1,column = 2)
 		passwordEntry.grid(row=2,column = 2)
 
