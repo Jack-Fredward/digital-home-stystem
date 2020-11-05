@@ -3,7 +3,7 @@ import datetime
 import time
 from kitchen import *
 
-def commonSimACHeat(frame, room, temp):
+def commonSimACHeat(db, frame, room, temp):
     """Simulates the setting of a desired temperature and the AC/Heat system making a room that temperature.
 
     Keyword Arguments:
@@ -29,6 +29,7 @@ def commonSimACHeat(frame, room, temp):
             frame.update()
             # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
         room.turnOffAC(frame)
+        db.commit()
     elif temp > currTemp:
         secondsElapsed = 0
         room.turnOnHeat(frame)
@@ -46,6 +47,7 @@ def commonSimACHeat(frame, room, temp):
             frame.update()
             #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",room.getTemp())
         room.turnOffHeat(frame)
+        db.commit()
     #else:
         #print("The "+str(room.name)+" currently your requested temp")
 

@@ -4,7 +4,7 @@ import datetime
 import time
 import tkinter as tk
 
-def simOvenTemp(frame, kitchen, temp):
+def simOvenTemp(db, frame, kitchen, temp):
     """Simulates setting a desired temp for the oven to be at and the oven heating up to the desired temp.
 
     Keyword arguments:
@@ -31,12 +31,14 @@ def simOvenTemp(frame, kitchen, temp):
             frame.tempDisplayLabel.config(text = str(kitchen.getOvenTemp())+"*F")
             frame.update()
             # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
-        kitchen.turnOffOven(frame)
-        kitchen.setOvenTemp(0)
+        #kitchen.turnOffOven(frame)
+        # kitchen.setOvenTemp(0)
+        db.commit()
+
     else:
         print("Oven already on. Or entered an invalid temp (0) Should never be here.")
 
-def simStoveTemp(frame,kitchen,temp,burnerNum):
+def simStoveTemp(db,frame,kitchen,temp,burnerNum):
     """Simulates setting a desired temp to a stove burner and the stove burner heating up to it.
 
     Keyword Arguments:
@@ -61,12 +63,13 @@ def simStoveTemp(frame,kitchen,temp,burnerNum):
             frame.burnerTempDisplayLabel[burnerNum].config(text = str(kitchen.getStoveBurnerTemp(burnerNum))+"*F")
             frame.update()
             #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
-        kitchen.turnOffStoveBurner(frame,burnerNum)
+        #kitchen.turnOffStoveBurner(frame,burnerNum)
+        db.commit()
     #else:
         #print("Stove Burner #"+str(burnerNum)+" already on. Should never be here.")
 
 
-def simMicrowave(frame,kitchen, microTime, powerlevel):
+def simMicrowave(db, frame,kitchen, microTime, powerlevel):
     """Simulates the behavior of setting a cook time and temp to a microwave.
 
     Keyword Arguments:
@@ -92,6 +95,7 @@ def simMicrowave(frame,kitchen, microTime, powerlevel):
         #print("Time Left: "+str(microTime)+" at powerlevel: "+str(powerlevel)+" wattage: "+str(temp))
     #print("Beep Beep Beep")
     kitchen.turnOffMicrowave(frame)
+    db.commit()
 
 def simDishwasher(kitchen):
     """Simulating loading the dishwasher.
@@ -188,7 +192,7 @@ def simLights(kitchen):
     kitchen.turnOffLights()
     print("Turning lights off...")
 
-def simACHeat(frame,kitchen, temp):
+def simACHeat(db,frame,kitchen, temp):
     """Simulates the setting of a desired temperature and the AC/Heat system making the kitchen that temperature.
 
     Keyword Arguments:
@@ -214,6 +218,7 @@ def simACHeat(frame,kitchen, temp):
             frame.tempDisplayLabel.config(text = str(kitchen.getACTemp())+"*F")
             frame.update()
         kitchen.turnOffAC(frame)
+        db.commit()
     elif temp > currTemp:
         secondsElapsed = 0
         kitchen.turnOnHeat(frame)
@@ -231,6 +236,7 @@ def simACHeat(frame,kitchen, temp):
             frame.tempDisplayLabel.config(text = str(kitchen.getHeatTemp())+"*F")
             frame.update()
         kitchen.turnOffHeat(frame)
+        db.commit()
     #else:
     #    print("The Kitchen currently your requested temp")
 

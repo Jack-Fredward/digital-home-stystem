@@ -3,6 +3,7 @@
 import logging
 import bcrypt
 import pymysql
+import time
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -15,7 +16,7 @@ def check_password(user_id, password):
         return True
     else:
         logging.debug(f"password for user {user_id} does not match")
-        return True
+        return False
 
 def get_password_hash(user_id):
     # Open database connection
@@ -63,9 +64,17 @@ def hash_pw(user_fn, password):
     # print("UPDATE Users SET pw_hash="+str(hashed)[1:]+" WHERE F_Name = '"+str(user_fn)+"';")
 
     cursor.execute("UPDATE Users SET pw_hash="+str(hashed)[1:]+" WHERE F_Name = '"+str(user_fn)+"';")
+    db.commit()
     db.close()
 
-
+def update_pw(frame, user_fn, password,controller,LoginPage):
+    hash_pw(user_fn, password)
+    frame.passwordUpdateLabel.config(text = "Password Successfully updated")
+    frame.update()
+    time.sleep(3)
+    controller.show_frame(LoginPage)
+    
+    
 
 
 # def main():

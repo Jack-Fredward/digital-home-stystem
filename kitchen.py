@@ -323,7 +323,7 @@ class kitchen:
         """Returns the kitchen sink's state (on/off)."""
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, frame, flowRate):
+    def setSinkFlow(self, frame, flowRate, db):
         """Sets the flow rate of the kitchen sink.
 
         Keyword Arguments:
@@ -334,6 +334,7 @@ class kitchen:
         self.turnOnSink(frame)
         frame.kitchenSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
+        db.commit()
 
 
     def getSinkFlow(self):
@@ -357,7 +358,7 @@ class kitchen:
         """Gets the panty sink's state (on/off)."""
         return self.pantrysink.actuators[0].getState()
 
-    def setPantrySinkFlow(self,frame, flowRate):
+    def setPantrySinkFlow(self,frame, flowRate,db):
         """Sets the flow rate of the pantry sink.
 
         Keyword Arguments:
@@ -368,6 +369,7 @@ class kitchen:
         self.turnOnPantrySink(frame)
         frame.pantrySinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
+        db.commit()
 
     def getPantrySinkFlow(self):
         """Returns the pantry sink's flow rate."""

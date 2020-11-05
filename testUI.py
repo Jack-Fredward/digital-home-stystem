@@ -11,9 +11,10 @@ SMALLFONT =("calibre",10)
 class DigitalHomeApp(tk.Tk): 
 	
 	# __init__ function for class tkinterApp 
-	def __init__(self, dbCursor):
+	def __init__(self, db, dbCursor):
 
 		# initializing the digital home
+		self.db = db
 		self.dbCursor = dbCursor
 		self.kitchen=kitchen("kitchen", dbCursor)
 		
@@ -32,7 +33,7 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker): 
+		for F in (LoginPage, UpdatePassword, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker): 
 
 			frame = F(container, self) 
 
@@ -50,6 +51,7 @@ class DigitalHomeApp(tk.Tk):
 	def show_frame(self, cont): 
 		frame = self.frames[cont] 
 		frame.tkraise() 
+		self.db.commit()
 
 
 class LoginPage(tk.Frame):
@@ -69,9 +71,42 @@ class LoginPage(tk.Frame):
 		userNameEntry.grid(row=1,column = 2)
 		passwordEntry.grid(row=2,column = 2)
 
+
 		loginButton = ttk.Button(self, text = "Login", command = lambda : login(userNameEntry.get(),passwordEntry.get(),controller,MainMenu))
 		loginButton.grid(row = 3, column =2)
 
+		updatePasswordButton = ttk.Button(self, text = "Set/Update Password", command = lambda : controller.show_frame(UpdatePassword))
+		updatePasswordButton.grid(row = 4, column =2)
+
+
+class UpdatePassword(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text = "Update Password", font = LARGEFONT)
+		mainLabel.grid(row=0, column = 4, padx = 10, pady=10)
+
+		userNameLabel = ttk.Label(self, text = "First Name", font = SMALLFONT)
+		passwordLabel = ttk.Label(self, text = "New Password", font = SMALLFONT)
+		userNameLabel.grid(row=1,column=1)
+		passwordLabel.grid(row=2,column=1)
+
+		userNameEntry = ttk.Entry(self, font = SMALLFONT)
+		passwordEntry = ttk.Entry(self, font = SMALLFONT)
+		userNameEntry.grid(row=1,column = 2)
+		passwordEntry.grid(row=2,column = 2)
+
+
+		self.passwordUpdateLabel = ttk.Label(self, text ="", font = SMALLFONT)
+		self.passwordUpdateLabel.grid(row=1,column=3)
+
+
+
+		updateButton = ttk.Button(self, text = "Update", command = lambda : update_pw(self,userNameEntry.get(),passwordEntry.get(),controller,LoginPage))
+		updateButton.grid(row = 3, column =2)
+
+		backButton = ttk.Button(self, text = "Back", command = lambda : controller.show_frame(LoginPage))
+		backButton.grid(row = 4, column =2)
 
 
 
@@ -101,6 +136,9 @@ class MainMenu(tk.Frame):
 		# putting the button in its place by 
 		# using grid 
 		# button2.grid(row = 2, column = 1, padx = 10, pady = 10) 
+
+		exitButton = ttk.Button(self, text = "Exit", command = lambda : exit(0))
+		exitButton.grid(row = 5, column = 1)
 
 		
 
@@ -179,7 +217,7 @@ class Oven(tk.Frame):
 
 		tempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		tempEntry = ttk.Entry(self, font = SMALLFONT)
-		tempButton = ttk.Button(self, text = "Go", command = lambda : simOvenTemp(self,controller.kitchen,int(tempEntry.get())))
+		tempButton = ttk.Button(self, text = "Go", command = lambda : simOvenTemp(controller.db,self,controller.kitchen,int(tempEntry.get())))
 		self.tempDisplayLabel = ttk.Label(self, text = "0 *F")
 		currTempLabel = ttk.Label(self,text = "Oven Temp")
 		#THIS IS HOW TO DO THE UI MAKE THE BUTTONS ATTRIBUTESD PASS TO OTHER PLACES UPDATE IN THE OTHER PLACES AND BOOM WORKING UPDATING UI
@@ -218,7 +256,7 @@ class KitchenACHeat(tk.Frame):
 
 		tempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		tempEntry = ttk.Entry(self, font = SMALLFONT)
-		tempButton = ttk.Button(self, text = "Go", command = lambda : commonSimACHeat(self,controller.kitchen,int(tempEntry.get())))
+		tempButton = ttk.Button(self, text = "Go", command = lambda : commonSimACHeat(controller.db,self,controller.kitchen,int(tempEntry.get())))
 		self.tempDisplayLabel = ttk.Label(self, text = "70 *F")
 		currTempLabel = ttk.Label(self,text = "Kitchen Room Temp")
 
@@ -283,7 +321,7 @@ class Stove(tk.Frame):
 
 		burner1TempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		burner1TempEntry = ttk.Entry(self, font = SMALLFONT)
-		burner1TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(self,controller.kitchen,int(burner1TempEntry.get()),0))
+		burner1TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(controller.db,self,controller.kitchen,int(burner1TempEntry.get()),0))
 		self.burnerTempDisplayLabel.append(ttk.Label(self, text = "0 *F"))
 		burner1CurrTempLabel = ttk.Label(self,text = "Burner 1")
 		burner1TempEntryLabel.grid(row = 2, column = 1, padx = 10, pady = 10)
@@ -310,7 +348,7 @@ class Stove(tk.Frame):
 
 		burner2TempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		burner2TempEntry = ttk.Entry(self, font = SMALLFONT)
-		burner2TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(self,controller.kitchen,int(burner2TempEntry.get()),1))
+		burner2TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(controller.db,self,controller.kitchen,int(burner2TempEntry.get()),1))
 		self.burnerTempDisplayLabel.append(ttk.Label(self, text = "0 *F"))
 		burner2CurrTempLabel = ttk.Label(self,text = "Burner 2")
 		burner2TempEntryLabel.grid(row = 2, column = 5, padx = 10, pady = 10)
@@ -336,7 +374,7 @@ class Stove(tk.Frame):
 
 		burner3TempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		burner3TempEntry = ttk.Entry(self, font = SMALLFONT)
-		burner3TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(self,controller.kitchen,int(burner3TempEntry.get()),2))
+		burner3TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(controller.db, self,controller.kitchen,int(burner3TempEntry.get()),2))
 		self.burnerTempDisplayLabel.append(ttk.Label(self, text = "0 *F"))
 		burner3CurrTempLabel = ttk.Label(self,text = "Burner 3")
 		burner3TempEntryLabel.grid(row = 6, column = 1, padx = 10, pady = 10)
@@ -362,7 +400,7 @@ class Stove(tk.Frame):
 
 		burner4TempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
 		burner4TempEntry = ttk.Entry(self, font = SMALLFONT)
-		burner4TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(self,controller.kitchen,int(burner4TempEntry.get()),3))
+		burner4TempButton = ttk.Button(self, text = "Go", command = lambda : simStoveTemp(controller.db, self,controller.kitchen,int(burner4TempEntry.get()),3))
 		self.burnerTempDisplayLabel.append(ttk.Label(self, text = "0 *F"))
 		burner4CurrTempLabel = ttk.Label(self,text = "Burner 4")
 		burner4TempEntryLabel.grid(row = 6, column = 5, padx = 10, pady = 10)
@@ -378,7 +416,7 @@ class KitchenSink(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Kitchen Sink", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.setSinkFlow(self,flowScale.get()))
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.setSinkFlow(self,flowScale.get(),controller.db))
 		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffSink(self))
 		self.kitchenSinkStateDisplayLabel = ttk.Label(self, text = "Off")
 
@@ -406,7 +444,7 @@ class PantrySink(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Pantry Sink", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.setPantrySinkFlow(self,flowScale.get()))
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.setPantrySinkFlow(self,flowScale.get(),controller.db))
 		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffPantrySink(self))
 		self.pantrySinkStateDisplayLabel = ttk.Label(self, text = "Off")
 
@@ -450,7 +488,7 @@ class Microwave(tk.Frame):
 
 		timeEntryLabel = ttk.Label(self, text = "Cook Time(s)", font = SMALLFONT)
 		timeEntry = ttk.Entry(self, font = SMALLFONT)
-		cookButton = ttk.Button(self, text = "Start", command = lambda : simMicrowave(self, controller.kitchen, timeEntry.get(),powerSpinbox.get()))
+		cookButton = ttk.Button(self, text = "Start", command = lambda : simMicrowave(controller.db,self, controller.kitchen, timeEntry.get(),powerSpinbox.get()))
 
 		timeEntryLabel.grid(row = 3, column=1)
 		timeEntry.grid(row=3, column = 2)
@@ -512,7 +550,7 @@ def main():
 	cursor.execute("DELETE FROM Actuators")
 	cursor.execute("DELETE FROM Devices")
 
-	app = DigitalHomeApp(cursor) 
+	app = DigitalHomeApp(db,cursor) 
 	app.mainloop() 
 
 	db.commit()
