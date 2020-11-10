@@ -84,7 +84,7 @@ class kitchen:
         #   DISH WASHER
         #-------------------------------------------------------------
 
-        self.DISHWASHERCAP = 50 #Arbitrary number of dishes the dishwasher can hold
+        #self.DISHWASHERCAP = 50 #Arbitrary number of dishes the dishwasher can hold
         self.dishwasherDishCount = 0
         self.dishwasher = device("Dishwasher",dbCursor)
         self.dishwasher.actuators.append(actuator("Dishwasher Actuator", "Dishwasher", dbCursor))
@@ -161,6 +161,7 @@ class kitchen:
         self.smokeDetector=device("Kitchen Smoke Detector",dbCursor)
         self.smokeDetector.actuators.append(actuator("Kitchen Smoke Detector Actuator","Kitchen Smoke Detector", dbCursor))
         self.smokeDetector.sensors.append(openCloseSensors("KSDOCS", "Kitchen Smoke Detector",dbCursor))
+        self.turnOnSmokeDetector()
         
     
     #-------------------------------------------------------------
@@ -206,33 +207,37 @@ class kitchen:
     #   FRIDGE
     #-------------------------------------------------------------
 
-    def turnOnFridge(self,frame):
+    def turnOnFridge(self,frame,db):
         """Turns on the fridge."""
         self.fridge.actuators[0].turnOn()
         frame.fridgeStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffFridge(self,frame):
+    def turnOffFridge(self,frame,db):
         """Turns off the fridge."""
         self.fridge.actuators[0].turnOff()
         frame.fridgeStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getFridgeState(self):
         """Returns the fridge's state (on/off)."""
         return self.fridge.actuators[0].getState()
     
-    def openFridgeDoor(self,frame):
+    def openFridgeDoor(self,frame,db):
         """Opens the fridge door."""
         self.fridge.sensors[0].updateOpen()
         frame.fridgeDoorStateDisplayLabel.config(text="Open")
         frame.update()
+        db.commit()
 
-    def closeFridgeDoor(self,frame):
+    def closeFridgeDoor(self,frame,db):
         """Closes the fridge door."""
         self.fridge.sensors[0].updateClosed()
         frame.fridgeDoorStateDisplayLabel.config(text="Closed")
         frame.update()
+        db.commit()
 
     def getFridgeDoorState(self):
         """Returns the fridge door's state (open/close)."""
@@ -242,7 +247,7 @@ class kitchen:
     #   STOVE
     #-------------------------------------------------------------
 
-    def turnOnStoveBurner(self,frame, burnerNum):
+    def turnOnStoveBurner(self,frame, burnerNum, db):
         """Turns on the Stove burner.
 
         Keyword Arguments:
@@ -252,8 +257,9 @@ class kitchen:
         self.stove.actuators[burnerNum].turnOn()
         frame.burnerStateDisplayLabel[burnerNum].config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffStoveBurner(self, frame,burnerNum):
+    def turnOffStoveBurner(self, frame,burnerNum,db):
         """Turns off the Stove burner.
 
         Keyword Arguments:
@@ -263,6 +269,7 @@ class kitchen:
         self.stove.actuators[burnerNum].turnOff()
         frame.burnerStateDisplayLabel[burnerNum].config(text="Off")
         frame.update()
+        db.commit()
 
     def getStoveBurnerTemp(self, burnerNum):
         """Returns the temp of the Stove burner.
@@ -312,10 +319,10 @@ class kitchen:
         frame.kitchenSinkStateDisplayLabel.config(text="On")
         frame.update()
 
-    def turnOffSink(self,frame):
+    def turnOffSink(self,frame,db):
         """Turns off the kitchen sink."""
         self.sink.actuators[0].turnOff()
-        self.setSinkFlow(frame, 0)
+        self.setSinkFlow(frame, 0,db)
         frame.kitchenSinkStateDisplayLabel.config(text="Off")
         frame.update()
 
@@ -348,9 +355,10 @@ class kitchen:
         frame.pantrySinkStateDisplayLabel.config(text="On")
         frame.update()
     
-    def turnOffPantrySink(self,frame):
+    def turnOffPantrySink(self,frame,db):
         """Turns off the pantry sink."""
         self.pantrysink.actuators[0].turnOff()
+        self.setPantrySinkFlow(frame,0,db)
         frame.pantrySinkStateDisplayLabel.config(text="Off")
         frame.update()
 
@@ -379,17 +387,19 @@ class kitchen:
     #   MICROWAVE
     #-------------------------------------------------------------
 
-    def turnOnMicrowave(self,frame):
+    def turnOnMicrowave(self,frame,db):
         """Turns on the microwave."""
         self.microwave.actuators[0].turnOn()
         frame.microwaveStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffMicrowave(self,frame):
+    def turnOffMicrowave(self,frame,db):
         """Turns off the microwave"""
         self.microwave.actuators[0].turnOff()
         frame.microwaveStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getMicrowaveState(self):
         """Returns the microwave's state (on/off)."""
@@ -412,13 +422,19 @@ class kitchen:
     #   DISH WASHER
     #-------------------------------------------------------------
 
-    def turnOnDishwasher(self):
+    def turnOnDishwasher(self,frame,db):
         """Turns on the dishwasher."""
         self.dishwasher.actuators[0].turnOn()
+        frame.dishWasherStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffDishwaser(self):
+    def turnOffDishwasher(self,frame,db):
         """Turns off the dishwasher."""
         self.dishwasher.actuators[0].turnOff()
+        frame.dishWasherStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getDishwasherState(self):
         """Returns the dishwasher's state (on/off)."""
@@ -437,9 +453,9 @@ class kitchen:
         """Returns the dishwasher's flow rate."""
         return self.dishwasher.sensors[0].getFlowRatePct()
 
-    def getDishwasherCap(self):
-        """Returns the dishwasher's max dish capacity."""
-        return self.DISHWASHERCAP
+    # def getDishwasherCap(self):
+    #     """Returns the dishwasher's max dish capacity."""
+    #     return self.DISHWASHERCAP
 
     def getDishwasherDishCount(self):
         """Returns the dishwasher's dish count."""
@@ -452,10 +468,11 @@ class kitchen:
         numDishes       -- number of dishes to be added.
 
         """
-        if(self.getDishwasherDishCount()+numDishes<=self.DISHWASHERCAP):
-            self.dishwasherDishCount+=numDishes
-        else:
-            print("Too many dishes. Must add less")
+        self.dishwasherDishCount+=numDishes
+        # if(self.getDishwasherDishCount()+numDishes<=self.DISHWASHERCAP):
+        #     self.dishwasherDishCount+=numDishes
+        # else:
+        #     print("Too many dishes. Must add less")
 
     
 
@@ -463,17 +480,19 @@ class kitchen:
     #   COFFEE MAKER
     #-------------------------------------------------------------
 
-    def turnOnCoffeeMaker(self,frame):
+    def turnOnCoffeeMaker(self,frame,db):
         """Turns on the coffee maker."""
         self.coffeemaker.actuators[0].turnOn()
         frame.coffeeMakerStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffCoffeeMaker(self,frame):
+    def turnOffCoffeeMaker(self,frame,db):
         """Turns off the coffee maker."""
         self.coffeemaker.actuators[0].turnOff()
         frame.coffeeMakerStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getCoffeeMakerState(self):
         """Returns the coffeemaker's state (on/off)."""
@@ -509,13 +528,18 @@ class kitchen:
     #   TOASTER
     #-------------------------------------------------------------
 
-    def turnOnToaster(self):
+    def turnOnToaster(self, frame,db):
         """Turns on the toaster."""
         self.toaster.actuators[0].turnOn()
+        frame.toasterStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffToaster(self):
+    def turnOffToaster(self, frame,db):
         """Turns off the toaster."""
         self.toaster.actuators[0].turnOff()
+        frame.toasterStateDisplayLabel.config(text="Off")
+        frame.update()
 
     def getToasterState(self):
         """Returns the state of the coffee maker (on/off)."""
@@ -538,13 +562,20 @@ class kitchen:
     #   GARBAGE DISPOSAL
     #-------------------------------------------------------------
 
-    def turnOnGarbageDisposal(self):
+    def turnOnGarbageDisposal(self,frame,db):
         """Turns on the garbage disposal."""
         self.garbagedisposal.actuators[0].turnOn()
+        frame.garbageDisposalStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffGarbageDisposal(self):
+    def turnOffGarbageDisposal(self,frame,db):
         """Turns off the garbage disposal."""
         self.garbagedisposal.actuators[0].turnOff()
+        frame.garbageDisposalStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
+
 
     def getGarbageDisposalState(self):
         """Returns the garbage disposal's state (on/off)."""
@@ -554,19 +585,26 @@ class kitchen:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         """Turns on the lights."""
         self.lights.actuators[0].turnOn()
+        frame.kitchenLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         """Turns off the lights."""
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame,0,db)
+        frame.kitchenLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         """Returns the light's state (on/off)."""
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame, bright,db):
         """Sets the brightness of the lights.
 
         Keyword Arguments:
@@ -574,6 +612,12 @@ class kitchen:
 
         """        
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.kitchenLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
+
+
 
     def getLightBrightness(self):
         """Returns the light's brightness."""
@@ -609,17 +653,19 @@ class kitchen:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self,frame):
+    def turnOnAC(self,frame,db):
         """Turns on the AC."""
         self.aircon.actuators[0].turnOn()
         frame.aCStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffAC(self,frame):
+    def turnOffAC(self,frame,db):
         """Turns off the AC."""
         self.aircon.actuators[0].turnOff()
         frame.aCStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getACState(self):
         """Returns the AC's state (on/off)."""
@@ -646,17 +692,19 @@ class kitchen:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self,frame):
+    def turnOnHeat(self,frame,db):
         """Turns on the heat."""
         self.heat.actuators[0].turnOn()
         frame.heatStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffHeat(self,frame):
+    def turnOffHeat(self,frame,db):
         """Turns off the heat."""
         self.heat.actuators[0].turnOff()
         frame.heatStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getHeatState(self):
         """Returns the heat's state (on/off)."""

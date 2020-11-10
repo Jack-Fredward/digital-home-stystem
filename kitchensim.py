@@ -13,9 +13,11 @@ def simOvenTemp(db, frame, kitchen, temp):
 
     """
 
-    if (kitchen.getOvenState()!=1 and temp != 0):
+    if (temp != 0):
         secondsElapsed = 0
-        kitchen.turnOnOven(frame)
+        if(kitchen.getOvenState()!=1):
+            kitchen.turnOnOven(frame)
+        kitchen.setOvenTemp(0)
         time.sleep(1)
         secondsElapsed = secondsElapsed +1
         kitchen.updateOvenTemp()
@@ -31,12 +33,12 @@ def simOvenTemp(db, frame, kitchen, temp):
             frame.tempDisplayLabel.config(text = str(kitchen.getOvenTemp())+"*F")
             frame.update()
             # print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getOvenTemp())
-        #kitchen.turnOffOven(frame)
+        kitchen.turnOffOven(frame)
         # kitchen.setOvenTemp(0)
         db.commit()
 
-    else:
-        print("Oven already on. Or entered an invalid temp (0) Should never be here.")
+    # else:
+    #     print("Oven already on. Or entered an invalid temp (0) Should never be here.")
 
 def simStoveTemp(db,frame,kitchen,temp,burnerNum):
     """Simulates setting a desired temp to a stove burner and the stove burner heating up to it.
@@ -47,9 +49,11 @@ def simStoveTemp(db,frame,kitchen,temp,burnerNum):
         burnerNum       -- the burner number of which burner to use.
         
         """
-    if (kitchen.getStoveBurnerState(burnerNum)!=1):
+    if (temp!=0):
         secondsElapsed = 0
-        kitchen.turnOnStoveBurner(frame,burnerNum)
+        kitchen.setStoveBurnerTemp(burnerNum,0)
+        if(kitchen.getStoveBurnerState(burnerNum)!=1):
+            kitchen.turnOnStoveBurner(frame,burnerNum,db)
         time.sleep(1)
         secondsElapsed = secondsElapsed +1
         kitchen.updateStoveBurnerTemp(burnerNum)
@@ -63,7 +67,7 @@ def simStoveTemp(db,frame,kitchen,temp,burnerNum):
             frame.burnerTempDisplayLabel[burnerNum].config(text = str(kitchen.getStoveBurnerTemp(burnerNum))+"*F")
             frame.update()
             #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getStoveBurnerTemp(burnerNum))
-        #kitchen.turnOffStoveBurner(frame,burnerNum)
+        kitchen.turnOffStoveBurner(frame,burnerNum,db)
         db.commit()
     #else:
         #print("Stove Burner #"+str(burnerNum)+" already on. Should never be here.")
@@ -83,7 +87,7 @@ def simMicrowave(db, frame,kitchen, microTime, powerlevel):
     powerlevel = int(powerlevel)
     microTime = int(microTime)
     temp = (powerlevel/10)*MICROWATTS
-    kitchen.turnOnMicrowave(frame)
+    kitchen.turnOnMicrowave(frame,db)
     kitchen.setMicrowaveTemp(temp)
     frame.microwaveCookTimeDisplay.config(text = "Time Remaining: "+str(microTime))
     frame.update()
@@ -94,26 +98,57 @@ def simMicrowave(db, frame,kitchen, microTime, powerlevel):
         frame.update()
         #print("Time Left: "+str(microTime)+" at powerlevel: "+str(powerlevel)+" wattage: "+str(temp))
     #print("Beep Beep Beep")
-    kitchen.turnOffMicrowave(frame)
+    kitchen.turnOffMicrowave(frame,db)
     db.commit()
 
-def simDishwasher(kitchen):
+def simDishwasher(kitchen,frame,dishes,db):
     """Simulating loading the dishwasher.
 
     Keyword Arguments:
     kitchen     -- is the room object that this simulation pertains to, the kitchen.
 
     """
-    numDishes = eval(input("Please enter the number of dishes you would like to add(max capcity"+str(kitchen.DISHWASHERCAP)+ "): "))
-    kitchen.addDishToDishwasher(numDishes)
-    print(kitchen.getDishwasherDishCount())
-    while(kitchen.getDishwasherDishCount()<kitchen.getDishwasherCap()):
-        numDishes = eval(input("Please enter the number of dishes you would like to add: "))
-        kitchen.addDishToDishwasher(numDishes)
-        print(kitchen.getDishwasherDishCount())
-    print("Running Dishwasher now...")
+    kitchen.addDishToDishwasher(dishes)
+
+    if dishes <=20:
+        kitchen.setDishwasherFlow(.33)
+        kitchen.turnOnDishwasher(frame,db)
+        frame.dishWasherFlowLabel.config(text="Flow Rate: 33%")
+        frame.update()
+        db.commit()
+        time.sleep(3)
+    elif dishes <=40:
+        kitchen.setDishwasherFlow(.66)
+        kitchen.turnOnDishwasher(frame,db)
+        frame.dishWasherFlowLabel.config(text="Flow Rate: 66%")
+        frame.update()
+        db.commit()
+        time.sleep(6)
+    else:
+        kitchen.setDishwasherFlow(1)
+        kitchen.turnOnDishwasher(frame,db)
+        frame.dishWasherFlowLabel.config(text="Flow Rate: 100%")
+        frame.update()
+        time.sleep(9)
     
-def simCoffeMaker(kitchen,cupSize):
+    kitchen.setDishwasherFlow(0)
+    kitchen.turnOffDishwasher(frame,db)
+    frame.dishWasherFlowLabel.config(text="Flow Rate: 0%")
+    frame.update()
+
+
+
+    
+    # numDishes = eval(input("Please enter the number of dishes you would like to add(max capcity"+str(kitchen.DISHWASHERCAP)+ "): "))
+    # kitchen.addDishToDishwasher(numDishes)
+    # print(kitchen.getDishwasherDishCount())
+    # while(kitchen.getDishwasherDishCount()<kitchen.getDishwasherCap()):
+    #     numDishes = eval(input("Please enter the number of dishes you would like to add: "))
+    #     kitchen.addDishToDishwasher(numDishes)
+    #     print(kitchen.getDishwasherDishCount())
+    # print("Running Dishwasher now...")
+    
+def simCoffeeMaker(db, frame, kitchen,cupSize):
     """Simulating the coffee maker's behavior.
 
     Keyword Arguments:
@@ -121,28 +156,51 @@ def simCoffeMaker(kitchen,cupSize):
     cupSize     -- cup size to make where 1 is a small cup, 2 is a medium cup 3 is a large cup.
 
     """
-    kitchen.turnOnCoffeeMaker()
-    kitchen.setCoffeeMakerTemp(200) #the average optimal temp for making coffee
-    print("Heating Water For Coffee Please Wait")
-    time.sleep(3)
+    kitchen.turnOnCoffeeMaker(frame,db)
+    # kitchen.setCoffeeMakerTemp(200) #the average optimal temp for making coffee
+    #print("Heating Water For Coffee Please Wait")
+    
+    temp = 0
+    for i in range(5):
+        frame.coffeeMakerTempLabel.config(text ="Temp: "+str(temp)+" *F")
+        frame.update()
+        temp+=50
+        time.sleep(1)
+    kitchen.setCoffeeMakerTemp(temp) #the average optimal temp for making coffee
+    db.commit()
     #cup size options small medium large
     if(cupSize == 1):
         kitchen.setCoffeeMakerFlow(.33)
-        print("Dispensing Coffee Now for a Small Cup")
-        time.sleep(1)
+        db.commit()
+        frame.coffeeMakerFlowLabel.config(text = "Flow Rate: 33%")
+        frame.update()
+        #print("Dispensing Coffee Now for a Small Cup")
+        time.sleep(3)
     elif(cupSize ==2):
         kitchen.setCoffeeMakerFlow(.66)
-        print("Dispensing Coffee Now for a Medium Cup")
-        time.sleep(2)
+        db.commit()
+        frame.coffeeMakerFlowLabel.config(text = "Flow Rate: 66%")
+        frame.update()
+        #print("Dispensing Coffee Now for a Medium Cup")
+        time.sleep(5)
     else:
         kitchen.setCoffeeMakerFlow(1)
-        print("Dispensing Coffee Now for a Large Cup")
-        time.sleep(3)
-    kitchen.turnOffCofeeMaker()
-    kitchen.setCoffeeMakerTemp(0)
-    print("Shutting Off: Enjoy your coffee")
+        db.commit()
+        frame.coffeeMakerFlowLabel.config(text = "Flow Rate: 100%")
+        frame.update()
+        #print("Dispensing Coffee Now for a Large Cup")
+        time.sleep(8)
+    kitchen.turnOffCoffeeMaker(frame,db)
+    temp = 0
+    kitchen.setCoffeeMakerTemp(temp)
+    kitchen.setCoffeeMakerFlow(0)
+    db.commit()
+    frame.coffeeMakerTempLabel.config(text ="Temp: "+str(temp)+" *F")
+    frame.coffeeMakerFlowLabel.config(text = "Flow Rate: 0%")
+    frame.update()
+    #print("Shutting Off: Enjoy your coffee")
         
-def simToaster(kitchen,tempSetting):
+def simToaster(db, frame, kitchen,tempSetting):
     """Simulating a toasters behavior.
 
     Keyword Arguments:
@@ -152,12 +210,14 @@ def simToaster(kitchen,tempSetting):
     """
     TOASTERTEMP = 1112 #degrees F
     TOASTERTIMEFACTOR = 2 #factor of time in seconds for each tempSetting( tempSetting 1 = 2 seconds, 2 = 4 seconds, etc)
-    kitchen.turnOnToaster()
+    kitchen.turnOnToaster(frame,db)
     kitchen.setToasterTemp(TOASTERTEMP)
+    db.commit()
     print("Cooking the toast for "+str(tempSetting*TOASTERTIMEFACTOR)+" seconds")
     secondsElapsed = 0
+    frame.toasterToastTimeDisplay.config(text = "Time Remaining: "+str())
     time.sleep(1)
-    secondsElapsed+=1
+    secondsElapsed+=1 #REDO THE COUNTING OF TIME IN THIS FUNCTION
     print("Toasting. Time left: "+str(tempSetting*TOASTERTIMEFACTOR-secondsElapsed)+" seconds")
     while(secondsElapsed<tempSetting*TOASTERTIMEFACTOR-1):
         time.sleep(1)
@@ -165,8 +225,9 @@ def simToaster(kitchen,tempSetting):
         print("Toasting. Time left: "+str(tempSetting*TOASTERTIMEFACTOR-secondsElapsed)+" seconds")
     time.sleep(1)
     print("Pop! Toast is done")
-    kitchen.turnOffToaster()
+    kitchen.turnOffToaster(frame,db)
     kitchen.setToasterTemp(0)
+    db.commit()
 
 def simLights(kitchen):
     """Simulating someone entering and leaving the kitchen.
@@ -203,7 +264,7 @@ def simACHeat(db,frame,kitchen, temp):
     currTemp = kitchen.getTemp()
     if temp < currTemp:
         secondsElapsed = 0
-        kitchen.turnOnAC(frame)
+        kitchen.turnOnAC(frame,db)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         kitchen.updateACTemp()
@@ -217,11 +278,11 @@ def simACHeat(db,frame,kitchen, temp):
             #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
             frame.tempDisplayLabel.config(text = str(kitchen.getACTemp())+"*F")
             frame.update()
-        kitchen.turnOffAC(frame)
+        kitchen.turnOffAC(frame,db)
         db.commit()
     elif temp > currTemp:
         secondsElapsed = 0
-        kitchen.turnOnHeat(frame)
+        kitchen.turnOnHeat(frame,db)
         time.sleep(1)
         secondsElapsed = secondsElapsed + 1
         kitchen.updateHeatTemp()
@@ -235,7 +296,7 @@ def simACHeat(db,frame,kitchen, temp):
             #print("Seconds Elapsed: ",secondsElapsed, " ","Temperature(F): ",kitchen.getTemp())
             frame.tempDisplayLabel.config(text = str(kitchen.getHeatTemp())+"*F")
             frame.update()
-        kitchen.turnOffHeat(frame)
+        kitchen.turnOffHeat(frame,db)
         db.commit()
     #else:
     #    print("The Kitchen currently your requested temp")
