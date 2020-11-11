@@ -12,10 +12,10 @@ logging.basicConfig(level=logging.DEBUG)
 def check_password(user_id, password):
     hashed = get_password_hash(user_id)
     if bcrypt.checkpw(password.encode('utf8'), hashed):
-        logging.debug(f"password for user {user_id} matches")
+        # logging.debug(f"password for user {user_id} matches")
         return True
     else:
-        logging.debug(f"password for user {user_id} does not match")
+        # logging.debug(f"password for user {user_id} does not match")
         return False
 
 def get_password_hash(user_id):

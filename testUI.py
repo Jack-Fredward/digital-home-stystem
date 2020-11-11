@@ -194,8 +194,8 @@ class Kitchen(tk.Frame):
 		garbageDisposalButton = ttk.Button(self, text ="Garbage Disposal", command = lambda : controller.show_frame(GarbageDisposal)) 
 		garbageDisposalButton.grid(row = 3, column = 2, padx = 10, pady = 10)
 
-		smokeDetectorButton = ttk.Button(self, text ="Smoke Detector", command = lambda : controller.show_frame(SmokeDetector)) 
-		smokeDetectorButton.grid(row = 3, column = 3, padx = 10, pady = 10)
+		# smokeDetectorButton = ttk.Button(self, text ="Smoke Detector", command = lambda : controller.show_frame(SmokeDetector)) 
+		# smokeDetectorButton.grid(row = 3, column = 3, padx = 10, pady = 10)
 
 class Oven(tk.Frame): 
 	def __init__(self, parent, controller): 
