@@ -4,6 +4,8 @@ from commomsim import *
 from kitchensim import *
 from kitchen import *
 from login import *
+from diningRoom import *
+
 
 LARGEFONT =("Verdana", 35) 
 SMALLFONT =("calibre",10)
@@ -33,7 +35,7 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, UpdatePassword, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker, Toaster, KithcenLights, GarbageDisposal, SmokeDetector): 
+		for F in (LoginPage, UpdatePassword, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker, Toaster, KitchenLights, GarbageDisposal, KitchenSmokeDetector): 
 
 			frame = F(container, self) 
 
@@ -188,13 +190,13 @@ class Kitchen(tk.Frame):
 		toasterButton = ttk.Button(self, text ="Toaster", command = lambda : controller.show_frame(Toaster)) 
 		toasterButton.grid(row = 3, column = 2, padx = 10, pady = 10)
 
-		lightsButton = ttk.Button(self, text ="Lights", command = lambda : controller.show_frame(KithcenLights)) 
+		lightsButton = ttk.Button(self, text ="Lights", command = lambda : controller.show_frame(KitchenLights)) 
 		lightsButton.grid(row = 3, column = 2, padx = 10, pady = 10)
 
 		garbageDisposalButton = ttk.Button(self, text ="Garbage Disposal", command = lambda : controller.show_frame(GarbageDisposal)) 
 		garbageDisposalButton.grid(row = 3, column = 2, padx = 10, pady = 10)
 
-		# smokeDetectorButton = ttk.Button(self, text ="Smoke Detector", command = lambda : controller.show_frame(SmokeDetector)) 
+		# smokeDetectorButton = ttk.Button(self, text ="Smoke Detector", command = lambda : controller.show_frame(kitchenSmokeDetector)) 
 		# smokeDetectorButton.grid(row = 3, column = 3, padx = 10, pady = 10)
 
 class Oven(tk.Frame): 
@@ -613,7 +615,7 @@ class Toaster(tk.Frame):
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
-class KithcenLights(tk.Frame):
+class KitchenLights(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
 
@@ -660,7 +662,7 @@ class GarbageDisposal(tk.Frame):
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
-class SmokeDetector(tk.Frame):
+class KitchenSmokeDetector(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
 
@@ -674,6 +676,45 @@ class SmokeDetector(tk.Frame):
 		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
 		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
+class DiningRoom(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Dining Room", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10) 
+
+		# button to show startframe
+		#
+		button1 = ttk.Button(self, text ="MainMenu", command = lambda : controller.show_frame(MainMenu))
+
+
+class DiningRoomLights(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Kitchen Lights", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.kitchen.setLightBrightness(self,brightScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.kitchen.turnOffLights(self,controller.db))
+		self.kitchenLightsStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.kitchenLightsStateDisplayLabel.grid(row=1,column=3)
+
+		brightScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		brightScale.grid(row=2,column=1, pady = 20)
+
+		kitchenLightsCurrBrightDisplayLabel = ttk.Label(self, text = "Brightness", font = SMALLFONT)
+		kitchenLightsCurrBrightDisplayLabel.grid(row=2, column =2)
+
+		self.kitchenLightsBrightValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.kitchenLightsBrightValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the kitchen
+		kitchenButton = ttk.Button(self, text ="Kitchen", command = lambda : controller.show_frame(Kitchen)) 
+		kitchenButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
 
 
