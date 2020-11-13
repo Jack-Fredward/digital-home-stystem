@@ -32,7 +32,7 @@ class laundryRoom:
 
         self.door = []
         self.door.append(device("LRinteriordoor",dbCursor))
-        self.door[0].actuators.append(actuator("laundryRoom Interior Door Actuator", "LRinteriodoor",dbCursor))
+        self.door[0].actuators.append(actuator("laundryRoom Interior Door Actuator", "LRinteriordoor",dbCursor))
         self.door[0].sensors.append(openCloseSensors("LRIDOCS","LRinteriordoor",dbCursor))
         self.door.append(device("LRgaragedoor",dbCursor))
         self.door[1].actuators.append(actuator("laundryRoom Garage Door Actuator", "LRgaragedoor",dbCursor))
@@ -78,6 +78,7 @@ class laundryRoom:
         self.washingmachine = device("Washing Machine",dbCursor)
         self.washingmachine.actuators.append(actuator("Washing Machine Actuator", "Washing Machine", dbCursor))
         self.washingmachine.sensors.append(liquidFlowSensor("WMLFS","Washing Machine", dbCursor))
+        self.washingmachine.sensors.append(tempSensor("WMTS", "Washing Machine",dbCursor))
 
         #-------------------------------------------------------------
         #   DRYER
@@ -85,7 +86,8 @@ class laundryRoom:
 
         self.dryer = device("Dryer",dbCursor)
         self.dryer.actuators.append(actuator("Dryer Actuator", "Dryer", dbCursor))
-        self.dryer.sensors.append(openCloseSensors("DMS","Dryer", dbCursor))
+        self.dryer.sensors.append(tempSensor("DTS","Dryer",dbCursor))
+        self.dryer.sensors.append(brightSensor("DBS","Dryer", dbCursor))
 
         #-------------------------------------------------------------
         #   SMOKE ALARM
@@ -102,19 +104,26 @@ class laundryRoom:
     #   LIGHTS
     #-------------------------------------------------------------
     
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         """Turns on the lights."""
         self.lights.actuators[0].turnOn()
+        frame.laundryRoomLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         """Turns off the lights."""
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.laundryRoomLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         """Returns the light's state (on/off)."""
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         """Sets the brightness of the lights.
 
         Keyword Arguments:
@@ -122,6 +131,10 @@ class laundryRoom:
 
         """        
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.laundryRoomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         """Returns the light's brightness."""
@@ -144,13 +157,19 @@ class laundryRoom:
     #  DOORS
     #-------------------------------------------------------------
 
-    def openDoor(self,doorNum):
+    def openDoor(self,doorNum,frame,db):
         self.door[doorNum].actuators[0].turnOn()
         self.door[doorNum].sensors[0].updateOpen()
+        frame.doorStateDisplayLabel[doorNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeDoor(self,doorNum):
+    def closeDoor(self,doorNum,frame,db):
         self.door[doorNum].actuators[0].turnOff()
         self.door[doorNum].sensors[0].updateClosed()
+        frame.doorStateDisplayLabel[doorNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getdoortate(self,doorNum):
         return self.door[doorNum].actuators[0].getState()
@@ -168,17 +187,19 @@ class laundryRoom:
     #   AC/HEAT
     #-------------------------------------------------------------
 
-    def turnOnAC(self,frame):
+    def turnOnAC(self,frame,db):
         """Turns on the AC."""
         self.aircon.actuators[0].turnOn()
         frame.aCStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffAC(self,frame):
+    def turnOffAC(self,frame,db):
         """Turns off the AC."""
         self.aircon.actuators[0].turnOff()
         frame.aCStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getACState(self):
         """Returns the AC's state (on/off)."""
@@ -205,17 +226,19 @@ class laundryRoom:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self,frame):
+    def turnOnHeat(self,frame,db):
         """Turns on the heat."""
         self.heat.actuators[0].turnOn()
         frame.heatStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
-    def turnOffHeat(self,frame):
+    def turnOffHeat(self,frame,db):
         """Turns off the heat."""
         self.heat.actuators[0].turnOff()
         frame.heatStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getHeatState(self):
         """Returns the heat's state (on/off)."""
@@ -253,19 +276,26 @@ class laundryRoom:
     #   SINK
     #-------------------------------------------------------------
     
-    def turnOnSink(self):
+    def turnOnSink(self,frame,db):
         """Turns on the laundryRoom sink."""
         self.sink.actuators[0].turnOn()
+        frame.laundryRoomSinkStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffSink(self):
+    def turnOffSink(self,frame,db):
         """Turns off the laundryRoom sink."""
         self.sink.actuators[0].turnOff()
+        self.setSinkFlow(frame, 0,db)
+        frame.laundryRoomSinkStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getSinkState(self):
         """Returns the laundryRoom sink's state (on/off)."""
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, flowRate):
+    def setSinkFlow(self, frame, flowRate,db):
         """Sets the flow rate of the laundryRoom sink.
 
         Keyword Arguments:
@@ -273,6 +303,10 @@ class laundryRoom:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
+        self.turnOnSink(frame, db)
+        frame.laundryRoomSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getSinkFlow(self):
         """Returns the laundryRoom sink's flow rate."""
@@ -287,6 +321,20 @@ class laundryRoom:
 
     def turnOffWashingMachine(self):
         self.washingmachine.actuators[0].turnOff()
+
+    def setWasherFlow(self,flowRate):
+        self.washingmachine.sensors[0].setFlowRatePct(flowRate)
+
+    def getWasherFlow(self, flowRate):
+        return self.washingmachine.sensors[0].getFlowRatePct()
+    
+    def setWasherTemp(self,temp):
+        self.washingmachine.sensors[1].setTemp(temp)
+
+    def getWasherTemp(self,temp):
+        return self.washingmachine.sensors[1].getTemp()
+
+    
 
 
     #-------------------------------------------------------------
@@ -322,29 +370,29 @@ class laundryRoom:
     def getSmokeState(self):
         return self.smokeDetector.sensors[0].getState()
   
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    test=laundryRoom("laundryRoom",cursor)
+#     test=laundryRoom("laundryRoom",cursor)
 
-    test.openDoor(0)
-    test.setSmokeState(1)
-    print(test.getTemp())
+#     test.openDoor(0)
+#     test.setSmokeState(1)
+#     print(test.getTemp())
 
-    db.commit()
-    db.close()
-main()  
+#     db.commit()
+#     db.close()
+# main()  
