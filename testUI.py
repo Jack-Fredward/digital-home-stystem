@@ -8,6 +8,7 @@ from diningRoom import *
 from study import *
 from breakfastNook import *
 from laundryRoom import *
+from laundryRoomSim import *
 
 
 LARGEFONT =("Verdana", 35) 
@@ -1105,7 +1106,6 @@ class LaundryRoom(tk.Frame):
 		dryerButton = ttk.Button(self, text = "Dryer", command = lambda : controller.show_frame(Dryer))
 		dryerButton.grid(row=2,column=6)
 
-
 class LaundryRoomLights(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
@@ -1202,7 +1202,6 @@ class LaundryRoomDoors(tk.Frame):
 		laundryRoomButton = ttk.Button(self, text ="Laundry Room", command = lambda : controller.show_frame(LaundryRoom)) 
 		laundryRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
-
 class LaundryRoomSink(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
@@ -1236,11 +1235,74 @@ class Washer(tk.Frame):
 		tk.Frame.__init__(self, parent)
 
 		mainLabel = ttk.Label(self, text ="Washer", font = LARGEFONT) 
-		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+		mainLabel.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		laodSizeLabel = ttk.Label(self, text = "Load Size", font = SMALLFONT)
+		laodSizeLabel.grid(row=1,column=1)
+
+
+		self.loadSize = tk.IntVar()
+
+		smallLoad = ttk.Radiobutton(self, text = "Small Load", variable = self.loadSize, value = 1)
+		medLoad = ttk.Radiobutton(self, text = "Medium Load", variable = self.loadSize, value = 2)
+		largeLoad = ttk.Radiobutton(self, text = "Large Load", variable=self.loadSize, value = 3)
+
+		smallLoad.grid(row = 2, column = 1)
+		medLoad.grid(row = 3, column = 1)
+		largeLoad.grid(row=4, column = 1)
+
+		tempSettingLabel = ttk.Label(self, text = "Temp Setting", font = SMALLFONT)
+		tempSettingLabel.grid(row=1,column=2)
+
+		self.tempSet = tk.IntVar()
+
+		coldTemp = ttk.Radiobutton(self, text = "Cold", variable = self.tempSet, value = 1)
+		warmTemp = ttk.Radiobutton(self, text = "Warm", variable = self.tempSet, value = 2)
+		hotTemp = ttk.Radiobutton(self, text = "Hot", variable=self.tempSet, value = 3)
+
+		coldTemp.grid(row = 2, column = 2)
+		warmTemp.grid(row = 3, column = 2)
+		hotTemp.grid(row=4, column = 2)
+
+		soilLevelLabel = ttk.Label(self, text = "Soil Level", font = SMALLFONT)
+		soilLevelLabel.grid(row=1,column=3)
+
+		self.soilLevel = tk.IntVar()
+
+		lightSoil = ttk.Radiobutton(self, text = "Light", variable = self.soilLevel, value = 1)
+		normalSoil = ttk.Radiobutton(self, text = "Normal", variable = self.soilLevel, value = 2)
+		heavySoil = ttk.Radiobutton(self, text = "Heavy", variable=self.soilLevel, value = 3)
+
+		lightSoil.grid(row = 2, column = 3)
+		normalSoil.grid(row = 3, column = 3)
+		heavySoil.grid(row=4, column = 3)
+
+
+		washButton = ttk.Button(self, text = "Wash", command = lambda : simWasher(controller.laundryRoom, (self.loadSize.get()), int(self.tempSet.get()), int(self.soilLevel.get()), self, controller.db))
+		washButton.grid(row=1,column = 4)
+
+
+		self.washerStatusLabel = ttk.Label(self, text = "Off")
+		self.washerStatusLabel.grid(row = 1, column = 5)
+
+		self.timeLeftLabel = ttk.Label(self, text = "Time Left: ")
+		self.timeLeftLabel.grid(row=2,column = 5)
+
+		self.waterTempLabel = ttk.Label(self,text = "Water Temp(f): ")
+		self.waterTempLabel.grid(row=3, column =5)
+		
+		self.flowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.flowLabel.grid(row=4, column = 5)
+
+
+
+
+
+
 
 		#to get back to the laundryRoom
 		laundryRoomButton = ttk.Button(self, text ="Laundry Room", command = lambda : controller.show_frame(LaundryRoom)) 
-		laundryRoomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+		laundryRoomButton.grid(row = 10, column = 1, padx = 10, pady = 10)
 
 class Dryer(tk.Frame):
 	def __init__(self, parent, controller): 
