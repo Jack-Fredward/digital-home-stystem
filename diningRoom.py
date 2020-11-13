@@ -92,6 +92,7 @@ class diningRoom:
     
     def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
         frame.diningRoomLightsStateDisplayLabel.config(text="Off")
         frame.update()
         db.commit()

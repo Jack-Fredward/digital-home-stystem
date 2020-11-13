@@ -80,17 +80,28 @@ class study:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.studyLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.studyLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.studyLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()
@@ -105,13 +116,19 @@ class study:
     #   DOORS
     #-------------------------------------------------------------
 
-    def openDoor(self,doorNum):
+    def openDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOn()
         self.doors[doorNum].sensors[0].updateOpen()
+        frame.doorStateDisplayLabel[doorNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeDoor(self,doorNum):
+    def closeDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOff()
         self.doors[doorNum].sensors[0].updateClosed()
+        frame.doorStateDisplayLabel[doorNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getDoorState(self,doorNum):
         return self.doors[doorNum].actuators[0].getState()
@@ -123,13 +140,19 @@ class study:
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
+    def openWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOn()
         self.windows[winNum].sensors[0].updateOpen()
+        frame.windowStateDisplayLabel[winNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeWindow(self,winNum):
+    def closeWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOff()
         self.windows[winNum].sensors[0].updateClosed()
+        frame.windowStateDisplayLabel[winNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getWindowState(self,winNum):
         return self.windows[winNum].actuators[0].getState()
@@ -142,11 +165,17 @@ class study:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame,db):
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffAC(self):
+    def turnOffAC(self,frame,db):
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getACState(self):
         return self.aircon.actuators[0].getState()
@@ -164,11 +193,17 @@ class study:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame,db):
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffHeat(self):
+    def turnOffHeat(self,frame,db):
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHeatState(self):
         return self.heat.actuators[0].getState()
@@ -215,29 +250,29 @@ class study:
         return self.smokeDetector.sensors[0].getState()
 
 
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#     #db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    test=study("study",cursor)
+#     test=study("study",cursor)
 
-    test.openDoor(0)
-    test.setSmokeState(1)
-    print(test.getTemp())
+#     test.openDoor(0)
+#     test.setSmokeState(1)
+#     print(test.getTemp())
 
-    db.commit()
-    db.close()
-main()  
+#     db.commit()
+#     db.close()
+# main()  
