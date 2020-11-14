@@ -10,8 +10,8 @@ import datetime
 #         self.dbCursor = dbCursor
 #         self.devices = []
 
-class bedroom:
-    def __init__(self, name, number, dbCursor, has_extDoor):
+class bedRoom:
+    def __init__(self, name, number, dbCursor):
         self.name = name
         self.dbCursor = dbCursor
 
@@ -35,10 +35,10 @@ class bedroom:
         self.doors[0].actuators.append(actuator("bedroom"+number+"Door Actuator", "bedroom"+number+"door",dbCursor))
         self.doors[0].sensors.append(openCloseSensors("Bed"+number+"DOCS","bedroom"+number+"door",dbCursor))
 
-        if (has_extDoor == 1):
-            self.doors.append(device("bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].actuators.append(actuator("bedroom"+number+"ExtDoor Actuator", "bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].sensors.append(openCloseSensors("Bed"+number+"EDOCS","bedroom"+number+"ExtDoor",dbCursor))
+        #if (has_extDoor == 1):
+        self.doors.append(device("bedroom"+number+"ExtDoor",dbCursor))
+        self.doors[0].actuators.append(actuator("bedroom"+number+"ExtDoor Actuator", "bedroom"+number+"ExtDoor",dbCursor))
+        self.doors[0].sensors.append(openCloseSensors("Bed"+number+"EDOCS","bedroom"+number+"ExtDoor",dbCursor))
       
         #-------------------------------------------------------------
         #   WINDOWS
@@ -220,15 +220,9 @@ def main ():
     cursor.execute("DELETE FROM Actuators")
     cursor.execute("DELETE FROM Devices")
 
-    bedroom2 = bedroom("bedroom2", "2", cursor,0)
-    bedroom3 = bedroom("bedroom3", "3", cursor,0)
-    bedroom4 = bedroom("bedroom4", "4", cursor,1)
-
-
-
-
-
-    
+    bedRoom2 = bedRoom("bedroom2", "2", cursor)
+    bedRoom3 = bedRoom("bedroom3", "3", cursor)
+    bedRoom4 = bedRoom("bedroom4", "4", cursor)
 
     db.commit()
     db.close()
