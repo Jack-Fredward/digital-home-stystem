@@ -347,6 +347,11 @@ class laundryRoom:
     def turnOffDryer(self):
         self.dryer.actuators[0].turnOff()
 
+    def setDryerTemp(self, temp):
+        self.dryer.sensors[0].setTemp(temp)
+
+    def getDryerTemp(self):
+        return self.dryer.sensors[0].getTemp()
 
     #-------------------------------------------------------------
     #   SMOKE ALARM

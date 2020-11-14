@@ -56,7 +56,47 @@ def simWasher(laundryRoom, loadSize, tempSet, soilLevel, frame, db):
     frame.waterTempLabel.config(text = "Water Temp(f): ")
     frame.flowLabel.config(text = "Flow Rate: 0%")
     frame.update()
+    db.commit()
     # print("Washer Done")
+
+
+
+def simDryer(laundryRoom,tempSet,duration,frame,db):
+    if(tempSet == 1):
+        laundryRoom.setDryerTemp(125)
+        frame.dryerTempLabel.config(text = "Dryer Temp(f): 125")
+    elif(tempSet == 2):
+        laundryRoom.setWasherTemp(135)
+        frame.dryerTempLabel.config(text = "Dryer Temp(f): 135")
+    elif(tempSet == 3):
+        laundryRoom.setWasherTemp(145)
+        frame.dryerTempLabel.config(text = "Dryer Temp(f): 145")
+
+    frame.update()
+
+    if(duration == 1):
+        cycleTime = 3
+    elif(duration == 2):
+        cycleTime = 5
+    elif(duration == 3):
+        cycleTime = 10
+
+    # print("Running washer with your settings")
+    # print(loadSize," ",tempSet," ",soilLevel)
+    frame.dryerStatusLabel.config(text = "Drying")
+    frame.timeLeftLabel.config(text = "Time Left: "+str(cycleTime))
+    frame.update()
+    for i in range(cycleTime):
+        time.sleep(1)
+        frame.timeLeftLabel.config(text = "Time Left: "+str(cycleTime-i-1))
+        frame.update()
+
+    frame.dryerStatusLabel.config(text="Done")
+    frame.dryerTempLabel.config(text = "Water Temp(f): ")
+    frame.update()
+    db.commit()
+    # print("Dryer Done")
+
 
 # def main():
 #     # Open database connection
@@ -74,7 +114,7 @@ def simWasher(laundryRoom, loadSize, tempSet, soilLevel, frame, db):
 #     cursor.execute("DELETE FROM Devices")
 
 #     lR = laundryRoom("laundry room", cursor)
-#     simWasher(lR)
+#     simDryer(lR)
 
 
 # main()
