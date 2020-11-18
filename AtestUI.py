@@ -12,6 +12,8 @@ from laundryRoomSim import *
 from bedroom import *
 from halfBath import *
 from bathroom import *
+from masterBathroom import *
+from livingRoom import *
 
 LARGEFONT =("Verdana", 35) 
 SMALLFONT =("calibre",10)
@@ -36,6 +38,8 @@ class DigitalHomeApp(tk.Tk):
 		self.bathroom2 = bathroom("bathroom2", "2", dbCursor, 0, 0, 0)
 		self.bathroom3 = bathroom("bathroom3", "3", dbCursor, 0, 1, 0)
 		self.bathroom4 = bathroom("bathroom4", "4", dbCursor, 1, 0, 1)
+		self.masterBathroom = masterBathroom("masterbathroom", dbCursor)
+		self.livingRoom = livingRoom("livingRoom", dbCursor)
 
 		# __init__ function for class Tk 
 		tk.Tk.__init__(self)
@@ -62,9 +66,12 @@ class DigitalHomeApp(tk.Tk):
 		BedRoom3, BedRoom3Lights, BedRoom3ACHeat, BedRoom3Windows, BedRoom3Doors, 
 		BedRoom4, BedRoom4Lights, BedRoom4ACHeat, BedRoom4Windows, BedRoom4Doors, BedRoom4ExternalDoors,
 		HalfBathroom, HalfBathroomLights, HalfBathroomACHeat, HalfBathroomDoors, HalfBathroomSink, HalfBathroomToilet,
-		Bathroom2, Bathroom2Lights, Bathroom2ACHeat, Bathroom2Doors, Bathroom2Sink, Bathroom2Toilet, Bathroom2Shower,
-		Bathroom3, Bathroom3Lights, Bathroom3ACHeat, Bathroom3Doors, Bathroom3Sink, Bathroom3Toilet, Bathroom3Bathtub,
-		Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors):
+		Bathroom2, Bathroom2Lights, Bathroom2ACHeat, Bathroom2Doors, Bathroom2Windows, Bathroom2Sink, Bathroom2Toilet, Bathroom2Shower,
+		Bathroom3, Bathroom3Lights, Bathroom3ACHeat, Bathroom3Doors, Bathroom3Windows, Bathroom3Sink, Bathroom3Toilet, Bathroom3Bathtub,
+		Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
+		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
+		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
+		LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision):
 
 			frame = F(container, self) 
 
@@ -186,8 +193,11 @@ class MainMenu(tk.Frame):
 		bathroomButton4 = ttk.Button(self, text ="Bathroom 4", command = lambda : controller.show_frame(Bathroom4))
 		bathroomButton4.grid(row=4, column = 5, padx = 10, pady = 10)
 
-		# livingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom))
-		# livingRoomButton.grid(row=1, column = 6, padx = 10, pady = 10)
+		masterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom))
+		masterBathroomButton.grid(row=5, column = 5, padx = 10, pady = 10)
+
+		livingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom))
+		livingRoomButton.grid(row=1, column = 6, padx = 10, pady = 10)
 
 		exitButton = ttk.Button(self, text = "Exit", command = lambda : exit(0))
 		exitButton.grid(row = 5, column = 1)
@@ -1935,14 +1945,31 @@ class HalfBathroomToilet(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
 
-		mainLabel = ttk.Label(self, text ="Half Bathroom Toilet", font = LARGEFONT) 
+		mainLabel = ttk.Label(self, text ="Toilet", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-	####### Need to be able to flush it ####
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.halfBathroom.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.halfBathroom.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
 
-		#to get back to the halfBathroom
-		halfBathroomButton = ttk.Button(self, text ="Half Bathroom", command = lambda : controller.show_frame(halfBathroom)) 
-		halfBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
+
+		#to get back to the HalfBathroom
+		HalfBathroomButton = ttk.Button(self, text ="Half Bathroom", command = lambda : controller.show_frame(HalfBathroom)) 
+		HalfBathroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
 
 class Bathroom2(tk.Frame):
@@ -2122,7 +2149,24 @@ class Bathroom2Toilet(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Toilet", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-	####### Need to be able to flush it ####
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.bathroom2.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom2.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
 
 		#to get back to the Bathroom2
 		Bathroom2Button = ttk.Button(self, text ="Bathroom 2", command = lambda : controller.show_frame(Bathroom2)) 
@@ -2174,7 +2218,7 @@ class Bathroom3(tk.Frame):
 	def __init__(self, parent, controller): 
 		
 		tk.Frame.__init__(self, parent) 
-		label = ttk.Label(self, text ="Bathroom 2", font = LARGEFONT) 
+		label = ttk.Label(self, text ="Bathroom 3", font = LARGEFONT) 
 		label.grid(row = 0, column = 4, padx = 10, pady = 10) 
 
 		# button to show startframe
@@ -2207,7 +2251,7 @@ class Bathroom3Lights(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
 
-		mainLabel = ttk.Label(self, text ="Bathroom 3 Lights", font = LARGEFONT) 
+		mainLabel = ttk.Label(self, text ="Lights", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
 		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bedRoom.setLightBrightness(self,brightScale.get(),controller.db))
@@ -2347,6 +2391,24 @@ class Bathroom3Toilet(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Toilet", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.bathroom3.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom3.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
 	####### Need to be able to flush it ####
 
 		#to get back to the Bathroom3
@@ -2357,11 +2419,11 @@ class Bathroom3Bathtub(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
 
-		mainLabel = ttk.Label(self, text ="Shower", font = LARGEFONT) 
+		mainLabel = ttk.Label(self, text ="Bathtub", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bathroom3.setSinkFlow(self,flowScale.get(),controller.db))
-		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom3.turnOffSink(self,controller.db))
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bathroom3.setBathtubFlow(self,flowScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom3.turnOffBathtub(self,controller.db))
 		self.bathroom3StateDisplayLabel = ttk.Label(self, text = "Off")
 
 		buttonOn.grid(row=1,column=1)
@@ -2399,7 +2461,7 @@ class Bathroom4(tk.Frame):
 	def __init__(self, parent, controller): 
 		
 		tk.Frame.__init__(self, parent) 
-		label = ttk.Label(self, text ="Bathroom 2", font = LARGEFONT) 
+		label = ttk.Label(self, text ="Bathroom 4", font = LARGEFONT) 
 		label.grid(row = 0, column = 4, padx = 10, pady = 10) 
 
 		# button to show startframe
@@ -2596,6 +2658,25 @@ class Bathroom4Toilet(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Toilet", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.bathroom4.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom4.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
+
 	####### Need to be able to flush it ####
 
 		#to get back to the Bathroom4
@@ -2609,8 +2690,8 @@ class Bathroom4Shower(tk.Frame):
 		mainLabel = ttk.Label(self, text ="Shower", font = LARGEFONT) 
 		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
 
-		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bathroom4.setSinkFlow(self,flowScale.get(),controller.db))
-		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom4.turnOffSink(self,controller.db))
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bathroom4.setShowerFlow(self,flowScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom4.turnOffShower(self,controller.db))
 		self.bathroom4StateDisplayLabel = ttk.Label(self, text = "Off")
 
 		buttonOn.grid(row=1,column=1)
@@ -2643,7 +2724,496 @@ class Bathroom4Shower(tk.Frame):
 		Bathroom4Button = ttk.Button(self, text ="Bathroom 4", command = lambda : controller.show_frame(Bathroom4)) 
 		Bathroom4Button.grid(row = 4, column = 1, padx = 10, pady = 10)
 
+class MasterBathroom(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Master Bathroom", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10) 
 
+		# button to show startframe
+		#
+		button1 = ttk.Button(self, text ="MainMenu", command = lambda : controller.show_frame(MainMenu))
+		button1.grid(row=1,column=1)
+
+		lightsButton = ttk.Button(self, text = "Lights", command = lambda : controller.show_frame(MasterBathroomLights))
+		lightsButton.grid(row=2, column =1)
+
+		aCHeatButton = ttk.Button(self, text = "AC/Heat", command = lambda : controller.show_frame(MasterBathroomACHeat))
+		aCHeatButton.grid(row=2, column =2)
+
+		windowsButton = ttk.Button(self, text = "Windows", command = lambda : controller.show_frame(MasterBathroomWindows))
+		windowsButton.grid(row=2, column =3)
+
+		doorsButton = ttk.Button(self, text = "Doors", command = lambda : controller.show_frame(MasterBathroomDoors))
+		doorsButton.grid(row=2, column =4)
+
+		masterBathroomHerSinkButton = ttk.Button(self, text ="Her Sink", command = lambda : controller.show_frame(MasterBathroomHerSink)) 
+		masterBathroomHerSinkButton.grid(row = 2, column = 5) 
+
+		masterBathroomHisSinkButton = ttk.Button(self, text ="His Sink", command = lambda : controller.show_frame(MasterBathroomHisSink)) 
+		masterBathroomHisSinkButton.grid(row = 3, column = 5)
+
+		masterBathroomHerToiletButton = ttk.Button(self, text ="Her Toilet", command = lambda : controller.show_frame(MasterBathroomHerToilet)) 
+		masterBathroomHerToiletButton.grid(row = 2, column = 6) 
+
+		masterBathroomHisToiletButton = ttk.Button(self, text ="His Toilet", command = lambda : controller.show_frame(MasterBathroomHisToilet)) 
+		masterBathroomHisToiletButton.grid(row = 3, column = 6)
+
+		masterBathroomShowerButton = ttk.Button(self, text ="Shower", command = lambda : controller.show_frame(MasterBathroomShower)) 
+		masterBathroomShowerButton.grid(row = 2, column = 7) 
+
+		masterBathroomBathtubButton = ttk.Button(self, text ="Bathtub", command = lambda : controller.show_frame(MasterBathroomBathtub)) 
+		masterBathroomBathtubButton.grid(row = 3, column = 7)
+
+class MasterBathroomLights(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text = "Lights", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.bathroom.setLightBrightness(self,brightScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.bathroom.turnOffLights(self,controller.db))
+		self.masterBathroomLightsStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.masterBathroomLightsStateDisplayLabel.grid(row=1,column=3)
+
+		brightScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		brightScale.grid(row=2,column=1, pady = 20)
+
+		masterBathroomLightsCurrBrightDisplayLabel = ttk.Label(self, text = "Brightness", font = SMALLFONT)
+		masterBathroomLightsCurrBrightDisplayLabel.grid(row=2, column =2)
+
+		self.masterBathroomLightsBrightValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.masterBathroomLightsBrightValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the Master Bathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom))
+		MasterBathroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomACHeat(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="AC/Heat", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOnAC = ttk.Button(self, text = "AC On", command = lambda : controller.masterBathroom.turnOnAC(self,controller.db))
+		buttonOnAC.grid(row=1,column=1)
+		buttonOffAC = ttk.Button(self, text = "AC Off", command = lambda : controller.masterBathroom.turnOffAC(self,controller.db))
+		buttonOffAC.grid(row=1,column=2)
+
+		buttonOnHeat = ttk.Button(self, text = "Heat On", command = lambda : controller.masterBathroom.turnOnHeat(self,controller.db))
+		buttonOnHeat.grid(row=2,column=1)
+		buttonOffHeat = ttk.Button(self, text = "Heat Off", command = lambda : controller.masterBathroom.turnOffHeat(self,controller.db))
+		buttonOffHeat.grid(row=2,column=2)
+
+		self.aCStateDisplayLabel = ttk.Label(self, text = "Off")
+		self.aCStateDisplayLabel.grid(row=1,column=3, padx = 10)
+		self.heatStateDisplayLabel = ttk.Label(self, text = "Off")
+		self.heatStateDisplayLabel.grid(row=2,column=3, padx = 10)
+
+		tempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
+		tempEntry = ttk.Entry(self, font = SMALLFONT)
+		tempButton = ttk.Button(self, text = "Go", command = lambda : commonSimACHeat(controller.db,self,controller.masterBathroom,int(tempEntry.get())))
+		self.tempDisplayLabel = ttk.Label(self, text = "70 *F")
+		currTempLabel = ttk.Label(self,text = "Master Bathroom Room Temp")
+
+
+		tempEntryLabel.grid(row = 3, column = 1, padx = 10, pady = 10)
+		tempEntry.grid(row = 3, column = 2)
+		tempButton.grid(row= 3, column = 3)
+		currTempLabel.grid(row=4,column=1)
+		self.tempDisplayLabel.grid(row=4, column =2)
+
+		#to get back to the masterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomWindows(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Windows", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		self.windowStateDisplayLabel = []
+
+		buttonOpen = ttk.Button(self, text = "Open", command = lambda : controller.masterBathroom.openWindow(0,self,controller.db))
+		buttonClose = ttk.Button(self, text="Close",command = lambda : controller.masterBathroom.closeWindow(0,self,controller.db))
+		self.windowStateDisplayLabel.append(ttk.Label(self, text = "Closed"))
+
+		buttonOpen.grid(row=1,column=1)
+		buttonClose.grid(row=1,column=2)
+		self.windowStateDisplayLabel[0].grid(row=1,column=3)
+
+        #to get back to the masterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomDoors(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Doors", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		self.doorStateDisplayLabel = []
+
+		buttonOpen = ttk.Button(self, text = "Open", command = lambda : controller.masterBathroom.openDoor(0,self,controller.db))
+		buttonClose = ttk.Button(self, text="Close",command = lambda : controller.masterBathroom.closeDoor(0,self,controller.db))
+		self.doorStateDisplayLabel.append(ttk.Label(self, text = "Closed"))
+
+		buttonOpen.grid(row=1,column=1)
+		buttonClose.grid(row=1,column=2)
+		self.doorStateDisplayLabel[0].grid(row=1,column=3) 
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomHerSink(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Bathroom2 Toilet", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.masterBathroom.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		flowScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		flowScale.grid(row=2,column=1, pady = 20)
+
+		masterBathroomToiletCurrFlowDisplayLabel = ttk.Label(self, text = "Flow Rate", font = SMALLFONT)
+		masterBathroomToiletCurrFlowDisplayLabel.grid(row=2, column =2)
+
+		self.masterBathroomToiletFlowValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.masterBathroomToiletFlowValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)	
+
+class MasterBathroomHisSink(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Half Bathroom Toilet", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.masterBathroom.turnOnToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		flowScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		flowScale.grid(row=2,column=1, pady = 20)
+
+		masterBathroomToiletCurrFlowDisplayLabel = ttk.Label(self, text = "Flow Rate", font = SMALLFONT)
+		masterBathroomToiletCurrFlowDisplayLabel.grid(row=2, column =2)
+
+		self.masterBathroomToiletFlowValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.masterBathroomToiletFlowValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomHerToilet(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Her Toilet", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.masterBathroom.turnOnHerToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffHerToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomHisToilet(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="His Toilet", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "Flush", command = lambda : controller.masterBathroom.turnOnHisToilet(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffHisToilet(self,controller.db))
+		self.BathroomToiletStateDisplayLabel = ttk.Label(self, text = "Off")	
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.BathroomToiletStateDisplayLabel.grid(row=1,column=3)
+
+		self.flushSize = tk.IntVar()
+
+		smallFlush = ttk.Radiobutton(self, text = "Small Flush", variable = self.flushSize, value = 1)
+		bigFlush = ttk.Radiobutton(self, text = "Big Flush", variable = self.flushSize, value = 3)
+		
+		smallFlush.grid(row = 2, column = 1)
+		bigFlush.grid(row = 3, column = 1)
+		
+		self.toiletFlowLabel = ttk.Label(self, text = "Flow Rate: 0%")
+		self.toiletFlowLabel.grid(row=3, column =2)
+
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomShower(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Shower", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.masterBathroom.setShowerFlow(self,flowScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffShower(self,controller.db))
+		self.masterBathroomStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.masterBathroomStateDisplayLabel.grid(row=1,column=3)
+
+		flowScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		flowScale.grid(row=2,column=1, pady = 20)
+
+		masterBathroomShowerCurrFlowDisplayLabel = ttk.Label(self, text = "Flow Rate", font = SMALLFONT)
+		masterBathroomShowerCurrFlowDisplayLabel.grid(row=2, column =2)
+
+		self.masterBathroomShowerFlowValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.masterBathroomShowerFlowValueDisplayLabel.grid(row=2,column = 3)
+
+		tempSettingLabel = ttk.Label(self, text = "Temp Setting", font = SMALLFONT)
+		tempSettingLabel.grid(row=1,column=2)
+
+		self.tempSet = tk.IntVar()
+
+		coldTemp = ttk.Radiobutton(self, text = "Cold", variable = self.tempSet, value = 1)
+		warmTemp = ttk.Radiobutton(self, text = "Warm", variable = self.tempSet, value = 2)
+		hotTemp = ttk.Radiobutton(self, text = "Hot", variable=self.tempSet, value = 3)
+
+		coldTemp.grid(row = 2, column = 2)
+		warmTemp.grid(row = 3, column = 2)
+		hotTemp.grid(row=4, column = 2)
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+class MasterBathroomBathtub(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Bathtub", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.masterBathroom.setBathtubFlow(self,flowScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.masterBathroom.turnOffBathtub(self,controller.db))
+		self.masterBathroomStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.masterBathroomStateDisplayLabel.grid(row=1,column=3)
+
+		flowScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		flowScale.grid(row=2,column=1, pady = 20)
+
+		masterBathroomBathtubCurrFlowDisplayLabel = ttk.Label(self, text = "Flow Rate", font = SMALLFONT)
+		masterBathroomBathtubCurrFlowDisplayLabel.grid(row=2, column =2)
+
+		self.masterBathroomBathtubFlowValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.masterBathroomBathtubFlowValueDisplayLabel.grid(row=2,column = 3)
+
+		tempSettingLabel = ttk.Label(self, text = "Temp Setting", font = SMALLFONT)
+		tempSettingLabel.grid(row=1,column=2)
+
+		self.tempSet = tk.IntVar()
+
+		coldTemp = ttk.Radiobutton(self, text = "Cold", variable = self.tempSet, value = 1)
+		warmTemp = ttk.Radiobutton(self, text = "Warm", variable = self.tempSet, value = 2)
+		hotTemp = ttk.Radiobutton(self, text = "Hot", variable=self.tempSet, value = 3)
+
+		coldTemp.grid(row = 2, column = 2)
+		warmTemp.grid(row = 3, column = 2)
+		hotTemp.grid(row=4, column = 2)
+
+		#to get back to the MasterBathroom
+		MasterBathroomButton = ttk.Button(self, text ="Master Bathroom", command = lambda : controller.show_frame(MasterBathroom)) 
+		MasterBathroomButton.grid(row = 4, column = 1, padx = 10, pady = 10)
+
+class LivingRoom(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Living Room", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10) 
+
+		# button to show startframe
+		#
+		button1 = ttk.Button(self, text ="MainMenu", command = lambda : controller.show_frame(MainMenu))
+		button1.grid(row=1,column=1)
+
+		lightsButton = ttk.Button(self, text = "Lights", command = lambda : controller.show_frame(LivingRoomLights))
+		lightsButton.grid(row=2, column =1)
+
+		aCHeatButton = ttk.Button(self, text = "AC/Heat", command = lambda : controller.show_frame(LivingRoomACHeat))
+		aCHeatButton.grid(row=2, column =2)
+
+		doorsButton = ttk.Button(self, text = "Doors", command = lambda : controller.show_frame(LivingRoomDoors))
+		doorsButton.grid(row=2,column=3)
+
+		televisionButton = ttk.Button(self, text = "Television", command = lambda : controller.show_frame(LivingRoom))
+		televisionButton.grid(row=2,column=4)
+
+class LivingRoomLights(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Living Room Lights", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.livingRoom.setLightBrightness(self,brightScale.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.livingRoom.turnOffLights(self,controller.db))
+		self.livingRoomLightsStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.livingRoomLightsStateDisplayLabel.grid(row=1,column=3)
+
+		brightScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		brightScale.grid(row=2,column=1, pady = 20)
+
+		livingRoomLightsCurrBrightDisplayLabel = ttk.Label(self, text = "Brightness", font = SMALLFONT)
+		livingRoomLightsCurrBrightDisplayLabel.grid(row=2, column =2)
+
+		self.livingRoomLightsBrightValueDisplayLabel = ttk.Label(self, text = "0%", font = SMALLFONT)
+		self.livingRoomLightsBrightValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the livingRoom
+		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
+		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class LivingRoomACHeat(tk.Frame):
+	def __init__(self, parent, controller): 
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="AC/Heat", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOnAC = ttk.Button(self, text = "AC On", command = lambda : controller.livingRoom.turnOnAC(self,controller.db))
+		buttonOnAC.grid(row=1,column=1)
+		buttonOffAC = ttk.Button(self, text = "AC Off", command = lambda : controller.livingRoom.turnOffAC(self,controller.db))
+		buttonOffAC.grid(row=1,column=2)
+
+		buttonOnHeat = ttk.Button(self, text = "Heat On", command = lambda : controller.livingRoom.turnOnHeat(self,controller.db))
+		buttonOnHeat.grid(row=2,column=1)
+		buttonOffHeat = ttk.Button(self, text = "Heat Off", command = lambda : controller.livingRoom.turnOffHeat(self,controller.db))
+		buttonOffHeat.grid(row=2,column=2)
+
+		self.aCStateDisplayLabel = ttk.Label(self, text = "Off")
+		self.aCStateDisplayLabel.grid(row=1,column=3, padx = 10)
+		self.heatStateDisplayLabel = ttk.Label(self, text = "Off")
+		self.heatStateDisplayLabel.grid(row=2,column=3, padx = 10)
+
+		tempEntryLabel = ttk.Label(self, text = "Enter Desired Temp")
+		tempEntry = ttk.Entry(self, font = SMALLFONT)
+		tempButton = ttk.Button(self, text = "Go", command = lambda : commonSimACHeat(controller.db,self,controller.livingRoom,int(tempEntry.get())))
+		self.tempDisplayLabel = ttk.Label(self, text = "70 *F")
+		currTempLabel = ttk.Label(self,text = "Living Room Room Temp")
+
+
+		tempEntryLabel.grid(row = 3, column = 1, padx = 10, pady = 10)
+		tempEntry.grid(row = 3, column = 2)
+		tempButton.grid(row= 3, column = 3)
+		currTempLabel.grid(row=4,column=1)
+		self.tempDisplayLabel.grid(row=4, column =2)
+
+		#to get back to the livingRoom
+		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
+		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class LivingRoomDoors(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Doors", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		self.doorStateDisplayLabel = []
+
+		buttonOpen = ttk.Button(self, text = "Open", command = lambda : controller.livingRoom.openDoor(0,self,controller.db))
+		buttonClose = ttk.Button(self, text="Close",command = lambda : controller.livingRoom.closeDoor(0,self,controller.db))
+		self.doorStateDisplayLabel.append(ttk.Label(self, text = "Closed"))
+
+		buttonOpen.grid(row=1,column=1)
+		buttonClose.grid(row=1,column=2)
+		self.doorStateDisplayLabel[0].grid(row=1,column=3) 
+
+		#to get back to the livingRoom
+		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
+		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class LivingRoomTelevision(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Television", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.livingRoom.turnOnTelevision(self,controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.livingRoom.turnOffTelevision(self,controller.db))
+		self.livingRoomTelevisionStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.livingRoomTelevisionStateDisplayLabel.grid(row=1,column=3)
+
+		# channelScale = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=0)
+		# channelScale.grid(row=2,column=1, pady = 20)
+
+		# livingRoomTelevisionCurrChannelDisplayLabel = ttk.Label(self, text = "Channel", font = SMALLFONT)
+		# livingRoomTelevisionChannelDisplayLabel.grid(row=2, column =2)
+
+		# self.livingRoomTelevisionChannelValueDisplayLabel = ttk.Label(self, text = "0", font = SMALLFONT)
+		# self.livingRoomTelevisionChannelValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the livingRoom
+		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
+		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
 
 # Driver Code 
 def main():
