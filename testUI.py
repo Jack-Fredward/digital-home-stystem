@@ -25,6 +25,7 @@ class DigitalHomeApp(tk.Tk):
 		# initializing the digital home
 		self.db = db
 		self.dbCursor = dbCursor
+		self.username = "Steve"
 		self.kitchen=kitchen("kitchen", dbCursor)
 		self.diningRoom=diningRoom("dining room",dbCursor)
 		self.study = study("study",dbCursor)
@@ -62,14 +63,43 @@ class DigitalHomeApp(tk.Tk):
 
 		# self.show_frame(LoginPage)
 		self.show_frame(MainMenu)
+	
+	def getUserAccessLevel(self):
+		self.dbCursor.execute("SELECT Is_SU FROM Users WHERE F_Name = '"+self.username+"';")
+		#print(int(self.dbCursor.fetchall()[0][0]))
+		return int(self.dbCursor.fetchall()[0][0])
+
+
+	def checkUserAccess(self,cont):
+		for F in (Oven, KitchenACHeat, Stove, Microwave, Dishwasher, CoffeeMaker, Toaster, GarbageDisposal, DiningRoomACHeat, DiningRoomWindows, DiningRoomWetBarSink, StudyACHeat, StudyWindows, BreakfastNookACHeat, BreakfastNookLights, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, LaundryRoom):
+			if F == cont and self.getUserAccessLevel() == 1:
+				return 1
+			elif F == cont and self.getUserAccessLevel() == 0:
+				return 0
+		return 1	
+			
+
+
 
 	# to display the current frame passed as 
 	# parameter 
-	def show_frame(self, cont): 
-		frame = self.frames[cont] 
-		frame.tkraise() 
-		self.db.commit()
+	def show_frame(self, cont):
+		
+		if self.checkUserAccess(cont):
+			frame = self.frames[cont] 
+			frame.tkraise() 
+			self.db.commit()
+		else:
+			popupmsg()	
 
+def popupmsg():
+    popup = tk.Tk()
+    popup.wm_title("No Access")
+    label = ttk.Label(popup, text="You do not have access to this", font=SMALLFONT)
+    label.pack(side="top", fill="x", pady=10)
+    B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+    B1.pack()
+    popup.mainloop()
 
 class LoginPage(tk.Frame):
 	def __init__(self, parent, controller):
@@ -87,7 +117,6 @@ class LoginPage(tk.Frame):
 		passwordEntry = ttk.Entry(self, show="*", font = SMALLFONT)
 		userNameEntry.grid(row=1,column = 2)
 		passwordEntry.grid(row=2,column = 2)
-
 
 		loginButton = ttk.Button(self, text = "Login", command = lambda : login(userNameEntry.get(),passwordEntry.get(),controller,MainMenu))
 		loginButton.grid(row = 3, column =2)
