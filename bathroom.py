@@ -306,32 +306,32 @@ class bathroom:
 
     
 
-def main ():
+# def main ():
 
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+#     # Open database connection
+#     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
-    bathroom2 = bathroom("Bathroom2", "2", cursor,0,0,0)
-    bathroom3 = bathroom("Bathroom3", "3", cursor,0,1,0)
-    bathroom4 = bathroom("Bathroom4", "4", cursor,1,0,1)
+#     bathroom2 = bathroom("Bathroom2", "2", cursor,0,0,0)
+#     bathroom3 = bathroom("Bathroom3", "3", cursor,0,1,0)
+#     bathroom4 = bathroom("Bathroom4", "4", cursor,1,0,1)
 
 
 
 
     
 
-    db.commit()
-    db.close()
-main()  
+#     db.commit()
+#     db.close()
+# main()  

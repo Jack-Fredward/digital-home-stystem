@@ -225,29 +225,29 @@ class halfBathroom:
         return self.toilet.sensors[0].getFlowRatePct()
 
 
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    test=halfBathroom("halfBathroom",cursor)
+#     test=halfBathroom("halfBathroom",cursor)
 
-    test.openDoor(0)
-    print(test.getTemp())
+#     test.openDoor(0)
+#     print(test.getTemp())
 
-    db.commit()
-    db.close()
+#     db.commit()
+#     db.close()
 
-main()
+# main()

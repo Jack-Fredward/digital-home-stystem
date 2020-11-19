@@ -239,29 +239,29 @@ class livingRoom:
         return self.television.actuators[0].getState()
 
 
-def main():
-    # Open database connection
-     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#      db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    test=livingRoom("livingRoom",cursor)
+#     test=livingRoom("livingRoom",cursor)
 
-    test.openDoor(0)
-    test.setSmokeState(1)
-    print(test.getTemp())
+#     test.openDoor(0)
+#     test.setSmokeState(1)
+#     print(test.getTemp())
 
-    db.commit()
-    db.close()
-main()  
+#     db.commit()
+#     db.close()
+# main()  
