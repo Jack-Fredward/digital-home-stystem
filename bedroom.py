@@ -10,7 +10,7 @@ import datetime
 #         self.dbCursor = dbCursor
 #         self.devices = []
 
-class bedroom:
+class bedRoom:
     def __init__(self, name, number, dbCursor, has_extDoor):
         self.name = name
         self.dbCursor = dbCursor
@@ -220,15 +220,9 @@ def main ():
     cursor.execute("DELETE FROM Actuators")
     cursor.execute("DELETE FROM Devices")
 
-    bedroom2 = bedroom("bedroom2", "2", cursor,0)
-    bedroom3 = bedroom("bedroom3", "3", cursor,0)
-    bedroom4 = bedroom("bedroom4", "4", cursor,1)
-
-
-
-
-
-    
+    bedRoom2 = bedRoom("bedroom2", "2", cursor, 0)
+    bedRoom3 = bedRoom("bedroom3", "3", cursor, 0)
+    bedRoom4 = bedRoom("bedroom4", "4", cursor, 1)
 
     db.commit()
     db.close()
