@@ -79,17 +79,28 @@ class breakfastNook:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.breakfastNookLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.breakfastNookLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.breakfastNookLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()
@@ -110,13 +121,19 @@ class breakfastNook:
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
+    def openWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOn()
         self.windows[winNum].sensors[0].updateOpen()
+        frame.windowStateDisplayLabel[winNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeWindow(self,winNum):
+    def closeWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOff()
         self.windows[winNum].sensors[0].updateClosed()
+        frame.windowStateDisplayLabel[winNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getWindowState(self,winNum):
         return self.windows[winNum].actuators[0].getState()
@@ -129,11 +146,18 @@ class breakfastNook:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame,db):
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffAC(self):
+
+    def turnOffAC(self,frame,db):
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getACState(self):
         return self.aircon.actuators[0].getState()
@@ -151,11 +175,17 @@ class breakfastNook:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame,db):
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffHeat(self):
+    def turnOffHeat(self,frame,db):
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHeatState(self):
         return self.heat.actuators[0].getState()
@@ -213,68 +243,68 @@ class breakfastNook:
         return self.smokeDetector.sensors[0].getState()
 
 
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+# def main():
+#     # Open database connection
+#     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    bN = breakfastNook("breakfastNook", cursor)
-#    Testing all elements of the breakfastNook
+#     bN = breakfastNook("breakfastNook", cursor)
+# #    Testing all elements of the breakfastNook
 
-    print("------------------------------------------")
-    print("TESTING LIGHTS")
-    print(bN.getLightsState())
-    bN.turnOnLights()
-    print(bN.getLightsState())
-    bN.turnOffLights()
-    print(bN.getLightsState())
-    print(bN.getLightBrightness())
-    bN.setLightBrightness(.129837)
-    print(bN.getLightBrightness())
-    print(bN.getLightsMotion())
-    bN.setLightsMotion(1)
-    print(bN.getLightsMotion())
-    print("------------------------------------------")
-    print("TESTING AC/HEAT")
-    print(bN.getACState())
-    bN.turnOnAC()
-    print(bN.getACState())
-    bN.turnOffAC()
-    print(bN.getACState())
-    print(bN.getACTemp())
-    bN.setACTemp(1290470)
-    print(bN.getACTemp())
-    print(bN.getHeatState())
-    bN.turnOnHeat()
-    print(bN.getHeatState())
-    bN.turnOffHeat()
-    print(bN.getHeatState())
-    print(bN.getHeatTemp())
-    bN.setHeatTemp(9182791823719283)
-    print(bN.getHeatTemp())
-    print("------------------------------------------")
-    print("TESTING SMOKE DETECTOR")
-    print(bN.getSmokeDetectorState())
-    bN.turnOnSmokeDetector()
-    print(bN.getSmokeDetectorState())
-    bN.turnOffSmokeDetector()
-    print(bN.getSmokeDetectorState())
-    print(bN.getSmokeState())
-    bN.setSmokeState(1)
-    print(bN.getSmokeState())
+#     print("------------------------------------------")
+#     print("TESTING LIGHTS")
+#     print(bN.getLightsState())
+#     bN.turnOnLights()
+#     print(bN.getLightsState())
+#     bN.turnOffLights()
+#     print(bN.getLightsState())
+#     print(bN.getLightBrightness())
+#     bN.setLightBrightness(.129837)
+#     print(bN.getLightBrightness())
+#     print(bN.getLightsMotion())
+#     bN.setLightsMotion(1)
+#     print(bN.getLightsMotion())
+#     print("------------------------------------------")
+#     print("TESTING AC/HEAT")
+#     print(bN.getACState())
+#     bN.turnOnAC()
+#     print(bN.getACState())
+#     bN.turnOffAC()
+#     print(bN.getACState())
+#     print(bN.getACTemp())
+#     bN.setACTemp(1290470)
+#     print(bN.getACTemp())
+#     print(bN.getHeatState())
+#     bN.turnOnHeat()
+#     print(bN.getHeatState())
+#     bN.turnOffHeat()
+#     print(bN.getHeatState())
+#     print(bN.getHeatTemp())
+#     bN.setHeatTemp(9182791823719283)
+#     print(bN.getHeatTemp())
+#     print("------------------------------------------")
+#     print("TESTING SMOKE DETECTOR")
+#     print(bN.getSmokeDetectorState())
+#     bN.turnOnSmokeDetector()
+#     print(bN.getSmokeDetectorState())
+#     bN.turnOffSmokeDetector()
+#     print(bN.getSmokeDetectorState())
+#     print(bN.getSmokeState())
+#     bN.setSmokeState(1)
+#     print(bN.getSmokeState())
 
 
-    db.commit()
-    db.close()
-main()  
+#     db.commit()
+#     db.close()
+# main()  

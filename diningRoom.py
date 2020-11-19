@@ -84,17 +84,28 @@ class diningRoom:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.diningRoomLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.diningRoomLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.diningRoomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()
@@ -115,13 +126,19 @@ class diningRoom:
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
+    def openWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOn()
         self.windows[winNum].sensors[0].updateOpen()
+        frame.windowStateDisplayLabel[winNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeWindow(self,winNum):
+    def closeWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOff()
         self.windows[winNum].sensors[0].updateClosed()
+        frame.windowStateDisplayLabel[winNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getWindowState(self,winNum):
         return self.windows[winNum].actuators[0].getState()
@@ -134,11 +151,17 @@ class diningRoom:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame,db):
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffAC(self):
+    def turnOffAC(self,frame,db):
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getACState(self):
         return self.aircon.actuators[0].getState()
@@ -156,11 +179,17 @@ class diningRoom:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame,db):
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffHeat(self):
+    def turnOffHeat(self,frame,db):
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHeatState(self):
         return self.heat.actuators[0].getState()
@@ -210,44 +239,55 @@ class diningRoom:
     #   SINK
     #-------------------------------------------------------------
    
-    def turnOnSink(self):
+    def turnOnSink(self,frame,db):
         self.sink.actuators[0].turnOn()
+        frame.diningRoomSinkStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffSink(self):
+    def turnOffSink(self,frame,db):
         self.sink.actuators[0].turnOff()
+        self.setSinkFlow(frame, 0,db)
+        frame.diningRoomSinkStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getSinkState(self):
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, flowRate):
+    def setSinkFlow(self, frame,flowRate,db):
         self.sink.sensors[0].setFlowRatePct(flowRate)
+        self.turnOnSink(frame, db)
+        frame.diningRoomSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getSinkFlow(self):
         return self.sink.sensors[0].getFlowRatePct()
 
-def main():
-    # Open database connection
-    db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
-    # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
+# def main():
+#     # Open database connection
+#     db = pymysql.connect("localhost","root","Audrey1!seed","digitalhome" )
+#     # db = pymysql.connect("localhost","jp","Database","digital_home_database" )
 
-    # prepare a cursor object using cursor() method
-    cursor = db.cursor()
+#     # prepare a cursor object using cursor() method
+#     cursor = db.cursor()
     
-    cursor.execute("DELETE FROM TempSensors")
-    cursor.execute("DELETE FROM OpenCloseSensors")
-    cursor.execute("DELETE FROM MotionSensors")
-    cursor.execute("DELETE FROM LiquidFlowSensors")
-    cursor.execute("DELETE FROM BrightnessSensor")
-    cursor.execute("DELETE FROM Actuators")
-    cursor.execute("DELETE FROM Devices")
+#     cursor.execute("DELETE FROM TempSensors")
+#     cursor.execute("DELETE FROM OpenCloseSensors")
+#     cursor.execute("DELETE FROM MotionSensors")
+#     cursor.execute("DELETE FROM LiquidFlowSensors")
+#     cursor.execute("DELETE FROM BrightnessSensor")
+#     cursor.execute("DELETE FROM Actuators")
+#     cursor.execute("DELETE FROM Devices")
 
 
-    test=diningRoom("diningRoom",cursor)
+#     test=diningRoom("diningRoom",cursor)
 
    
-    test.setSmokeState(1)
-    print(test.getTemp())
+#     test.setSmokeState(1)
+#     print(test.getTemp())
 
-    db.commit()
-    db.close()
-main() 
+#     db.commit()
+#     db.close()
+# main() 

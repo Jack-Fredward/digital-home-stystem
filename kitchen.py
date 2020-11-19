@@ -313,11 +313,12 @@ class kitchen:
     #-------------------------------------------------------------
 
     #Kitchen Sink
-    def turnOnSink(self,frame):
+    def turnOnSink(self,frame,db):
         """Turns on the kitchen sink."""
         self.sink.actuators[0].turnOn()
         frame.kitchenSinkStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
 
     def turnOffSink(self,frame,db):
         """Turns off the kitchen sink."""
@@ -325,6 +326,7 @@ class kitchen:
         self.setSinkFlow(frame, 0,db)
         frame.kitchenSinkStateDisplayLabel.config(text="Off")
         frame.update()
+        db.commit()
 
     def getSinkState(self):
         """Returns the kitchen sink's state (on/off)."""
@@ -338,7 +340,7 @@ class kitchen:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnSink(frame)
+        self.turnOnSink(frame, db)
         frame.kitchenSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()
@@ -349,11 +351,12 @@ class kitchen:
         return self.sink.sensors[0].getFlowRatePct()
     
     #Pantry Sink
-    def turnOnPantrySink(self,frame):
+    def turnOnPantrySink(self,frame,db):
         """Turns on the pantry sink."""
         self.pantrysink.actuators[0].turnOn()
         frame.pantrySinkStateDisplayLabel.config(text="On")
         frame.update()
+        db.commit()
     
     def turnOffPantrySink(self,frame,db):
         """Turns off the pantry sink."""
@@ -374,7 +377,7 @@ class kitchen:
 
         """
         self.pantrysink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnPantrySink(frame)
+        self.turnOnPantrySink(frame,db)
         frame.pantrySinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()
