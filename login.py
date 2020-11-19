@@ -48,6 +48,7 @@ def get_user_id_from_user_fn(user_fn):
 def login(user_fn, password,controller,MainMenu):
     user_id = get_user_id_from_user_fn(user_fn)
     if check_password(user_id, password):
+        controller.username = user_fn
         controller.show_frame(MainMenu)
     else:
         print("Wrong username or password")
