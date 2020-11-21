@@ -84,17 +84,29 @@ class livingRoom:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.studyLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.studyLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        if bright!=0:
+            self.turnOnLights(frame,db)
+        frame.studyLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()

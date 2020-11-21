@@ -303,7 +303,8 @@ class laundryRoom:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnSink(frame, db)
+        if flowRate!=0:
+            self.turnOnSink(frame, db)
         frame.laundryRoomSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()

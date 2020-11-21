@@ -4,6 +4,7 @@
 import pymysql
 from device import *
 import datetime
+import time
 
 # class room:
 #     def __init__(self, name, dbCursor):
@@ -109,7 +110,8 @@ class halfBathroom:
 
     def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
-        self.turnOnLights(frame,db)
+        if bright!=0:
+            self.turnOnLights(frame,db)
         frame.halfBathroomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
         frame.update()
         db.commit()
@@ -180,7 +182,7 @@ class halfBathroom:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame,db):
         self.heat.actuators[0].turnOn()
         frame.heatStateDisplayLabel.config(text="On")
         frame.update()
@@ -237,7 +239,8 @@ class halfBathroom:
 
     def setSinkFlow(self, frame,flowRate,db):
         self.sink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnSink(frame, db)
+        if flowRate!=0:
+            self.turnOnSink(frame, db)
         frame.halfBathroomFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()
@@ -251,17 +254,28 @@ class halfBathroom:
 
     def turnOnToilet(self,frame,flowRate, db):
         self.toilet.actuators[0].turnOn()
-        self.toilet.setToiletFlow(flowRate)
-        
+        self.setToiletFlow(frame,flowRate,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="On")
+        frame.update()
+        time.sleep(2)
+        self.turnOffToilet(frame,db)
+        db.commit()
 
-    def turnOffToilet(self):
+    def turnOffToilet(self,frame,db):
         self.toilet.actuators[0].turnOff()
+        self.setToiletFlow(frame, 0,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getToiletState(self):
         return self.toilet.actuators[0].getState()
 
-    def setToiletFlow(self, flowRate):
+    def setToiletFlow(self,frame, flowRate,db):
         self.toilet.sensors[0].setFlowRatePct(flowRate)
+        frame.toiletFlowLabel.config(text="Flow Rate: "+str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getToiletFlow(self):
         return self.toilet.sensors[0].getFlowRatePct()

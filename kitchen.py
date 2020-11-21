@@ -340,7 +340,8 @@ class kitchen:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnSink(frame, db)
+        if flowRate != 0:
+            self.turnOnSink(frame, db)
         frame.kitchenSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()
@@ -377,7 +378,8 @@ class kitchen:
 
         """
         self.pantrysink.sensors[0].setFlowRatePct(flowRate)
-        self.turnOnPantrySink(frame,db)
+        if flowRate!=0:
+            self.turnOnPantrySink(frame,db)
         frame.pantrySinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
         frame.update()
         db.commit()
@@ -615,7 +617,8 @@ class kitchen:
 
         """        
         self.lights.sensors[0].setBrightPct(bright)
-        self.turnOnLights(frame,db)
+        if bright!=0:
+            self.turnOnLights(frame,db)
         frame.kitchenLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
         frame.update()
         db.commit()

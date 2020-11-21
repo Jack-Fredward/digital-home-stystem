@@ -104,7 +104,8 @@ class bedRoom:
 
     def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
-        self.turnOnLights(frame,db)
+        if bright!=0:
+            self.turnOnLights(frame,db)
         frame.bedroomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
         frame.update()
         db.commit()
