@@ -92,17 +92,27 @@ class halfBathroom:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.halfBathroomLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        frame.halfBathroomLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        self.turnOnLights(frame,db)
+        frame.halfBathroomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()
@@ -117,13 +127,19 @@ class halfBathroom:
     #   DOORS
     #-------------------------------------------------------------
 
-    def openDoor(self,doorNum):
+    def openDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOn()
         self.doors[doorNum].sensors[0].updateOpen()
+        frame.doorStateDisplayLabel[doorNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeDoor(self,doorNum):
+    def closeDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOff()
         self.doors[doorNum].sensors[0].updateClosed()
+        frame.doorStateDisplayLabel[doorNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getDoorState(self,doorNum):
         return self.doors[doorNum].actuators[0].getState()
@@ -136,11 +152,17 @@ class halfBathroom:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame,db):
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffAC(self):
+    def turnOffAC(self,frame,db):
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getACState(self):
         return self.aircon.actuators[0].getState()
@@ -160,9 +182,16 @@ class halfBathroom:
     #HEAT
     def turnOnHeat(self):
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffHeat(self):
+
+    def turnOffHeat(self,frame,db):
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHeatState(self):
         return self.heat.actuators[0].getState()
@@ -190,17 +219,28 @@ class halfBathroom:
     #   SINK
     #-------------------------------------------------------------
     
-    def turnOnSink(self):
+    def turnOnSink(self,frame,db):
         self.sink.actuators[0].turnOn()
+        frame.halfBathroomSinkStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffSink(self):
+    def turnOffSink(self,frame,db):
         self.sink.actuators[0].turnOff()
+        self.setSinkFlow(frame, 0,db)
+        frame.halfBathroomSinkStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getSinkState(self):
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, flowRate):
+    def setSinkFlow(self, frame,flowRate,db):
         self.sink.sensors[0].setFlowRatePct(flowRate)
+        self.turnOnSink(frame, db)
+        frame.halfBathroomFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getSinkFlow(self):
         return self.sink.sensors[0].getFlowRatePct()
@@ -209,8 +249,10 @@ class halfBathroom:
     #   TOILET
     #-------------------------------------------------------------
 
-    def turnOnToilet(self):
+    def turnOnToilet(self,frame,flowRate, db):
         self.toilet.actuators[0].turnOn()
+        self.toilet.setToiletFlow(flowRate)
+        
 
     def turnOffToilet(self):
         self.toilet.actuators[0].turnOff()
