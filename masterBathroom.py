@@ -382,7 +382,7 @@ class masterBathroom:
     #His Toilet
     def turnOnToilet(self,frame,flowRate,db):
         """Turns on the His Toilet."""
-        self.toilet.actuators[0].turnOn()
+        self.histoilet.actuators[0].turnOn()
         self.setToiletFlow(frame,flowRate,db)
         frame.BathroomToiletStateDisplayLabel.config(text="On")
         frame.update()
@@ -392,7 +392,7 @@ class masterBathroom:
 
     def turnOffToilet(self,frame,db):
         """Turns off the His Toilet."""
-        self.toilet.actuators[0].turnOff()
+        self.histoilet.actuators[0].turnOff()
         self.setToiletFlow(frame, 0,db)
         frame.BathroomToiletStateDisplayLabel.config(text="Off")
         frame.update()
@@ -400,7 +400,7 @@ class masterBathroom:
 
     def getToiletState(self):
         """Returns the His Toilet's state (on/off)."""
-        return self.toilet.actuators[0].getState()
+        return self.histoilet.actuators[0].getState()
 
     def setToiletFlow(self, frame, flowRate, db):
         """Sets the flow rate of the His Toilet.
@@ -409,19 +409,19 @@ class masterBathroom:
         flowRate        -- the flow rate of the toilet as a percent of its maximum flow.
 
         """
-        self.toilet.sensors[0].setFlowRatePct(flowRate)
+        self.histoilet.sensors[0].setFlowRatePct(flowRate)
         frame.toiletFlowLabel.config(text="Flow Rate: "+str(flowRate)+"%")
         frame.update()
         db.commit()
 
     def getToiletFlow(self):
         """Returns the His Toilet's flow rate."""
-        return self.toilet.sensors[0].getFlowRatePct()
+        return self.histoilet.sensors[0].getFlowRatePct()
 
     #her toilet
     def turnOnHerToilet(self,frame,flowRate,db):
         """Turns on the her toilet."""
-        self.toilet.actuators[0].turnOn()
+        self.histoilet.actuators[0].turnOn()
         self.setHerToiletFlow(frame,flowRate,db)
         frame.BathroomToiletStateDisplayLabel.config(text="On")
         frame.update()
@@ -431,7 +431,7 @@ class masterBathroom:
     
     def turnOffHerToilet(self,frame,db):
         """Turns off the toilet."""
-        self.toilet.actuators[0].turnOff()
+        self.histoilet.actuators[0].turnOff()
         self.setHerToiletFlow(frame, 0,db)
         frame.BathroomToiletStateDisplayLabel.config(text="Off")
         frame.update()
@@ -439,7 +439,7 @@ class masterBathroom:
 
     def getHerToiletState(self):
         """Gets the toilet's state (on/off)."""
-        return self.toilet.actuators[0].getState()
+        return self.histoilet.actuators[0].getState()
 
     def setHerToiletFlow(self, frame, flowRate, db):
         """Sets the flow rate of the her toilet.
@@ -448,14 +448,14 @@ class masterBathroom:
         flowRate        -- the flow rate of the toilet as a percent of its maximum flow.
 
         """
-        self.toilet.sensors[0].setFlowRatePct(flowRate)
+        self.histoilet.sensors[0].setFlowRatePct(flowRate)
         frame.toiletFlowLabel.config(text="Flow Rate: "+str(flowRate)+"%")
         frame.update()
         db.commit()
 
     def getHerToiletFlow(self):
         """Returns the her toilet's flow rate."""
-        return self.toilet.sensors[0].getFlowRatePct()
+        return self.histoilet.sensors[0].getFlowRatePct()
 
     #-------------------------------------------------------------
     #   SHOWER
