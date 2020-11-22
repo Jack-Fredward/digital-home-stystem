@@ -30,7 +30,8 @@ class DigitalHomeApp(tk.Tk):
 		# initializing the digital home
 		self.db = db
 		self.dbCursor = dbCursor
-		self.username = "Stanely"
+		# self.username = "Stanely"
+		self.username = "Steve"
 		self.kitchen=kitchen("kitchen", dbCursor)
 		self.diningRoom=diningRoom("dining room",dbCursor)
 		self.study = study("study",dbCursor)
@@ -91,7 +92,7 @@ class DigitalHomeApp(tk.Tk):
 
 		for F in (MainMenu,
 		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
-		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
+		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub, ,
 		LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision):
 
 			frame = F(container, self) 
@@ -113,7 +114,15 @@ class DigitalHomeApp(tk.Tk):
 
 
 	def checkUserAccess(self,cont):
-		for F in (Oven, KitchenACHeat, Stove, Microwave, Dishwasher, CoffeeMaker, Toaster, GarbageDisposal, DiningRoomACHeat, DiningRoomWindows, DiningRoomWetBarSink, StudyACHeat, StudyWindows, BreakfastNookACHeat, BreakfastNookLights, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, LaundryRoom):
+		for F in (KitchenACHeat,Oven, Stove, CoffeeMaker, Toaster, Dishwasher, GarbageDisposal, DiningRoomACHeat, DiningRoomWindows,  StudyACHeat, StudyWindows, StudyLights, BreakfastNookWindows, LaundryRoom, LaundryRoomLights, LaundryRoomACHeat, LaundryRoomDoors, LaundryRoomSink, Washer, Dryer, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MainDoor, BedRoom2ACHeat, BedRoom2Windows, 
+		BedRoom3ACHeat, BedRoom3Windows, 
+		BedRoom4ACHeat, BedRoom4Windows, BedRoom4ExternalDoors,
+		HalfBathroomACHeat, Bathroom2ACHeat,  Bathroom2Windows, Bathroom2Shower, 
+		Bathroom3ACHeat, Bathroom3Windows, Bathroom3Bathtub,
+		Bathroom4ACHeat, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
+		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
+		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
+		LivingRoomACHeat):
 			if F == cont and self.getUserAccessLevel() == 1:
 				return 1
 			elif F == cont and self.getUserAccessLevel() == 0:
@@ -2103,10 +2112,10 @@ class HalfBathroom(tk.Frame):
 		# windowsButton.grid(row=2, column =3)
 
 		doorsButton = ttk.Button(self, text = "Doors", command = lambda : controller.show_frame(HalfBathroomDoors))
-		doorsButton.grid(row=2, column =4)
+		doorsButton.grid(row=2, column =3)
 
 		halfBathroomSinkButton = ttk.Button(self, text ="Sink", command = lambda : controller.show_frame(HalfBathroomSink)) 
-		halfBathroomSinkButton.grid(row = 2, column = 5) 
+		halfBathroomSinkButton.grid(row = 2, column = 4) 
 
 		halfBathroomToiletButton = ttk.Button(self, text ="Toilet", command = lambda : controller.show_frame(HalfBathroomToilet)) 
 		halfBathroomToiletButton.grid(row = 2, column = 5) 
