@@ -90,7 +90,6 @@ class actuator:
         #else:
             #print("Device already off")
 
-
 class brightSensor:
     """A digital home system brightness sensor."""
     def __init__(self, name, deviceName, dbCursor):
@@ -133,7 +132,6 @@ class brightSensor:
         """
         self.dbCursor.execute("UPDATE BrightnessSensor SET BrightnessPct=\""+str(value)+"\" WHERE BS_ID = \""+str(self.getBSID())+"\";")
 
-
 class liquidFlowSensor:
     """A digital home system liquid flow sensor."""
     def __init__(self, name, deviceName, dbCursor):
@@ -175,7 +173,6 @@ class liquidFlowSensor:
         """
         self.dbCursor.execute("UPDATE LiquidFlowSensors SET FlowRatePct=\""+str(value)+"\" WHERE LFS_ID = \""+str(self.getLFSID())+"\";")
     
-
 class motionSensor:
     """A digital home system motion sensor."""
     def __init__(self, name, deviceName, dbCursor):
@@ -254,15 +251,15 @@ class openCloseSensors:
         """Updates the sensor to the open positon/value in the database. It checks the value and then updates accordingly."""
         if(self.getState() != 1):
             self.dbCursor.execute("UPDATE OpenCloseSensors SET State=1 WHERE OCS_ID = \""+str(self.getOCSID())+"\";")
-        else:
-            print("Device already open")
+        # else:
+        #     print("Device already open")
 
     def updateClosed(self):
         """Updates the sensor to the closed positon/value in the database. It checks the value then updates accordinly."""
         if(self.getState() != 0):
             self.dbCursor.execute("UPDATE OpenCloseSensors SET State=0 WHERE OCS_ID = \""+str(self.getOCSID())+"\";")
-        else:
-            print("Device already closed")
+        # else:
+        #     print("Device already closed")
 
 class tempSensor:
     """A digital home system temperature sensor."""

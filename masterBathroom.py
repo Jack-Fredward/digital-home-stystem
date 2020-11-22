@@ -3,7 +3,7 @@
 import pymysql
 from device import *
 import datetime
-
+import time
 # class room:
 #     def __init__(self, name, dbCursor):
 #         self.name = name
@@ -61,7 +61,7 @@ class masterBathroom:
         self.windows.append(device("MBWindow4",dbCursor))
         self.windows[3].actuators.append(actuator("masterBathroom Window 4 Actuator", "MBwindow4",dbCursor))
         self.windows[3].sensors.append(openCloseSensors("MBW4OCS","MBWindow4",dbCursor))
-        self.windows.append(device("MBWindow4",dbCursor))
+        self.windows.append(device("MBWindow5",dbCursor))
         self.windows[4].actuators.append(actuator("masterBathroom Window 5 Actuator", "MBwindow5",dbCursor))
         self.windows[4].sensors.append(openCloseSensors("MBW5OCS","MBWindow5",dbCursor))
 
@@ -126,6 +126,7 @@ class masterBathroom:
         self.shower = device("masterBathroom shower",dbCursor)
         self.shower.actuators.append(actuator("masterBathroom Shower Actuator","masterBathroom Shower",dbCursor))
         self.shower.sensors.append(liquidFlowSensor("MBSHLFS","masterBathroom Shower",dbCursor))
+        self.shower.sensors.append(tempSensor("MBSHTS","masterBathroom Shower",dbCursor))
 
         #-------------------------------------------------------------
         #   BATHTUB
@@ -135,6 +136,7 @@ class masterBathroom:
         self.bathtub = device("masterBathroom bathtub",dbCursor)
         self.bathtub.actuators.append(actuator("masterBathroom Bathtub Actuator","masterBathroom Bathtub",dbCursor))
         self.bathtub.sensors.append(liquidFlowSensor("MBBLFS","masterBathroom Bathtub",dbCursor))
+        self.bathtub.sensors.append(tempSensor("MBBTS", "masterBathroom Bathtub", dbCursor))
 
 
     #-------------------------------------------------------------
@@ -143,17 +145,29 @@ class masterBathroom:
     #   LIGHTS
     #-------------------------------------------------------------
 
-    def turnOnLights(self):
+    def turnOnLights(self,frame,db):
         self.lights.actuators[0].turnOn()
+        frame.masterBathroomLightsStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffLights(self):
+    def turnOffLights(self,frame,db):
         self.lights.actuators[0].turnOff()
+        self.setLightBrightness(frame, 0, db)
+        frame.masterBathroomLightsStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
     
     def getLightsState(self):
         return self.lights.actuators[0].getState()
 
-    def setLightBrightness(self,bright):
+    def setLightBrightness(self,frame,bright,db):
         self.lights.sensors[0].setBrightPct(bright)
+        if bright!=0:
+            self.turnOnLights(frame,db)
+        frame.masterBathroomLightsBrightValueDisplayLabel.config(text=str(bright)+"%")
+        frame.update()
+        db.commit()
 
     def getLightBrightness(self):
         return self.lights.sensors[0].getBrightPct()
@@ -168,13 +182,19 @@ class masterBathroom:
     #   DOORS
     #-------------------------------------------------------------
 
-    def openDoor(self,doorNum):
+    def openDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOn()
         self.doors[doorNum].sensors[0].updateOpen()
+        frame.doorStateDisplayLabel[doorNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeDoor(self,doorNum):
+    def closeDoor(self,doorNum,frame,db):
         self.doors[doorNum].actuators[0].turnOff()
         self.doors[doorNum].sensors[0].updateClosed()
+        frame.doorStateDisplayLabel[doorNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getDoorState(self,doorNum):
         return self.doors[doorNum].actuators[0].getState()
@@ -187,13 +207,19 @@ class masterBathroom:
     #   WINDOWS
     #-------------------------------------------------------------
 
-    def openWindow(self,winNum):
+    def openWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOn()
         self.windows[winNum].sensors[0].updateOpen()
+        frame.windowStateDisplayLabel[winNum].config(text="Open")
+        frame.update()
+        db.commit()
 
-    def closeWindow(self,winNum):
+    def closeWindow(self,winNum,frame,db):
         self.windows[winNum].actuators[0].turnOff()
         self.windows[winNum].sensors[0].updateClosed()
+        frame.windowStateDisplayLabel[winNum].config(text="Closed")
+        frame.update()
+        db.commit()
 
     def getWindowState(self,winNum):
         return self.windows[winNum].actuators[0].getState()
@@ -206,11 +232,17 @@ class masterBathroom:
     #-------------------------------------------------------------
 
     #AC
-    def turnOnAC(self):
+    def turnOnAC(self,frame,db):
         self.aircon.actuators[0].turnOn()
+        frame.aCStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffAC(self):
+    def turnOffAC(self,frame,db):
         self.aircon.actuators[0].turnOff()
+        frame.aCStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getACState(self):
         return self.aircon.actuators[0].getState()
@@ -228,11 +260,17 @@ class masterBathroom:
         self.setHeatTemp(newTemp)
 
     #HEAT
-    def turnOnHeat(self):
+    def turnOnHeat(self,frame,db):
         self.heat.actuators[0].turnOn()
+        frame.heatStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffHeat(self):
+    def turnOffHeat(self,frame,db):
         self.heat.actuators[0].turnOff()
+        frame.heatStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHeatState(self):
         return self.heat.actuators[0].getState()
@@ -261,19 +299,26 @@ class masterBathroom:
     #-------------------------------------------------------------
    
     #His Sink
-    def turnOnSink(self):
+    def turnOnSink(self,frame,db):
         """Turns on the His sink."""
         self.sink.actuators[0].turnOn()
+        frame.bathroomSinkStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffSink(self):
+    def turnOffSink(self,frame,db):
         """Turns off the His sink."""
         self.sink.actuators[0].turnOff()
+        self.setSinkFlow(frame, 0,db)
+        frame.bathroomSinkStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getSinkState(self):
         """Returns the His sink's state (on/off)."""
         return self.sink.actuators[0].getState()
 
-    def setSinkFlow(self, flowRate):
+    def setSinkFlow(self,frame,flowRate,db):
         """Sets the flow rate of the His sink.
 
         Keyword Arguments:
@@ -281,25 +326,37 @@ class masterBathroom:
 
         """
         self.sink.sensors[0].setFlowRatePct(flowRate)
+        if flowRate!=0:
+            self.turnOnSink(frame, db)
+        frame.bathroomSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getSinkFlow(self):
         """Returns the His sink's flow rate."""
         return self.sink.sensors[0].getFlowRatePct()
 
     #Her Sink
-    def turnOnherSink(self):
+    def turnOnHerSink(self,frame,db):
         """Turns on her sink."""
         self.hersink.actuators[0].turnOn()
+        frame.bathroomSinkStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
     
-    def turnOffherSink(self):
+    def turnOffHerSink(self,frame,db):
         """Turns off her sink."""
         self.hersink.actuators[0].turnOff()
+        self.setHerSinkFlow(frame, 0,db)
+        frame.bathroomSinkStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getHerSinkState(self):
         """Gets her sink's state (on/off)."""
         return self.hersink.actuators[0].getState()
 
-    def setherSinkFlow(self, flowRate):
+    def setHerSinkFlow(self, frame, flowRate, db):
         """Sets the flow rate of the her sink.
 
         Keyword Arguments:
@@ -307,8 +364,13 @@ class masterBathroom:
 
         """
         self.hersink.sensors[0].setFlowRatePct(flowRate)
+        if flowRate!=0:
+            self.turnOnHerSink(frame, db)
+        frame.bathroomSinkFlowValueDisplayLabel.config(text = str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
-    def getherSinkFlow(self):
+    def getHerSinkFlow(self):
         """Returns the her sink's flow rate."""
         return self.hersink.sensors[0].getFlowRatePct()
     
@@ -318,19 +380,29 @@ class masterBathroom:
     #-------------------------------------------------------------
     
     #His Toilet
-    def turnOnToilet(self):
+    def turnOnToilet(self,frame,flowRate,db):
         """Turns on the His Toilet."""
         self.toilet.actuators[0].turnOn()
+        self.setToiletFlow(frame,flowRate,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="On")
+        frame.update()
+        time.sleep(2)
+        self.turnOffToilet(frame,db)
+        db.commit()
 
-    def turnOfftoilet(self):
+    def turnOffToilet(self,frame,db):
         """Turns off the His Toilet."""
         self.toilet.actuators[0].turnOff()
+        self.setToiletFlow(frame, 0,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
-    def gettoiletState(self):
+    def getToiletState(self):
         """Returns the His Toilet's state (on/off)."""
         return self.toilet.actuators[0].getState()
 
-    def settoiletFlow(self, flowRate):
+    def setToiletFlow(self, frame, flowRate, db):
         """Sets the flow rate of the His Toilet.
 
         Keyword Arguments:
@@ -338,25 +410,38 @@ class masterBathroom:
 
         """
         self.toilet.sensors[0].setFlowRatePct(flowRate)
+        frame.toiletFlowLabel.config(text="Flow Rate: "+str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
-    def gettoiletFlow(self):
+    def getToiletFlow(self):
         """Returns the His Toilet's flow rate."""
         return self.toilet.sensors[0].getFlowRatePct()
 
     #her toilet
-    def turnOnhertoilet(self):
+    def turnOnHerToilet(self,frame,flowRate,db):
         """Turns on the her toilet."""
         self.toilet.actuators[0].turnOn()
+        self.setHerToiletFlow(frame,flowRate,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="On")
+        frame.update()
+        time.sleep(2)
+        self.turnOffToilet(frame,db)
+        db.commit()
     
-    def turnOffhertoilet(self):
+    def turnOffHerToilet(self,frame,db):
         """Turns off the toilet."""
         self.toilet.actuators[0].turnOff()
+        self.setHerToiletFlow(frame, 0,db)
+        frame.BathroomToiletStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
-    def gethertoiletState(self):
+    def getHerToiletState(self):
         """Gets the toilet's state (on/off)."""
         return self.toilet.actuators[0].getState()
 
-    def sethertoiletFlow(self, flowRate):
+    def setHerToiletFlow(self, frame, flowRate, db):
         """Sets the flow rate of the her toilet.
 
         Keyword Arguments:
@@ -364,8 +449,11 @@ class masterBathroom:
 
         """
         self.toilet.sensors[0].setFlowRatePct(flowRate)
+        frame.toiletFlowLabel.config(text="Flow Rate: "+str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
-    def gethertoiletFlow(self):
+    def getHerToiletFlow(self):
         """Returns the her toilet's flow rate."""
         return self.toilet.sensors[0].getFlowRatePct()
 
@@ -373,39 +461,85 @@ class masterBathroom:
     #   SHOWER
     #-------------------------------------------------------------
     
-    def turnOnShower(self):
+    def turnOnShower(self,frame,db):
         self.shower.actuators[0].turnOn()
+        frame.bathroomShowerStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffShower(self):
+    def turnOffShower(self,frame,db):
         self.shower.actuators[0].turnOff()
+        self.setShowerFlow(frame,0,0,db)
+        self.setShowerTemp(frame,0,db)
+        frame.bathroomShowerStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getShowerState(self):
         return self.shower.actuators[0].getState()
 
-    def setShowerFlow(self, flowRate):
+    def setShowerFlow(self, frame,flowRate,temp,db):
         self.shower.sensors[0].setFlowRatePct(flowRate)
+        if flowRate!=0:
+            self.turnOnShower(frame,db)
+            self.setShowerTemp(frame,temp,db)
+        frame.bathroomShowerFlowValueDisplayLabel.config(text=str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getShowerFlow(self):
         return self.shower.sensors[0].getFlowRatePct()
+
+    def setShowerTemp(self,frame,temp,db):
+       self.shower.sensors[1].setTemp(temp)
+       frame.showerTempValueDisplayLabel.config(text="Temp(*F): "+str(temp))
+       frame.update()
+       db.commit()
+
+    def getShowerTemp(self):
+        self.shower.sensors[1].getTemp()
 
     #-------------------------------------------------------------
     #   BATHTUB
     #-------------------------------------------------------------
 
-    def turnOnBathtub(self):
+    def turnOnBathtub(self,frame,db):
         self.bathtub.actuators[0].turnOn()
+        frame.bathroomBathtubStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffBathtub(self):
+    def turnOffBathtub(self,frame,db):
         self.bathtub.actuators[0].turnOff()
+        self.setBathtubFlow(frame,0,0,db)
+        self.setBathtubTemp(frame,0,db)
+        frame.bathroomBathtubStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getBathtubState(self):
         return self.bathtub.actuators[0].getState()
 
-    def setBathtubFlow(self, flowRate):
+    def setBathtubFlow(self, frame,flowRate,temp,db):
         self.bathtub.sensors[0].setFlowRatePct(flowRate)
+        if flowRate!=0:
+            self.turnOnBathtub(frame,db)
+            self.setBathtubTemp(frame,temp,db)
+        frame.bathroomBathtubFlowValueDisplayLabel.config(text=str(flowRate)+"%")
+        frame.update()
+        db.commit()
 
     def getBathtubFlow(self):
         return self.bathtub.sensors[0].getFlowRatePct()
+
+    def setBathtubTemp(self,frame,temp,db):
+       self.bathtub.sensors[1].setTemp(temp)
+       frame.bathtubTempValueDisplayLabel.config(text="Temp(*F): "+str(temp))
+       frame.update()
+       db.commit()
+
+    def getBathtubTemp(self):
+        self.bathtub.sensors[1].getTemp()
 
 # def main():
 #     # Open database connection
