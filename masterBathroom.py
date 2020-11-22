@@ -109,14 +109,14 @@ class masterBathroom:
         #-------------------------------------------------------------
  
         #His Toilet
-        self.toilet = device("His Toilet", dbCursor)
-        self.toilet.actuators.append(actuator("His Toilet Actuator","His Toilet",dbCursor))
-        self.toilet.sensors.append(liquidFlowSensor("HTLFS","His Toilet",dbCursor))
+        self.histoilet = device("His Toilet", dbCursor)
+        self.histoilet.actuators.append(actuator("His Toilet Actuator","His Toilet",dbCursor))
+        self.histoilet.sensors.append(liquidFlowSensor("HTLFS","His Toilet",dbCursor))
 
         #Her Toilet
-        self.pantrytoilet = device("Her toilet",dbCursor)
-        self.pantrytoilet.actuators.append(actuator("Her toilet Actuator", "Her toilet", dbCursor))
-        self.pantrytoilet.sensors.append(liquidFlowSensor("HERTLFS","Her Toilet", dbCursor))
+        self.hertoilet = device("Her toilet",dbCursor)
+        self.hertoilet.actuators.append(actuator("Her toilet Actuator", "Her toilet", dbCursor))
+        self.hertoilet.sensors.append(liquidFlowSensor("HERTLFS","Her Toilet", dbCursor))
 
         #-------------------------------------------------------------
         #   SHOWER
