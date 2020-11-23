@@ -30,8 +30,8 @@ class DigitalHomeApp(tk.Tk):
 		# initializing the digital home
 		self.db = db
 		self.dbCursor = dbCursor
-		# self.username = "Stanely"
-		self.username = "Steve"
+		self.username = "Stanely"
+		# self.username = "Steve"
 		self.kitchen=kitchen("kitchen", dbCursor)
 		self.diningRoom=diningRoom("dining room",dbCursor)
 		self.study = study("study",dbCursor)
@@ -77,7 +77,7 @@ class DigitalHomeApp(tk.Tk):
 		# Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
 		# MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
 		# MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision):
+		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
 
 		# for F in (MainMenu, BedRoom2, BedRoom2Lights, BedRoom2ACHeat, BedRoom2Windows, BedRoom2Doors, 
 		# BedRoom3, BedRoom3Lights, BedRoom3ACHeat, BedRoom3Windows, BedRoom3Doors, 
@@ -88,12 +88,11 @@ class DigitalHomeApp(tk.Tk):
 		# Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
 		# MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
 		# MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision):
+		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
 
 		for F in (MainMenu,
 		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
-		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub, ,
-		LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision):
+		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub, LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
 
 			frame = F(container, self) 
 
@@ -122,7 +121,7 @@ class DigitalHomeApp(tk.Tk):
 		Bathroom4ACHeat, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
 		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
 		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		LivingRoomACHeat):
+		LivingRoomACHeat, LivingRoomFireplace):
 			if F == cont and self.getUserAccessLevel() == 1:
 				return 1
 			elif F == cont and self.getUserAccessLevel() == 0:
@@ -3468,8 +3467,12 @@ class LivingRoom(tk.Frame):
 		doorsButton = ttk.Button(self, text = "Doors", command = lambda : controller.show_frame(LivingRoomDoors))
 		doorsButton.grid(row=2,column=3)
 
+		
 		televisionButton = ttk.Button(self, text = "Television", command = lambda : controller.show_frame(LivingRoomTelevision))
 		televisionButton.grid(row=2,column=4)
+
+		fireplaceButton = ttk.Button(self, text = "Fireplace", command = lambda : controller.show_frame(LivingRoomFireplace))
+		fireplaceButton.grid(row=2,column=5)
 
 class LivingRoomLights(tk.Frame):
 	def __init__(self, parent, controller): 
@@ -3590,6 +3593,37 @@ class LivingRoomTelevision(tk.Frame):
 		#to get back to the livingRoom
 		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
 		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class LivingRoomFireplace(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent)
+
+		mainLabel = ttk.Label(self, text ="Fireplace", font = LARGEFONT) 
+		mainLabel.grid(row = 0, column = 1, padx = 10, pady = 10)
+
+		buttonOn = ttk.Button(self, text = "On", command = lambda : controller.livingRoom.setFireplaceTemp(self,temp.get(),controller.db))
+		buttonOff = ttk.Button(self, text="Off",command = lambda : controller.livingRoom.turnOffFireplace(self,controller.db))
+		self.fireplaceStateDisplayLabel = ttk.Label(self, text = "Off")
+
+		buttonOn.grid(row=1,column=1)
+		buttonOff.grid(row=1,column=2)
+		self.fireplaceStateDisplayLabel.grid(row=1,column=3)
+
+		temp = tk.Scale(self, tickinterval = 10, length = 300,from_=100, to=60)
+		temp.grid(row=2,column=1, pady = 20)
+
+		fireplaceTempDisplayLabel = ttk.Label(self, text = "Temp(*F):", font = SMALLFONT)
+		fireplaceTempDisplayLabel.grid(row=2, column =2)
+
+		self.fireplaceTempValueDisplayLabel = ttk.Label(self, text = "0", font = SMALLFONT)
+		self.fireplaceTempValueDisplayLabel.grid(row=2,column = 3)
+
+		#to get back to the livingRoom
+		LivingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom)) 
+		LivingRoomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+
 
 # Driver Code 
 def main():

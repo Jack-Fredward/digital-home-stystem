@@ -241,17 +241,29 @@ class livingRoom:
     #   FIREPLACE
     #-------------------------------------------------------------
 
-    def turnOnFireplace(self):
+    def turnOnFireplace(self,frame,db):
         self.fireplace.actuators[0].turnOn()
+        frame.fireplaceStateDisplayLabel.config(text="On")
+        frame.update()
+        db.commit()
 
-    def turnOffFireplace(self):
+    def turnOffFireplace(self,frame,db):
         self.fireplace.actuators[0].turnOff()
+        self.setFireplaceTemp(frame, 0,db)
+        frame.fireplaceStateDisplayLabel.config(text="Off")
+        frame.update()
+        db.commit()
 
     def getFireplaceState(self):
         return self.fireplace.actuators[0].getState()
 
-    def setFireplaceTemp(self, temp):
+    def setFireplaceTemp(self,frame, temp,db):
         self.fireplace.sensors[0].setTemp(temp)
+        if temp!=0:
+            self.turnOnFireplace(frame, db)
+        frame.fireplaceTempValueDisplayLabel.config(text = str(temp))
+        frame.update()
+        db.commit()
 
     def getFireplaceTemp(self):
         self.fireplace.sensors[0].getTemp()
