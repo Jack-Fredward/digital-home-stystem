@@ -79,28 +79,22 @@ class masterBedroom:
         self.smokeDetector.sensors.append(openCloseSensors("MBDSD","masterBedroom Detector", dbCursor))
 
         #-------------------------------------------------------------
-        #   BLOOD PRESSURE MONITOR should this have an open close sensor or can we change it to something else?
+        #   BLOOD PRESSURE MONITOR
         #-------------------------------------------------------------
 
-        self.bloodpressuremonitor=device("Blood Pressure Monitor",dbCursor)
-        self.bloodpressuremonitor.actuators.append(actuator("Blood Pressure Monitor Actuator","Blood Pressure Monitor", dbCursor))
-        self.bloodpressuremonitor.sensors.append(openCloseSensors("BPMOCS", "Blood Pressure Monitor",dbCursor))
+        self.bloodPressureMonitor=device("Blood Pressure Monitor",dbCursor)
+        self.bloodPressureMonitor.actuators.append(actuator("Blood Pressure Monitor Actuator","Blood Pressure Monitor", dbCursor))
+        self.bloodPressureMonitor.sensors.append(brightSensor("BPMBS1", "Blood Pressure Monitor", dbCursor))
+        self.bloodPressureMonitor.sensors.append(brightSensor("BPMBS2", "Blood Pressure Monitor", dbCursor))
+
 
         #-------------------------------------------------------------
-        #   GLUCOSE MONITOR should this have an open close sensor or can we change it to something else?
+        #   HEART RATE MONITOR 
         #-------------------------------------------------------------
 
-        self.glucosemonitor=device("Glucose Monitor",dbCursor)
-        self.glucosemonitor.actuators.append(actuator("Glucose Monitor Actuator","Glucose Monitor", dbCursor))
-        self.glucosemonitor.sensors.append(openCloseSensors("GMOCS", "Glucose Monitor",dbCursor))
-
-        #-------------------------------------------------------------
-        #   PULSE OXIMETER should this have an open close sensor or can we change it to something else?
-        #-------------------------------------------------------------
-
-        self.pulseoximeter=device("Pulse Oximeter",dbCursor)
-        self.pulseoximeter.actuators.append(actuator("Pulse Oximeter Actuator","Pulse Oximeter", dbCursor))
-        self.pulseoximeter.sensors.append(openCloseSensors("POOCS", "Pulse Oximeter",dbCursor))
+        self.heartRateMonitor=device("Heart Rate Monitor",dbCursor)
+        self.heartRateMonitor.actuators.append(actuator("Heart Rate Monitor Actuator","Heart Rate Monitor", dbCursor))
+        self.heartRateMonitor.sensors.append(brightSensor("HRMBS", "Heart Rate Monitor", dbCursor))
 
        
 
@@ -287,62 +281,46 @@ class masterBedroom:
     #   BLOOD PRESSURE MONITOR
     #-------------------------------------------------------------
 
-    def turnOnbloodpressuremonitor(self):
-        self.bloodpressuremonitor.actuators[0].turnOn()
+    def turnOnBloodPressureMonitor(self):
+        self.bloodPressureMonitor.actuators[0].turnOn()
 
-    def turnOffbloodpressuremonitor(self):
-        self.bloodpressuremonitor.actuators[0].turnOff()
+    def turnOffBloodPressureMonitor(self):
+        self.bloodPressureMonitor.actuators[0].turnOff()
 
-    def getbloodpressuremonitorState(self):
-        return self.bloodpressuremonitor.actuators[0].getState()
+    def getBloodPressureMonitorState(self):
+        return self.bloodPressureMonitor.actuators[0].getState()
 
-    def setbloodpressuremonitorState(self, isHigh):
-        if isHigh == 1:
-            self.bloodpressuremonitor.sensors[0].updateOpen()
-        else:
-            self.bloodpressuremonitor.sensors[0].updateClosed()
-    
+    def setBloodPressureMonitorTopNumber(self,topNum):
+        self.bloodPressureMonitor.sensors[0].setBrightPct(topNum)
 
+    def getBloodPressureMonitorTopNumber(self):
+        return self.bloodPressureMonitor.sensors[0].getBrightPct()
 
-    #-------------------------------------------------------------
-    #   GLUCOSE MONITOR
-    #-------------------------------------------------------------
+    def setBloodPressureMonitorBottomNumber(self,botNum):
+        self.bloodPressureMonitor.sensors[1].setBrightPct(botNum)
 
-    def turnOnglucosemonitor(self):
-        self.glucosemonitor.actuators[0].turnOn()
-
-    def turnOffglucosemonitor(self):
-        self.glucosemonitor.actuators[0].turnOff()
-
-    def getglucosemonitorState(self):
-        return self.glucosemonitor.actuators[0].getState()
-
-    def setglucosemonitorState(self, isHigh):
-        if isHigh == 1:
-            self.glucosemonitor.sensors[0].updateOpen()
-        else:
-            self.glucosemonitor.sensors[0].updateClosed()
-    
-
+    def getBloodPressureMonitorBottomNumber(self):
+        return self.bloodPressureMonitor.sensors[1].getBrightPct()
 
     #-------------------------------------------------------------
-    #   PULSE OXIMETER
+    #   HEART RATE MONITOR
     #-------------------------------------------------------------
     
-    def turnOnpulseoximeter(self):
-        self.pulseoximeter.actuators[0].turnOn()
+    def turnOnHeartRateMonitor(self):
+        self.heartRateMonitor.actuators[0].turnOn()
 
-    def turnOffpulseoximeter(self):
-        self.pulseoximeter.actuators[0].turnOff()
+    def turnOffHeartRateMonitor(self):
+        self.heartRateMonitor.actuators[0].turnOff()
 
-    def getpulseoximeterState(self):
-        return self.pulseoximeter.actuators[0].getState()
+    def getHeartRateMontiorState(self):
+        return self.heartRateMonitor.actuators[0].getState()
 
-    def setpulseoximeterState(self, isLow):
-        if isLow == 1:
-            self.pulseoximeter.sensors[0].updateOpen()
-        else:
-            self.pulseoximeter.sensors[0].updateClosed()
+    def setHeartRate(self, heartRate):
+        self.heartRateMonitor.sensors[0].setBrightPct(heartRate)
+
+    def getHeartRate(self):
+        return self.heartRateMonitor.sensors[0].getBrightPct()
+
     
 
 

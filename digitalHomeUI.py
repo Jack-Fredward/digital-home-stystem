@@ -17,6 +17,7 @@ from halfBath import *
 from bathroom import *
 from masterBathroom import *
 from livingRoom import *
+from healthSystemSim import *
 
 
 LARGEFONT =("Verdana", 35) 
@@ -91,8 +92,7 @@ class DigitalHomeApp(tk.Tk):
 		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
 
 		for F in (MainMenu,
-		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
-		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub, LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
+		MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MasterBedroomBloodPressureMonitor, MasterBedroomHeartRateMonitor):
 
 			frame = F(container, self) 
 
@@ -113,7 +113,7 @@ class DigitalHomeApp(tk.Tk):
 
 
 	def checkUserAccess(self,cont):
-		for F in (KitchenACHeat,Oven, Stove, CoffeeMaker, Toaster, Dishwasher, GarbageDisposal, DiningRoomACHeat, DiningRoomWindows,  StudyACHeat, StudyWindows, StudyLights, BreakfastNookWindows, LaundryRoom, LaundryRoomLights, LaundryRoomACHeat, LaundryRoomDoors, LaundryRoomSink, Washer, Dryer, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MainDoor, BedRoom2ACHeat, BedRoom2Windows, 
+		for F in (KitchenACHeat,Oven, Stove, CoffeeMaker, Toaster, Dishwasher, GarbageDisposal, DiningRoomACHeat, DiningRoomWindows,  StudyACHeat, StudyWindows, StudyLights, BreakfastNookWindows, LaundryRoom, LaundryRoomLights, LaundryRoomACHeat, LaundryRoomDoors, LaundryRoomSink, Washer, Dryer, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MasterBedroomBloodPressureMonitor, MasterBedroomHeartRateMonitor, MainDoor, BedRoom2ACHeat, BedRoom2Windows, 
 		BedRoom3ACHeat, BedRoom3Windows, 
 		BedRoom4ACHeat, BedRoom4Windows, BedRoom4ExternalDoors,
 		HalfBathroomACHeat, Bathroom2ACHeat,  Bathroom2Windows, Bathroom2Shower, 
@@ -140,16 +140,16 @@ class DigitalHomeApp(tk.Tk):
 			frame.tkraise() 
 			self.db.commit()
 		else:
-			popupmsg()	
+			self.popupmsg("You do not have access to this")	
 
-def popupmsg():
-	popup = tk.Tk()
-	popup.wm_title("No Access")
-	label = ttk.Label(popup, text="You do not have access to this", font=SMALLFONT)
-	label.pack(side="top", fill="x", pady=10)
-	B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
-	B1.pack()
-	popup.mainloop()
+	def popupmsg(self,msg):
+		popup = tk.Tk()
+		popup.wm_title("Alert")
+		label = ttk.Label(popup, text=msg, font=SMALLFONT)
+		label.pack(side="top", fill="x", pady=10)
+		B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
+		B1.pack()
+		popup.mainloop()
 
 class LoginPage(tk.Frame):
 	def __init__(self, parent, controller):
@@ -1493,6 +1493,12 @@ class MasterBedroom(tk.Frame):
 		doorsButton = ttk.Button(self, text = "Doors", command = lambda : controller.show_frame(MasterBedroomDoors))
 		doorsButton.grid(row=2,column=4)
 
+		bloodPressureMonitorButton = ttk.Button(self, text = "Blood Pressure Monitor", command = lambda : controller.show_frame(MasterBedroomBloodPressureMonitor))
+		bloodPressureMonitorButton.grid(row=2,column=4)
+
+		heartRateMonitorButton = ttk.Button(self, text = "Heart Rate Monitor", command = lambda : controller.show_frame(MasterBedroomHeartRateMonitor))
+		heartRateMonitorButton.grid(row=2,column=5)
+
 class MasterBedroomLights(tk.Frame):
 	def __init__(self, parent, controller): 
 		tk.Frame.__init__(self, parent)
@@ -1631,6 +1637,71 @@ class MasterBedroomDoors(tk.Frame):
 		buttonOpen2.grid(row=1,column=4)
 		buttonClose2.grid(row=1,column=5)
 		self.doorStateDisplayLabel[1].grid(row=1,column=6)  
+
+		#to get back to the masterBedroom
+		masterBedroomButton = ttk.Button(self, text ="Master Bedroom", command = lambda : controller.show_frame(MasterBedroom)) 
+		masterBedroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBedroomBloodPressureMonitor(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Blood Pressure Monitor", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+
+
+		bloodPressureSystolicNumberLabel = ttk.Label(self, text="Systolic: ")
+		bloodPressureSystolicNumberLabel.grid(row=2,column=1)
+
+		bloodPressureDiastolicNumberLabel = ttk.Label(self, text = "Diastolic: ")
+		bloodPressureDiastolicNumberLabel.grid(row=3,column =1)
+
+		self.bloodPressureTopNumberLabel = ttk.Label(self, text = "")
+		self.bloodPressureTopNumberLabel.grid(row=2,column = 2)
+		
+		self.bloodPressureBottomNumberLabel = ttk.Label(self, text = "")
+		self.bloodPressureBottomNumberLabel.grid(row=3,column = 2)
+
+		takeBloodPressureButton = ttk.Button(self, text = "Measure BP", command = lambda : simBloodPressure(self, controller.masterBedroom, controller.db,controller))
+		takeBloodPressureButton.grid(row=1,column=1)
+
+		#to get back to the masterBedroom
+		masterBedroomButton = ttk.Button(self, text ="Master Bedroom", command = lambda : controller.show_frame(MasterBedroom)) 
+		masterBedroomButton.grid(row = 5, column = 1, padx = 10, pady = 10)
+
+class MasterBedroomHeartRateMonitor(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Heart Rate Monitor", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+
+
+		heartRateLabel = ttk.Label(self, text="Heart Rate (BPM): ")
+		heartRateLabel.grid(row=2,column=1)
+
+		self.heartRateValueLabel = ttk.Label(self, text = "")
+		self.heartRateValueLabel.grid(row=2,column = 2)
+
+		genderChoiceLabel = ttk.Label(self, text = "Gender")
+		genderChoiceLabel.grid(row=3,column=1)
+
+		self.gender = tk.IntVar()
+
+		male = ttk.Radiobutton(self, text = "Male", variable = self.gender, value = 1)
+		male.grid(row=3,column=2)
+		female = ttk.Radiobutton(self, text = "Female", variable = self.gender, value = 2)
+		female.grid(row=3,column=3)
+
+		ageEntryLabel = ttk.Label(self, text="Enter age: ")
+		ageEntryLabel.grid(row=4, column = 1)
+
+		ageEntry = ttk.Entry(self, font = SMALLFONT)
+		ageEntry.grid(row=4, column = 2)
+		
+		takeHeartRateButton = ttk.Button(self, text = "Measure Heart RateP", command = lambda : simHeartRate(self, controller.masterBedroom, controller.db,controller,ageEntry.get(),self.gender.get()))
+		takeHeartRateButton.grid(row=1,column=1)
 
 		#to get back to the masterBedroom
 		masterBedroomButton = ttk.Button(self, text ="Master Bedroom", command = lambda : controller.show_frame(MasterBedroom)) 
