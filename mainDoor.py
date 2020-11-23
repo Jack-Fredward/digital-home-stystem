@@ -39,3 +39,6 @@ class mainDoor:
 
     def getDoorOpenCloseState(self,doorNum):
         return self.mainDoor.sensors[0].getState()
+
+    def getName(self):
+        return self.name

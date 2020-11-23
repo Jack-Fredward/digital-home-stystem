@@ -65,19 +65,19 @@ class DigitalHomeApp(tk.Tk):
 
 		# iterating through a tuple consisting 
 		# of the different page layouts 
-		for F in (LoginPage, UpdatePassword, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker, Toaster, KitchenLights, GarbageDisposal, KitchenSmokeDetector, DiningRoom, DiningRoomLights, DiningRoomACHeat,DiningRoomWindows, DiningRoomWetBarSink, Study, StudyACHeat, StudyWindows, StudyDoors, StudyLights, BreakfastNook, BreakfastNookACHeat, BreakfastNookLights, BreakfastNookWindows, LaundryRoom, LaundryRoomLights, LaundryRoomACHeat, LaundryRoomDoors, LaundryRoomSink, Washer, Dryer, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MasterBedroomBloodPressureMonitor, MasterBedroomHeartRateMonitor, MainDoor, BedRoom2, BedRoom2Lights, BedRoom2ACHeat, BedRoom2Windows, BedRoom2Doors, 
-		BedRoom3, BedRoom3Lights, BedRoom3ACHeat, BedRoom3Windows, BedRoom3Doors, 
-		BedRoom4, BedRoom4Lights, BedRoom4ACHeat, BedRoom4Windows, BedRoom4Doors, BedRoom4ExternalDoors,
-		HalfBathroom, HalfBathroomLights, HalfBathroomACHeat, HalfBathroomDoors, HalfBathroomSink, HalfBathroomToilet,
-		Bathroom2, Bathroom2Lights, Bathroom2ACHeat, Bathroom2Doors, Bathroom2Windows, Bathroom2Sink, Bathroom2Toilet, Bathroom2Shower,
-		Bathroom3, Bathroom3Lights, Bathroom3ACHeat, Bathroom3Doors, Bathroom3Windows, Bathroom3Sink, Bathroom3Toilet, Bathroom3Bathtub,
-		Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
-		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
-		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
+		# for F in (LoginPage, UpdatePassword, MainMenu, Kitchen, Oven, KitchenACHeat, Fridge, Stove, KitchenSink, PantrySink, Microwave, Dishwasher, CoffeeMaker, Toaster, KitchenLights, GarbageDisposal, KitchenSmokeDetector, DiningRoom, DiningRoomLights, DiningRoomACHeat,DiningRoomWindows, DiningRoomWetBarSink, Study, StudyACHeat, StudyWindows, StudyDoors, StudyLights, BreakfastNook, BreakfastNookACHeat, BreakfastNookLights, BreakfastNookWindows, LaundryRoom, LaundryRoomLights, LaundryRoomACHeat, LaundryRoomDoors, LaundryRoomSink, Washer, Dryer, MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MasterBedroomBloodPressureMonitor, MasterBedroomHeartRateMonitor, MainDoor, BedRoom2, BedRoom2Lights, BedRoom2ACHeat, BedRoom2Windows, BedRoom2Doors, 
+		# BedRoom3, BedRoom3Lights, BedRoom3ACHeat, BedRoom3Windows, BedRoom3Doors, 
+		# BedRoom4, BedRoom4Lights, BedRoom4ACHeat, BedRoom4Windows, BedRoom4Doors, BedRoom4ExternalDoors,
+		# HalfBathroom, HalfBathroomLights, HalfBathroomACHeat, HalfBathroomDoors, HalfBathroomSink, HalfBathroomToilet,
+		# Bathroom2, Bathroom2Lights, Bathroom2ACHeat, Bathroom2Doors, Bathroom2Windows, Bathroom2Sink, Bathroom2Toilet, Bathroom2Shower,
+		# Bathroom3, Bathroom3Lights, Bathroom3ACHeat, Bathroom3Doors, Bathroom3Windows, Bathroom3Sink, Bathroom3Toilet, Bathroom3Bathtub,
+		# Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
+		# MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
+		# MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
+		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
 
-		# for F in (MainMenu,
-		# MasterBedroom, MasterBedroomLights, MasterBedroomDoors, MasterBedroomWindows, MasterBedroomACHeat, MasterBedroomBloodPressureMonitor, MasterBedroomHeartRateMonitor):
+		for F in (MainMenu,
+		):
 
 			frame = F(container, self) 
 
