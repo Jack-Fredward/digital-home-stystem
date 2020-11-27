@@ -37,8 +37,8 @@ class bedRoom:
 
         if (has_extDoor == 1):
             self.doors.append(device("bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].actuators.append(actuator("bedroom"+number+"ExtDoor Actuator", "bedroom"+number+"ExtDoor",dbCursor))
-            self.doors[0].sensors.append(openCloseSensors("Bed"+number+"EDOCS","bedroom"+number+"ExtDoor",dbCursor))
+            self.doors[1].actuators.append(actuator("bedroom"+number+"ExtDoor Actuator", "bedroom"+number+"ExtDoor",dbCursor))
+            self.doors[1].sensors.append(openCloseSensors("Bed"+number+"EDOCS","bedroom"+number+"ExtDoor",dbCursor))
       
         #-------------------------------------------------------------
         #   WINDOWS

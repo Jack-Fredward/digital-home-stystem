@@ -18,6 +18,7 @@ from bathroom import *
 from masterBathroom import *
 from livingRoom import *
 from healthSystemSim import *
+from securitySystem import *
 
 
 LARGEFONT =("Verdana", 35) 
@@ -74,9 +75,9 @@ class DigitalHomeApp(tk.Tk):
 		# Bathroom4, Bathroom4Lights, Bathroom4ACHeat, Bathroom4Doors, Bathroom4Windows, Bathroom4Sink, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
 		# MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
 		# MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace):
+		# LivingRoom, LivingRoomLights, LivingRoomACHeat, LivingRoomDoors, LivingRoomTelevision, LivingRoomFireplace,SecuritySim):
 
-		for F in (MainMenu,
+		for F in (MainMenu,SecuritySim
 		):
 
 			frame = F(container, self) 
@@ -106,7 +107,7 @@ class DigitalHomeApp(tk.Tk):
 		Bathroom4ACHeat, Bathroom4Toilet, Bathroom4Shower, Bathroom4ExternalDoors,
 		MasterBathroom, MasterBathroomLights, MasterBathroomACHeat, MasterBathroomDoors, MasterBathroomWindows, MasterBathroomHisSink, MasterBathroomHerSink, MasterBathroomHisToilet, 
 		MasterBathroomHerToilet, MasterBathroomShower, MasterBathroomBathtub,
-		LivingRoomACHeat, LivingRoomFireplace):
+		LivingRoomACHeat, LivingRoomFireplace, SecuritySim):
 			if F == cont and self.getUserAccessLevel() == 1:
 				return 1
 			elif F == cont and self.getUserAccessLevel() == 0:
@@ -131,7 +132,7 @@ class DigitalHomeApp(tk.Tk):
 		popup = tk.Tk()
 		popup.wm_title("Alert")
 		label = ttk.Label(popup, text=msg, font=SMALLFONT)
-		label.pack(side="top", fill="x", pady=10)
+		label.pack(side="top", fill="y", pady=10)
 		B1 = ttk.Button(popup, text="Okay", command = popup.destroy)
 		B1.pack()
 		popup.mainloop()
@@ -247,6 +248,9 @@ class MainMenu(tk.Frame):
 
 		livingRoomButton = ttk.Button(self, text ="Living Room", command = lambda : controller.show_frame(LivingRoom))
 		livingRoomButton.grid(row=2, column = 6, padx = 10, pady = 10)
+
+		securitySimButton = ttk.Button(self, text ="Security Simulation", command = lambda : controller.show_frame(SecuritySim))
+		securitySimButton.grid(row=10, column = 3, padx = 10, pady = 10)
 
 		exitButton = ttk.Button(self, text = "Exit", command = lambda : exit(0))
 		exitButton.grid(row = 10, column = 1)
@@ -1716,6 +1720,184 @@ class MainDoor(tk.Frame):
 
 		button1 = ttk.Button(self, text ="MainMenu", command = lambda : controller.show_frame(MainMenu))
 		button1.grid(row=5,column=1)
+
+class SecuritySim(tk.Frame):
+	def __init__(self, parent, controller): 
+		
+		tk.Frame.__init__(self, parent) 
+		label = ttk.Label(self, text ="Security Simulation", font = LARGEFONT) 
+		label.grid(row = 0, column = 4, padx = 10, pady = 10)
+
+		simSecurityButton = ttk.Button(self, text = "Sim Security", command = lambda : simSecurity(self, controller, controller.dbCursor, controller.db))
+		simSecurityButton.grid(row=1,column =1)
+
+
+		mainDoorOpenButton = ttk.Button(self, text= "Open Main Door", command = lambda : controller.mainDoor.mainDoor.sensors[0].updateOpen())
+		mainDoorOpenButton.grid(row=2,column=1)
+
+		mainDoorCloseButton = ttk.Button(self, text= "Close Main Door", command = lambda : controller.mainDoor.mainDoor.sensors[0].updateClosed())
+		mainDoorCloseButton.grid(row=2,column=2)
+
+		laundryRoomDoorOpenButton = ttk.Button(self, text="Open Laundryroom Door", command = lambda : controller.laundryRoom.door[1].sensors[0].updateOpen())
+		laundryRoomDoorOpenButton.grid(row=2, column =3)
+
+		laundryRoomDoorCloseButton = ttk.Button(self, text="Close Laundryroom Door", command = lambda : controller.laundryRoom.door[1].sensors[0].updateClosed())
+		laundryRoomDoorCloseButton.grid(row=2, column =4)
+
+		bedRoom4OpenDoorButton = ttk.Button(self, text = "Open Bedroom4 External Door", command = lambda : controller.bedRoom4.doors[1].sensors[0].updateOpen())
+		bedRoom4OpenDoorButton.grid(row=2,column=5)
+
+		bedRoom4CloseDoorButton = ttk.Button(self, text = "Close Bedroom4 External Door", command = lambda : controller.bedRoom4.doors[1].sensors[0].updateClosed())
+		bedRoom4CloseDoorButton.grid(row=2,column=6)
+
+		bathroom4OpenDoorButton = ttk.Button(self, text = "Open bathroom4 External Door", command = lambda : controller.bathroom4.doors[1].sensors[0].updateOpen())
+		bathroom4OpenDoorButton.grid(row=3,column=1)
+
+		bathroom4CloseDoorButton = ttk.Button(self, text = "Close bathroom4 External Door", command = lambda : controller.bathroom4.doors[1].sensors[0].updateClosed())
+		bathroom4CloseDoorButton.grid(row=3,column=2)
+
+
+		masterBedroomOpenDoorButton = ttk.Button(self, text= "Open Master Bedroom External Door", command = lambda : controller.masterBedroom.doors[1].sensors[0].updateOpen())
+		masterBedroomOpenDoorButton.grid(row=3, column =3)
+
+		masterBedroomCloseDoorButton = ttk.Button(self, text= "Close Master Bedroom External Door", command = lambda : controller.masterBedroom.doors[1].sensors[0].updateClosed())
+		masterBedroomCloseDoorButton.grid(row=3, column =4)
+
+		livingRoomOpenDoorButton = ttk.Button(self, text="Open Living Room External Door", command = lambda : controller.livingRoom.doors[0].sensors[0].updateOpen())
+		livingRoomOpenDoorButton.grid(row=3, column =5)
+
+		livingRoomCloseDoorButton = ttk.Button(self, text="Close Living Room External Door", command = lambda : controller.livingRoom.doors[0].sensors[0].updateClosed())
+		livingRoomCloseDoorButton.grid(row=3, column =6)
+
+		diningRoomOpenWindowButton  = ttk.Button(self, text = "Open Dining Room Window", command = lambda : controller.diningRoom.windows[0].sensors[0].updateOpen())
+		diningRoomOpenWindowButton.grid(row=4, column = 1)
+
+		diningRoomCloseWindowButton  = ttk.Button(self, text = "Close Dining Room Window", command = lambda : controller.diningRoom.windows[0].sensors[0].updateClosed())
+		diningRoomCloseWindowButton.grid(row=4, column = 2)
+
+		studyWindowOpenButton = ttk.Button(self, text= "Open Study Window", command = lambda : controller.study.windows[0].sensors[0].updateOpen())
+		studyWindowOpenButton.grid(row=4,column=3)
+
+		studyWindowCloseButton = ttk.Button(self, text= "Close Study Window", command = lambda : controller.study.windows[0].sensors[0].updateClosed())
+		studyWindowCloseButton.grid(row=4,column=4)
+
+		breakfasteNookOpenWindow1Button = ttk.Button(self, text = "Open Breakfast Nook Window 1", command = lambda : controller.breakfastNook.windows[0].sensors[0].updateOpen())
+		breakfasteNookOpenWindow1Button.grid(row=4, column=5)
+
+		breakfasteNookCloseWindow1Button = ttk.Button(self, text = "Close Breakfast Nook Window 1", command = lambda : controller.breakfastNook.windows[0].sensors[0].updateClosed())
+		breakfasteNookCloseWindow1Button.grid(row=4, column=6)
+
+		breakfasteNookOpenWindow2Button = ttk.Button(self, text = "Open Breakfast Nook Window 2", command = lambda : controller.breakfastNook.windows[1].sensors[0].updateOpen())
+		breakfasteNookOpenWindow2Button.grid(row=5, column=1)
+
+		breakfasteNookCloseWindow2Button = ttk.Button(self, text = "Close Breakfast Nook Window 2", command = lambda : controller.breakfastNook.windows[1].sensors[0].updateClosed())
+		breakfasteNookCloseWindow2Button.grid(row=5, column=2)
+
+		masterBedroomOpenWindow1Button = ttk.Button(self, text = "Open Master Bedroom Window 1", command = lambda : controller.masterBedroom.windows[0].sensors[0].updateOpen())
+		masterBedroomOpenWindow1Button.grid(row=5, column =3)
+
+		masterBedroomCloseWindow1Button = ttk.Button(self, text = "Close Master Bedroom Window 1", command = lambda : controller.masterBedroom.windows[0].sensors[0].updateClosed())
+		masterBedroomCloseWindow1Button.grid(row=5, column =4)
+
+		masterBedroomOpenWindow2Button = ttk.Button(self, text = "Open Master Bedroom Window 2", command = lambda : controller.masterBedroom.windows[1].sensors[0].updateOpen())
+		masterBedroomOpenWindow2Button.grid(row=5, column =5)
+
+		masterBedroomCloseWindow2Button = ttk.Button(self, text = "Close Master Bedroom Window 2", command = lambda : controller.masterBedroom.windows[1].sensors[0].updateClosed())
+		masterBedroomCloseWindow2Button.grid(row=5, column =6)
+
+		masterBedroomOpenWindow3Button = ttk.Button(self, text = "Open Master Bedroom Window 3", command = lambda : controller.masterBedroom.windows[2].sensors[0].updateOpen())
+		masterBedroomOpenWindow3Button.grid(row=6, column =1)
+
+		masterBedroomCloseWindow3Button = ttk.Button(self, text = "Close Master Bedroom Window 3", command = lambda : controller.masterBedroom.windows[2].sensors[0].updateClosed())
+		masterBedroomCloseWindow3Button.grid(row=6, column =2)
+
+		bedRoom2OpenWindow1Button = ttk.Button(self, text = "Open Bedroom 2 Window 1", command  = lambda : controller.bedRoom2.windows[0].sensors[0].updateOpen())
+		bedRoom2OpenWindow1Button.grid(row=6, column =3)
+
+		bedRoom2CloseWindow1Button = ttk.Button(self, text = "Close Bedroom 2 Window 1", command  = lambda : controller.bedRoom2.windows[0].sensors[0].updateClosed())
+		bedRoom2CloseWindow1Button.grid(row=6, column =4)
+
+		bedRoom2OpenWindow2Button = ttk.Button(self, text = "Open Bedroom 2 Window 2", command  = lambda : controller.bedRoom2.windows[1].sensors[0].updateOpen())
+		bedRoom2OpenWindow2Button.grid(row=6, column =5)
+
+		bedRoom2CloseWindow2Button = ttk.Button(self, text = "Close Bedroom 2 Window 2", command  = lambda : controller.bedRoom2.windows[1].sensors[0].updateClosed())
+		bedRoom2CloseWindow2Button.grid(row=6, column =6)
+
+		bedRoom3OpenWindow1Button = ttk.Button(self, text = "Open Bedroom 3 Window 1", command  = lambda : controller.bedRoom3.windows[0].sensors[0].updateOpen())
+		bedRoom3OpenWindow1Button.grid(row=7, column =1)
+
+		bedRoom3CloseWindow1Button = ttk.Button(self, text = "Close Bedroom 3 Window 1", command  = lambda : controller.bedRoom3.windows[0].sensors[0].updateClosed())
+		bedRoom3CloseWindow1Button.grid(row=7, column =2)
+
+		bedRoom3OpenWindow2Button = ttk.Button(self, text = "Open Bedroom 3 Window 2", command  = lambda : controller.bedRoom3.windows[1].sensors[0].updateOpen())
+		bedRoom3OpenWindow2Button.grid(row=7, column =3)
+
+		bedRoom3CloseWindow2Button = ttk.Button(self, text = "Close Bedroom 3 Window 2", command  = lambda : controller.bedRoom2.windows[1].sensors[0].updateClosed())
+		bedRoom3CloseWindow2Button.grid(row=7, column =4)
+
+		bedRoom4OpenWindow1Button = ttk.Button(self, text = "Open Bedroom 4 Window 1", command  = lambda : controller.bedRoom4.windows[0].sensors[0].updateOpen())
+		bedRoom4OpenWindow1Button.grid(row=7, column =5)
+
+		bedRoom4CloseWindow1Button = ttk.Button(self, text = "Close Bedroom 4 Window 1", command  = lambda : controller.bedRoom4.windows[0].sensors[0].updateClosed())
+		bedRoom4CloseWindow1Button.grid(row=7, column =6)
+
+		bedRoom4OpenWindow2Button = ttk.Button(self, text = "Open Bedroom 4 Window 2", command  = lambda : controller.bedRoom4.windows[1].sensors[0].updateOpen())
+		bedRoom4OpenWindow2Button.grid(row=8, column =1)
+
+		bedRoom4CloseWindow2Button = ttk.Button(self, text = "Close Bedroom 4 Window 2", command  = lambda : controller.bedRoom2.windows[1].sensors[0].updateClosed())
+		bedRoom4CloseWindow2Button.grid(row=8, column =2)
+
+		bathroom2OpenWindowButton = ttk.Button(self, text = "Open Bathroom2 Window", command = lambda : controller.bathroom2.windows[0].sensors[0].updateOpen())
+		bathroom2OpenWindowButton.grid(row=8, column = 3)
+
+		bathroom2CloseWindowButton = ttk.Button(self, text = "Close Bathroom2 Window", command = lambda : controller.bathroom2.windows[0].sensors[0].updateClosed())
+		bathroom2CloseWindowButton.grid(row=8, column = 4)
+
+		bathroom3OpenWindowButton = ttk.Button(self, text = "Open Bathroom3 Window", command = lambda : controller.bathroom3.windows[0].sensors[0].updateOpen())
+		bathroom3OpenWindowButton.grid(row=8, column = 5)
+
+		bathroom3CloseWindowButton = ttk.Button(self, text = "Close Bathroom3 Window", command = lambda : controller.bathroom3.windows[0].sensors[0].updateClosed())
+		bathroom3CloseWindowButton.grid(row=8, column = 6)
+
+		bathroom4OpenWindowButton = ttk.Button(self, text = "Open Bathroom4 Window", command = lambda : controller.bathroom4.windows[0].sensors[0].updateOpen())
+		bathroom4OpenWindowButton.grid(row=9, column = 1)
+
+		bathroom4CloseWindowButton = ttk.Button(self, text = "Close Bathroom4 Window", command = lambda : controller.bathroom4.windows[0].sensors[0].updateClosed())
+		bathroom4CloseWindowButton.grid(row=9, column = 2)
+
+		masterBathroomOpenWindow1Button = ttk.Button(self, text = "Open Master Bathroom Window1", command = lambda : controller.masterBathroom.windows[0].sensors[0].updateOpen())
+		masterBathroomOpenWindow1Button.grid(row=9, column=3)
+
+		masterBathroomCloseWindow1Button = ttk.Button(self, text = "Close Master Bathroom Window1", command = lambda : controller.masterBathroom.windows[0].sensors[0].updateClosed())
+		masterBathroomCloseWindow1Button.grid(row=9, column=4)
+
+		masterBathroomOpenWindow2Button = ttk.Button(self, text = "Open Master Bathroom Window2", command = lambda : controller.masterBathroom.windows[1].sensors[0].updateOpen())
+		masterBathroomOpenWindow2Button.grid(row=9, column=5)
+
+		masterBathroomCloseWindow2Button = ttk.Button(self, text = "Close Master Bathroom Window2", command = lambda : controller.masterBathroom.windows[1].sensors[0].updateClosed())
+		masterBathroomCloseWindow2Button.grid(row=9, column=6)
+
+		masterBathroomOpenWindow3Button = ttk.Button(self, text = "Open Master Bathroom Window3", command = lambda : controller.masterBathroom.windows[2].sensors[0].updateOpen())
+		masterBathroomOpenWindow3Button.grid(row=10, column=1)
+
+		masterBathroomCloseWindow3Button = ttk.Button(self, text = "Close Master Bathroom Window3", command = lambda : controller.masterBathroom.windows[2].sensors[0].updateClosed())
+		masterBathroomCloseWindow3Button.grid(row=10, column=2)
+
+		masterBathroomOpenWindow4Button = ttk.Button(self, text = "Open Master Bathroom Window4", command = lambda : controller.masterBathroom.windows[3].sensors[0].updateOpen())
+		masterBathroomOpenWindow4Button.grid(row=10, column=3)
+
+		masterBathroomCloseWindow4Button = ttk.Button(self, text = "Close Master Bathroom Window4", command = lambda : controller.masterBathroom.windows[3].sensors[0].updateClosed())
+		masterBathroomCloseWindow4Button.grid(row=10, column=4)
+
+		masterBathroomOpenWindow5Button = ttk.Button(self, text = "Open Master Bathroom Window5", command = lambda : controller.masterBathroom.windows[4].sensors[0].updateOpen())
+		masterBathroomOpenWindow5Button.grid(row=10, column=5)
+
+		masterBathroomCloseWindow5Button = ttk.Button(self, text = "Close Master Bathroom Window5", command = lambda : controller.masterBathroom.windows[4].sensors[0].updateClosed())
+		masterBathroomCloseWindow5Button.grid(row=10, column=6)
+
+		button1 = ttk.Button(self, text ="MainMenu", command = lambda : controller.show_frame(MainMenu))
+		button1.grid(row=20,column=1)
+
 
 #AUDREYS STUFF
 
