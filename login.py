@@ -70,10 +70,8 @@ def hash_pw(user_fn, password):
 
 def update_pw(frame, user_fn, password,controller,LoginPage):
     hash_pw(user_fn, password)
-    frame.passwordUpdateLabel.config(text = "Password Successfully updated")
-    frame.update()
-    time.sleep(3)
-    controller.show_frame(LoginPage)
+    controller.popupmsg("Password Successfully updated")
+
     
     
 

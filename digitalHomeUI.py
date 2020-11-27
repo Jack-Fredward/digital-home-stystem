@@ -32,7 +32,8 @@ class DigitalHomeApp(tk.Tk):
 		# initializing the digital home
 		self.db = db
 		self.dbCursor = dbCursor
-		self.username = "Stanely"
+		self.username = ""
+		# self.username = "Stanely"
 		# self.username = "Steve"
 		self.kitchen=kitchen("kitchen", dbCursor)
 		self.diningRoom=diningRoom("dining room",dbCursor)
@@ -89,8 +90,8 @@ class DigitalHomeApp(tk.Tk):
 
 			frame.grid(row = 0, column = 0, sticky ="nsew") 
 
-		# self.show_frame(LoginPage)
-		self.show_frame(MainMenu)
+		self.show_frame(LoginPage)
+		# self.show_frame(MainMenu)
 	
 	def getUserAccessLevel(self):
 		self.dbCursor.execute("SELECT Is_SU FROM Users WHERE F_Name = '"+self.username+"';")
