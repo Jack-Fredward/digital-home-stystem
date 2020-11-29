@@ -1690,7 +1690,7 @@ class MasterBedroomHeartRateMonitor(tk.Frame):
 		ageEntry = ttk.Entry(self, font = SMALLFONT)
 		ageEntry.grid(row=4, column = 2)
 		
-		takeHeartRateButton = ttk.Button(self, text = "Measure Heart RateP", command = lambda : simHeartRate(self, controller.masterBedroom, controller.db,controller,ageEntry.get(),self.gender.get()))
+		takeHeartRateButton = ttk.Button(self, text = "Measure Heart Rate", command = lambda : simHeartRate(self, controller.masterBedroom, controller.db,controller,ageEntry.get(),self.gender.get()))
 		takeHeartRateButton.grid(row=1,column=1)
 
 		#to get back to the masterBedroom

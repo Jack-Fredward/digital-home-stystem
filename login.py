@@ -51,7 +51,8 @@ def login(user_fn, password,controller,MainMenu):
         controller.username = user_fn
         controller.show_frame(MainMenu)
     else:
-        print("Wrong username or password")
+        controller.popupmsg("Wrong username password")
+        # print("Wrong username or password")
 
 
 def hash_pw(user_fn, password):

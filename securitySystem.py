@@ -46,7 +46,7 @@ def simSecurity(frame, controller, dbCursor,db):
                 breachedAreas.append(window.getName())
 
     if len(breachedAreas)>0:
-        msg = "Intruder Alert!! Breached Areas: "+ ",\n".join(breachedAreas)
+        msg = "Intruder Alert!! Breached Areas: "+ ",\n".join(breachedAreas) + ",\n Police have been alerted!!!"
         controller.popupmsg(msg)
     else:
         controller.popupmsg("All secure")

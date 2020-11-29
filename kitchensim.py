@@ -13,7 +13,7 @@ def simOvenTemp(db, frame, kitchen, temp):
 
     """
 
-    if (temp != 0):
+    if (temp > 0):
         secondsElapsed = 0
         if(kitchen.getOvenState()!=1):
             kitchen.turnOnOven(frame)
@@ -49,7 +49,7 @@ def simStoveTemp(db,frame,kitchen,temp,burnerNum):
         burnerNum       -- the burner number of which burner to use.
         
         """
-    if (temp!=0):
+    if (temp>0):
         secondsElapsed = 0
         kitchen.setStoveBurnerTemp(burnerNum,0)
         if(kitchen.getStoveBurnerState(burnerNum)!=1):
